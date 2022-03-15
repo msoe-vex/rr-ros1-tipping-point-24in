@@ -1,0 +1,29 @@
+# Catkin build files
+build/
+devel/
+install/
+src/v5_hal/firmware/include/ros_lib/*
+src/CMakeLists.txt
+.catkin_workspace
+
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+*.bin
+*.elf
+
+# PROS
+bin/
+compile_commands.json
+temp.log
+temp.errors
+*.ini
+.d/
+
+# VSCode
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+.history/

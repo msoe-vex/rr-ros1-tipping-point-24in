@@ -1,0 +1,17 @@
+int8 analog_left_x
+int8 analog_left_y
+int8 analog_right_x
+int8 analog_right_y
+bool btn_right
+bool btn_down
+bool btn_left
+bool btn_up
+bool btn_a
+bool btn_b
+bool btn_x
+bool btn_y
+bool btn_r1
+bool btn_r2
+bool btn_l1
+bool btn_l2
+bool is_connected
