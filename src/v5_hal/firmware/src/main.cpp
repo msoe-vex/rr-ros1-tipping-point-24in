@@ -38,14 +38,14 @@ void initialize() {
 
 	controller = new ControllerNode(node_manager, "controller");
 
-	left_1_motor = new MotorNode(node_manager, 17,"left_1_motor", false);
-	left_2_motor = new MotorNode(node_manager, 18,"left_2_motor", true);
-	left_3_motor = new MotorNode(node_manager, 19,"left_3_motor", true);
-	left_4_motor = new MotorNode(node_manager, 20,"left_4_motor", false);
-	right_1_motor = new MotorNode(node_manager, 7,"right_1_motor", true);
-	right_2_motor = new MotorNode(node_manager, 8,"right_2_motor", false);
-	right_3_motor = new MotorNode(node_manager, 9,"right_3_motor", false);
-	right_4_motor = new MotorNode(node_manager, 10,"right_4_motor", true);
+	left_1_motor = new MotorNode(node_manager, 17, "left_1_motor", false);
+	left_2_motor = new MotorNode(node_manager, 18, "left_2_motor", true);
+	left_3_motor = new MotorNode(node_manager, 19, "left_3_motor", true);
+	left_4_motor = new MotorNode(node_manager, 20, "left_4_motor", false);
+	right_1_motor = new MotorNode(node_manager, 7, "right_1_motor", true);
+	right_2_motor = new MotorNode(node_manager, 8, "right_2_motor", false);
+	right_3_motor = new MotorNode(node_manager, 9, "right_3_motor", false);
+	right_4_motor = new MotorNode(node_manager, 10, "right_4_motor", true);
 
 	TankDriveNode::TankEightMotors tank_motors = {
 		left_1_motor,

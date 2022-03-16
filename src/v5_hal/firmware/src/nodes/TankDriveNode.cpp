@@ -99,7 +99,7 @@ void TankDriveNode::teleopPeriodic() {
     int right = left_y - right_x;
 
     m_setLeftVoltage(copysign(max(min(fabs(left) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, left));
-    m_setRightVoltage(copysign(max(min(fabs(left) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, right));
+    m_setRightVoltage(copysign(max(min(fabs(right) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, right));
 }
 
 void TankDriveNode::autonPeriodic() {
