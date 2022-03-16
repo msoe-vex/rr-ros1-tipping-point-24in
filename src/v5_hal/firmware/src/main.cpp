@@ -115,7 +115,7 @@ void initialize() {
 	pivotclaw = new ClawNode(node_manager, "pivot_claw", controller, pivot_claw_piston, pros::E_CONTROLLER_DIGITAL_B);
 
 	// Initialize the autonomous manager
-	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node, pivotclaw);
+	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node, pivotclaw, right_lift_node);
 
 	// Call the node manager to initialize all of the nodes above
 	node_manager->initialize();
