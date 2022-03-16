@@ -35,6 +35,9 @@ MotorNode* left_motor_lift;
 LiftNode* right_lift_node;
 MotorNode* right_motor_lift;
 
+ADIEncoderNode* y_encoder;
+InertialSensorNode inertialSensor;
+
 
 // Declare all robot nodes here:
 
@@ -55,14 +58,14 @@ void initialize() {
 
 	controller = new ControllerNode(node_manager, "controller");
 
-	left_1_motor = new MotorNode(node_manager, 1,"left_1_motor", false);
-	left_2_motor = new MotorNode(node_manager, 2,"left_2_motor", true);
-	left_3_motor = new MotorNode(node_manager, 3,"left_3_motor", true);
-	left_4_motor = new MotorNode(node_manager, 4,"left_4_motor", false);
-	right_1_motor = new MotorNode(node_manager, 5,"right_1_motor", true);
-	right_2_motor = new MotorNode(node_manager, 6,"right_2_motor", false);
-	right_3_motor = new MotorNode(node_manager, 7,"right_3_motor", false);
-	right_4_motor = new MotorNode(node_manager, 8,"right_4_motor", true);
+	left_1_motor = new MotorNode(node_manager, 17,"left_1_motor", false);
+	left_2_motor = new MotorNode(node_manager, 18,"left_2_motor", true);
+	left_3_motor = new MotorNode(node_manager, 19,"left_3_motor", true);
+	left_4_motor = new MotorNode(node_manager, 20,"left_4_motor", false);
+	right_1_motor = new MotorNode(node_manager, 7,"right_1_motor", true);
+	right_2_motor = new MotorNode(node_manager, 8,"right_2_motor", false);
+	right_3_motor = new MotorNode(node_manager, 9,"right_3_motor", false);
+	right_4_motor = new MotorNode(node_manager, 10,"right_4_motor", true);
 
 	TankDriveNode::TankEightMotors tank_motors = {
 		left_1_motor,
@@ -91,6 +94,9 @@ void initialize() {
 	tank_drive_node = new TankDriveNode(node_manager, "tank_drive_node", controller, 
         tank_motors, tank_kinematics
 	);
+
+	y_encoder = new ADIEncoderNode(node_manager, 'A', 'B', "y_encoder", true);
+	inertialSensor = new InertialSensorNode(node_manager, "inertialSensor", 16);
 	
 	left_motor_lift = new MotorNode(node_manager, 10, "left_motor_lift", true);
 	right_motor_lift = new MotorNode(node_manager, 15, "right_motor_lift", false);
