@@ -1,6 +1,6 @@
 #include "auton/auton_actions/PlatformBalance.h"
 
-PlatformBalance::PlatformBalace() {
+PlatformBalance::PlatformBalance() {
 
 }
 
@@ -8,7 +8,7 @@ void PlatformBalance::ActionInit() {
     m_timer.Start();
 }
 
-AutonAction::actionStatus PlatformBalace::Action() {
+AutonAction::actionStatus PlatformBalance::Action() {
     if (m_timer.Get() > 0.5) {
         return END;
     }
@@ -16,6 +16,6 @@ AutonAction::actionStatus PlatformBalace::Action() {
     return CONTINUE;
 }
 
-void PlatformBalace::ActionEnd() {
+void PlatformBalance::ActionEnd() {
     m_timer.Stop();
 }
