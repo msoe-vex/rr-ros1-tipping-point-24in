@@ -3,12 +3,12 @@
 #include "lib-rr/auton/Auton.h"
 #include "lib-rr/util/Timer.h"
 
-class PlatformBalace : public AutonAction {
+class PlatformBalance : public AutonAction {
 private:
     Timer m_timer;
 
 public:
-    PlatformBalace();
+    PlatformBalance();
 
     void ActionInit();
 
