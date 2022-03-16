@@ -16,25 +16,6 @@ MotorNode* right_2_motor;
 MotorNode* right_3_motor;
 MotorNode* right_4_motor;
 
-ClawNode* rightclaw;
-ADIDigitalOutNode* right_claw_piston;
-
-ClawNode* leftclaw;
-ADIDigitalOutNode* left_claw_piston;
-
-ClawNode* backclaw;
-ADIDigitalOutNode* back_claw_piston;
-
-ClawNode* pivotclaw;
-ADIDigitalOutNode* pivot_claw_piston;
-
-
-LiftNode* left_lift_node;
-MotorNode* left_motor_lift;
-
-LiftNode* right_lift_node;
-MotorNode* right_motor_lift;
-
 
 // Declare all robot nodes here:
 
@@ -92,30 +73,8 @@ void initialize() {
         tank_motors, tank_kinematics
 	);
 	
-	left_motor_lift = new MotorNode(node_manager, 10, "left_motor_lift", true);
-	right_motor_lift = new MotorNode(node_manager, 15, "right_motor_lift", false);
-
-
-	left_lift_node = new LiftNode(node_manager, "left_lift_node", 
-        controller, left_motor_lift, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2
-	);
-
-	right_lift_node = new LiftNode(node_manager, "right_lift_node", 
-        controller, right_motor_lift, pros::E_CONTROLLER_DIGITAL_R1, pros::E_CONTROLLER_DIGITAL_R2
-	);
-
-	right_claw_piston = new ADIDigitalOutNode(node_manager, "primary_claw_piston", 3, false);
-	left_claw_piston = new ADIDigitalOutNode(node_manager, "secondary_claw_piston", 1, false);
-	back_claw_piston = new ADIDigitalOutNode(node_manager, "back_claw_piston", 2, false);
-	pivot_claw_piston = new ADIDigitalOutNode(node_manager, "pivot_claw_piston", 4, false);
-
-	rightclaw = new ClawNode(node_manager, "rightclaw", controller, right_claw_piston, pros::E_CONTROLLER_DIGITAL_X);
-	leftclaw = new ClawNode(node_manager, "leftclaw", controller, left_claw_piston, pros::E_CONTROLLER_DIGITAL_UP);
-	backclaw = new ClawNode(node_manager, "back_claw", controller, back_claw_piston, pros::E_CONTROLLER_DIGITAL_DOWN);
-	pivotclaw = new ClawNode(node_manager, "pivot_claw", controller, pivot_claw_piston, pros::E_CONTROLLER_DIGITAL_B);
-
 	// Initialize the autonomous manager
-	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node, pivotclaw);
+	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node);
 
 	// Call the node manager to initialize all of the nodes above
 	node_manager->initialize();

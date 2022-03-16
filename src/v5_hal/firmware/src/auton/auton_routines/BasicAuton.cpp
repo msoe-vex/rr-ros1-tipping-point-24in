@@ -1,9 +1,8 @@
 #include "auton/auton_routines/BasicAuton.h"
 
-BasicAuton::BasicAuton(IDriveNode* drive_node, IClawNode* claw_node) : 
+BasicAuton::BasicAuton(IDriveNode* drive_node) : 
         Auton("Test Turn Node"), 
-        m_drive_node(drive_node),
-        m_claw_node(claw_node) {
+        m_drive_node(drive_node) {
     
 }
 

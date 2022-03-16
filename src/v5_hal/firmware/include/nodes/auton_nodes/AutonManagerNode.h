@@ -17,7 +17,7 @@ private:
     Auton* m_basic_auton;
 
 public:
-    AutonManagerNode(NodeManager* node_manager, IDriveNode* drive_node, IClawNode* claw_node);
+    AutonManagerNode(NodeManager* node_manager, IDriveNode* drive_node);
 
     Auton* selected_auton;
 
