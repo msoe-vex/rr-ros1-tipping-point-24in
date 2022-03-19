@@ -10,6 +10,9 @@
 class AutonManagerNode : public Node {
 private:
     IDriveNode* m_drive_node;
+    ADIEncoderNode* m_encoder_node;
+    InertialSensorNode* m_inertial_node;
+
     IClawNode* m_claw_node;
     ILiftNode* m_lift_node;
 
@@ -18,7 +21,7 @@ private:
     Auton* m_basic_auton;
 
 public:
-    AutonManagerNode(NodeManager* node_manager, IDriveNode* drive_node);
+    AutonManagerNode(NodeManager* node_manager, IDriveNode* drive_node, ADIEncoderNode* encoder_node, InertialSensorNode* inertial_node);
 
     Auton* selected_auton;
 

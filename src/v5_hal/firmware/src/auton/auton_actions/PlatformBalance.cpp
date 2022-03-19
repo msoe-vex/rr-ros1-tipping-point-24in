@@ -21,6 +21,7 @@ AutonAction::actionStatus PlatformBalance::Action() {
         m_drive_node->setDriveVelocity(100, 0); //should drive until the ramp starts to balance
     }
     m_drive_node->setDriveVelocity(0, 0); //Phase 3: Balancing at a standstill
+    return END;
 }
 
 void PlatformBalance::ActionEnd() {
