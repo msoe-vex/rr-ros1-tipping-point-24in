@@ -15,6 +15,8 @@ private:
     InertialSensorNode* m_inertial_node;
     ADIEncoderNode* m_encoder_node;
     Eigen::Rotation2Dd m_roll;
+    Eigen::Rotation2Dd m_roll_offset;
+    double m_roll_true;
     int m_phase = 1;
 
 public:
