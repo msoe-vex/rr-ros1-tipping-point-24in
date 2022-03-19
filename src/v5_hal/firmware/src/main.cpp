@@ -85,7 +85,7 @@ void initialize() {
 	inertialSensor = new InertialSensorNode(node_manager, "inertialSensor", 15);
 	
 	// Initialize the autonomous manager
-	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node);
+	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node, y_encoder, inertialSensor);
 
 	// Call the node manager to initialize all of the nodes above
 	node_manager->initialize();
