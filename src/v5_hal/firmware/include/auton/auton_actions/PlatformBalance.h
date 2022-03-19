@@ -15,6 +15,7 @@ private:
     InertialSensorNode* m_inertial_node;
     ADIEncoderNode* m_encoder_node;
     Eigen::Rotation2Dd m_roll;
+    int m_phase = 1;
 
 public:
     PlatformBalance(IDriveNode* drive_node, ADIEncoderNode* encoder_node, InertialSensorNode* inertial_node);

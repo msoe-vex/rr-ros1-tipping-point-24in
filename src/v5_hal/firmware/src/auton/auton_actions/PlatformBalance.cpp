@@ -4,6 +4,7 @@ PlatformBalance::PlatformBalance(IDriveNode* drive_node, ADIEncoderNode* encoder
     m_drive_node(drive_node), 
     m_encoder_node(encoder_node),
     m_inertial_node(inertial_node)
+
     {
 }
 
@@ -14,14 +15,21 @@ void PlatformBalance::ActionInit() {
 }
 
 AutonAction::actionStatus PlatformBalance::Action() {
-    if (m_roll.angle() < 25) { //Phase 1: Driving onto the ramp
-        m_drive_node->setDriveVelocity(100, 0); //should act as a checker for when the robot is fully on the ramp
+    switch(m_phase) {
+        case 1 :
+            m_drive_node->setDriveVelocity(100, 0);
+            if(m_roll.angle() > 25) {
+                m_phase = 2;
+            }
+        case 2 :
+            m_drive_node->setDriveVelocity(80, 0);
+            if(m_roll.angle() < 10) {
+                m_phase = 3;
+            }
+        case 3 : 
+            m_drive_node->setDriveVelocity(0, 0);
+            return END;
     }
-    if(m_roll.angle() > 10) { //Phase 2: Driving until the ramp starts to tilt towards being balanced
-        m_drive_node->setDriveVelocity(100, 0); //should drive until the ramp starts to balance
-    }
-    m_drive_node->setDriveVelocity(0, 0); //Phase 3: Balancing at a standstill
-    return END;
 }
 
 void PlatformBalance::ActionEnd() {
