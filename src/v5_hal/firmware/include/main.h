@@ -66,6 +66,7 @@
 #include "nodes/ClawNode.h"
 #include "nodes/TankDriveNode.h"
 #include "nodes/LiftNode.h"
+#include "nodes/IntakeNode.h"
 
    /**
     * You should add more #includes here

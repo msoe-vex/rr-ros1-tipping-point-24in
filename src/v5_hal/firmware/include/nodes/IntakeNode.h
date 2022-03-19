@@ -10,24 +10,16 @@
 class IntakeNode : public Node {
 private:
     pros::Controller* m_controller;
-    MotorNode* m_left_intake;
-    MotorNode* m_right_intake;
-    ADIDigitalOutNode* m_goal_plate;
-    ADIDigitalOutNode* m_intake_open;
+    MotorNode* m_intake_motor;
 
     std::string m_handle_name;
 
     bool m_open = false;
 
 public:
-    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* left_intake,
-        MotorNode* right_intake, ADIDigitalOutNode* goal_plate, ADIDigitalOutNode* intake_open);
+    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor);
 
     void setIntakeVoltage(int voltage);
-
-    void openIntakes(int open);
-
-    void liftGoalPlate(int open);
 
     void initialize();
 
