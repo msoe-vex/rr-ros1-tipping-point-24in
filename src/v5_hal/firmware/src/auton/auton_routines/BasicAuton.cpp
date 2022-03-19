@@ -13,4 +13,5 @@ void BasicAuton::AddNodes() {
     //Auton::AddFirstNode(forward_node);
 
     AutonNode* platformBalance_node = new AutonNode(10, new PlatformBalance(m_drive_node, m_encoder_node, m_inertial_node));
+    Auton::AddFirstNode(platformBalance_node);
 }

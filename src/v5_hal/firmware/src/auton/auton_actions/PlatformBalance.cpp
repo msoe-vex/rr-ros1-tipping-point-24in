@@ -16,12 +16,13 @@ void PlatformBalance::ActionInit() {
 AutonAction::actionStatus PlatformBalance::Action() {
     if (m_roll.angle() < 25) { //Phase 1: Driving onto the ramp
         m_drive_node->setDriveVelocity(100, 0); //should act as a checker for when the robot is fully on the ramp
-    }
-    if(m_roll.angle() > 10) { //Phase 2: Driving until the ramp starts to tilt towards being balanced
+    } else if(m_roll.angle() > 10) { //Phase 2: Driving until the ramp starts to tilt towards being balanced
         m_drive_node->setDriveVelocity(100, 0); //should drive until the ramp starts to balance
+    } else {
+        m_drive_node->setDriveVelocity(0, 0); //Phase 3: Balancing at a standstill
+        return END;
     }
-    m_drive_node->setDriveVelocity(0, 0); //Phase 3: Balancing at a standstill
-    return END;
+    return CONTINUE;
 }
 
 void PlatformBalance::ActionEnd() {
