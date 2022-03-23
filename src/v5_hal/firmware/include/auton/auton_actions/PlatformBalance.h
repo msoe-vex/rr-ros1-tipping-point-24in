@@ -16,7 +16,8 @@ private:
     ADIEncoderNode* m_encoder_node;
     Eigen::Rotation2Dd m_roll;
     Eigen::Rotation2Dd m_roll_offset;
-    double m_roll_true;
+    Eigen::Rotation2Dd m_roll_true;
+    double m_roll_true_angle;
     int m_phase = 1;
 
 public:

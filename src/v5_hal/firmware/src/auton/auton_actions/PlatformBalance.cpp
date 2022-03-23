@@ -16,8 +16,10 @@ void PlatformBalance::ActionInit() {
 
 AutonAction::actionStatus PlatformBalance::Action() {
     m_roll = m_inertial_node->getRoll();
-    m_roll_true = (m_roll* m_roll_offset).smallestAngle();
-    cout << "TR: " << toDegrees(m_roll_true*-1) << "\n";
+    //m_roll_true = (m_roll* m_roll_offset).smallestAngle();
+    m_roll_true = m_roll * m_roll_offset.inverse();
+    m_roll_true_angle = m_roll_true.angle();
+    cout << "TR: " << toDegrees(m_roll_true_angle) << "\n";
     /*switch(m_phase) {
         case 1 :
             if ((int) m_timer.getTime() % 5 == 0){
