@@ -6,7 +6,7 @@
 #include "lib-rr/nodes/sensor_nodes/InertialSensorNode.h"
 #include "lib-rr/auton/auton_actions/DriveStraightAction.h"
 #include "lib-rr/nodes/sensor_nodes/ADIEncoderNode.h"
-
+#include "lib-rr/math/Math.h"
 
 class PlatformBalance : public AutonAction {
 private:

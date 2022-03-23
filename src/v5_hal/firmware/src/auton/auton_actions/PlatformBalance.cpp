@@ -17,24 +17,40 @@ void PlatformBalance::ActionInit() {
 AutonAction::actionStatus PlatformBalance::Action() {
     m_roll = m_inertial_node->getRoll();
     m_roll_true = (m_roll* m_roll_offset).smallestAngle();
-    switch(m_phase) {
+    cout << "TR: " << toDegrees(m_roll_true*-1) << "\n";
+    /*switch(m_phase) {
         case 1 :
-            m_drive_node->setDriveVelocity(10, 0);
-            if(m_roll_true > 15) {
-                m_phase = 2;
+            if ((int) m_timer.getTime() % 5 == 0){
+                cout << "True Roll is: " << toDegrees(m_roll_true) << "\n" << "Hit case 1\n";
             }
+            m_drive_node->setDriveVelocity(10, 0);
+            if(m_roll_true > toRadians(15)) {
+                m_phase = 2;
+            }//else {
+            //    return CONTINUE;
+            //}
             return CONTINUE;
         case 2 :
-            m_drive_node->setDriveVelocity(10, 0);
-            if(m_roll_true < 5) {
-                m_phase = 3;
+            if ((int) m_timer.getTime() % 5 == 0){
+                cout << "True Roll is: " << toDegrees(m_roll_true) << "\n" << "Hit case 2\n";
+                
             }
+            m_drive_node->setDriveVelocity(0, 0);
+            if(m_roll_true < toRadians(10)) {
+                m_phase = 3;
+            } //else {
+            //    return CONTINUE;
+            //}
             return CONTINUE;
         case 3 : 
+            if ((int) m_timer.getTime() % 5 == 0){
+                cout << "True Roll is: " << toDegrees(m_roll_true) << "\n" << "Hit case 3\n";
+            }
             m_drive_node->setDriveVelocity(0, 0);
             return END;
     }
-    return END;
+    return END;*/
+    return CONTINUE;
 }
 
 void PlatformBalance::ActionEnd() {
