@@ -19,7 +19,7 @@ MotorNode* right_4_motor;
 MotorNode* intake_motor;
 IntakeNode* intake_node;
 
-ADIEncoderNode* y_encoder;
+ADIEncoderNode* encoder_node;
 InertialSensorNode* inertialSensor;
 
 // Declare all robot nodes here:
@@ -81,11 +81,11 @@ void initialize() {
 	intake_motor = new MotorNode(node_manager, 5, "intake_motor", true);
 	intake_node = new IntakeNode(node_manager, "intakeNode", controller, intake_motor);
 
-	y_encoder = new ADIEncoderNode(node_manager, 'A', 'B', "y_encoder", true);
+	encoder_node = new ADIEncoderNode(node_manager, 'A', 'B', "encoder_node", true);
 	inertialSensor = new InertialSensorNode(node_manager, "inertialSensor", 15);
 	
 	// Initialize the autonomous manager
-	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node, y_encoder, inertialSensor);
+	auton_manager_node = new AutonManagerNode(node_manager, tank_drive_node, encoder_node, inertialSensor);
 
 	// Call the node manager to initialize all of the nodes above
 	node_manager->initialize();

@@ -18,6 +18,7 @@ private:
     Eigen::Rotation2Dd m_roll_offset;
     Eigen::Rotation2Dd m_roll_true;
     double m_roll_true_angle;
+    int m_start_value;
     int m_phase = 1;
 
 public:
