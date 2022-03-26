@@ -10,16 +10,13 @@ void PlatformBalance::ActionInit() {
     m_timer.Start();
     m_roll_offset = m_inertial_node->getRoll();
     m_start_value = m_encoder_node->getValue();
-    //double time;
 }
 
 AutonAction::actionStatus PlatformBalance::Action() {
-    //double time = m_timer.Get();
-    //int distance = m_encoder_node->getValue();
-    cout << "hello /n";
-    if(m_timer.Get() > 20) {
-        return END;
-    }
+    double time = m_timer.Get();
+    int distance = m_encoder_node->getValue();
+    cout << distance << endl;
+
     return CONTINUE;
 }
 
