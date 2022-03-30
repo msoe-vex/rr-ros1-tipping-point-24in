@@ -6,7 +6,9 @@
 #include "lib-rr/nodes/sensor_nodes/InertialSensorNode.h"
 #include "lib-rr/auton/auton_actions/DriveStraightAction.h"
 #include "lib-rr/nodes/sensor_nodes/ADIEncoderNode.h"
-#include "lib-rr/math/Math.h"
+#include "lib-rr/math/Math.h"   
+#include "lib-rr/util/PID.h"
+#include "lib-rr/util/Constants.h"
 
 class PlatformBalance : public AutonAction {
 private:
@@ -20,6 +22,11 @@ private:
     double m_roll_true_angle;
     int m_start_value;
     int m_phase = 1;
+    PID m_climb_PID;
+    float m_EncoderValue;
+    float m_finalEncoderValue;
+    float m_EncoderError;
+    float m_Velocity;
 
 public:
     PlatformBalance(IDriveNode* drive_node, ADIEncoderNode* encoder_node, InertialSensorNode* inertial_node);
