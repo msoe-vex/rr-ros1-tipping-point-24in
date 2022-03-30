@@ -4,7 +4,7 @@ PlatformBalance::PlatformBalance(IDriveNode* drive_node, ADIEncoderNode* encoder
     m_drive_node(drive_node), 
     m_encoder_node(encoder_node),
     m_inertial_node(inertial_node),
-    m_climb_PID(0.001, 0.0025, 0) {
+    m_climb_PID(0.00125, 0.003, 0) {
 }
 
 void PlatformBalance::ActionInit() {
@@ -19,7 +19,7 @@ AutonAction::actionStatus PlatformBalance::Action() {
     m_roll_true_angle = toDegrees(m_roll_true.angle())*-1;
     switch(m_phase) {
         case 1 :
-            m_drive_node->setDriveVelocity(30, 0);
+            m_drive_node->setDriveVelocity(35, 0);
             if(m_roll_true_angle > 15) {
                 m_phase = 2;
             }
