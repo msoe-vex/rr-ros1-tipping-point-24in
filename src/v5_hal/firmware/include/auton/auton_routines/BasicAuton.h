@@ -15,13 +15,12 @@
 class BasicAuton : public Auton {
 public:
     //BasicAuton(IDriveNode* drive_node);
-    BasicAuton(IDriveNode* drive_node, ADIEncoderNode* encoder_node, InertialSensorNode* inertial_node);
+    BasicAuton(IDriveNode* drive_node, OdometryNode* odom_node);
 
     void AddNodes();
 
 private:
     IDriveNode* m_drive_node;
-    ADIEncoderNode* m_encoder_node;
-    InertialSensorNode* m_inertial_node;
+    OdometryNode* m_odom_node
 
 };
