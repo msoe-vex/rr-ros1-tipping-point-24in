@@ -12,7 +12,8 @@
 class LiftNode : public ILiftNode {
 private:
     ControllerNode* m_controller;
-    MotorNode* m_motor;
+    MotorNode* m_left_motor;
+    MotorNode* m_right_motor;
     pros::controller_digital_e_t m_up_button;
     pros::controller_digital_e_t m_down_button;
 
@@ -20,7 +21,7 @@ private:
 
 public:
     LiftNode(NodeManager* node_manager, std::string handle_name, 
-        ControllerNode* controller, MotorNode* motor,
+        ControllerNode* controller, MotorNode* left_motor, MotorNode* right_motor,
         pros::controller_digital_e_t up_button, pros::controller_digital_e_t down_button);
     
     void initialize();

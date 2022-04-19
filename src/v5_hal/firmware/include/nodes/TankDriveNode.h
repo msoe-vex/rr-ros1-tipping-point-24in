@@ -29,9 +29,13 @@ public:
 
     FourMotorDriveEncoderVals getIntegratedEncoderVals();
 
-    void setDriveVoltage(int x_voltage, int theta_voltage);
+    void setDriveVoltage(int y_voltage, int theta_voltage);
 
-    void setDriveVelocity(float x_velocity, float theta_velocity);
+    void setDriveVoltage(int x_voltage, int y_voltage, int theta_voltage);
+
+    void setDriveVelocity(float y_velocity, float theta_velocity);
+
+    void setDriveVelocity(float x_velocity, float y_velocity, float theta_velocity);
 
     void teleopPeriodic();
 
