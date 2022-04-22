@@ -141,7 +141,7 @@ void initialize() {
 
 	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'F', false);
 
-	backClaw = new BackClawNode(nodeManager, "backClaw", controller, backClawPiston, pros::E_CONTROLLER_DIGITAL_DOWN, 
+	backClaw = new BackClawNode(nodeManager, "backClaw", controller, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 	
 	// Initialize the autonomous manager
