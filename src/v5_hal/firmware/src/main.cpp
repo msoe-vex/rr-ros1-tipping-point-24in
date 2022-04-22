@@ -122,9 +122,9 @@ void initialize() {
 
 	leftLiftMotor = new MotorNode(nodeManager, 16, "leftLiftMotor", false);
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
-	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 7, "liftBottomLimitSwitch");
-	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 6, "liftTopLimitSwitch");
-	liftPotentiometer = new ADIAnalogInNode(nodeManager, 8, "liftPotentiometer", false);
+	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 7, "liftBottomLimitSwitch"); // not on robot
+	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");
+	liftPotentiometer = new ADIAnalogInNode(nodeManager, 8, "liftPotentiometer", false); // not on robot
 	
 	liftNode = new LiftNode(
 		nodeManager, 
