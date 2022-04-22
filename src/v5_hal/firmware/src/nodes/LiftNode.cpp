@@ -44,11 +44,11 @@ void LiftNode::setLiftVoltage(int voltage) {
 
 void LiftNode::setLiftVelocity(int velocity) {
     if (velocity < 0 && m_bottom_limit_switch->getValue() == 0) {
-        m_left_motor->moveVelocity(voltage);
-        m_right_motor->moveVelocity(voltage);
+        m_left_motor->moveVelocity(velocity);
+        m_right_motor->moveVelocity(velocity);
     } else if (velocity > 0 && m_top_limit_switch->getValue() == 0) {
-        m_left_motor->moveVelocity(voltage);
-        m_right_motor->moveVelocity(voltage);
+        m_left_motor->moveVelocity(velocity);
+        m_right_motor->moveVelocity(velocity);
     } else {
         m_left_motor->moveVelocity(0);
         m_right_motor->moveVelocity(0);
