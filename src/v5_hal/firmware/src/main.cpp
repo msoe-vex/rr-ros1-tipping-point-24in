@@ -149,7 +149,7 @@ void initialize() {
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 	
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, tankDriveNode, yOdomEncoder, inertialSensor);
+	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, yOdomEncoder, inertialSensor);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
