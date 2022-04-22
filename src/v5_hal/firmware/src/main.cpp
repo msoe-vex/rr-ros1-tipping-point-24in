@@ -35,6 +35,9 @@ ADIDigitalOutNode* backTiltPiston;
 LiftNode* liftNode;
 MotorNode* leftLiftMotor;
 MotorNode* rightLiftMotor;
+ADIDigitalInNode* liftBottomLimitSwitch;
+ADIDigitalInNode* liftTopLimitSwitch;
+ADIAnalogInNode* liftPotentiometer;
 
 ADIEncoderNode* yOdomEncoder;
 ADIEncoderNode* xOdomEncoder;
@@ -119,18 +122,19 @@ void initialize() {
 
 	leftLiftMotor = new MotorNode(nodeManager, 16, "leftLiftMotor", false);
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
-	//bottom_limit_switch_lift = new ADIDigitalInNode(node_manager, 7, "bottom_limit_switch_lift");
-	//top_limit_switch_lift = new ADIDigitalInNode(node_manager, 6, "top_limit_switch_lift");
-	//potentiometer_lift = new ADIAnalogInNode(node_manager, 8, "potentiometer_lift", false);
-
+	liftBottomLimitSwitch = new ADIDigitalInNode(node_manager, 7, "liftBottomLimitSwitch");
+	liftTopLimitSwitch = new ADIDigitalInNode(node_manager, 6, "liftTopLimitSwitch");
+	liftPotentiometer = new ADIAnalogInNode(node_manager, 8, "liftPotentiometer", false);
+	
 	liftNode = new LiftNode(
 		nodeManager, 
 		"liftNode", 
         controller, 
 		leftLiftMotor, 
         rightLiftMotor,
-		pros::E_CONTROLLER_DIGITAL_R1,
-		pros::E_CONTROLLER_DIGITAL_R2
+		liftBottomLimitSwitch,
+		liftTopLimitSwitch,
+		liftPotentiometer
 	);
 
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
