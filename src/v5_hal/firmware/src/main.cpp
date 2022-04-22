@@ -28,10 +28,8 @@ IntakeNode* flapConveyorNode;
 ClawNode* frontClaw;
 ADIDigitalOutNode* frontClawPiston;
 
-ClawNode* backClaw;
+BackClawNode* backClaw;
 ADIDigitalOutNode* backClawPiston;
-
-ClawNode* backTilt;
 ADIDigitalOutNode* backTiltPiston;
 
 LiftNode* liftNode;
@@ -141,10 +139,10 @@ void initialize() {
 
 	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'E', false);
 
-	backClaw = new ClawNode(nodeManager, "backClaw", controller, backClawPiston, pros::E_CONTROLLER_DIGITAL_LEFT);
-
 	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'F', false);
-	backTilt = new ClawNode(nodeManager, "backTilt", controller, backTiltPiston, pros::E_CONTROLLER_DIGITAL_DOWN);
+
+	backClaw = new BackClawNode(nodeManager, "backClaw", controller, backClawPiston, pros::E_CONTROLLER_DIGITAL_DOWN, 
+		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, tankDriveNode, yOdomEncoder, inertialSensor);
