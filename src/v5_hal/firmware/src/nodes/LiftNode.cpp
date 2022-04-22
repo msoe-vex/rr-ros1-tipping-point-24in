@@ -30,13 +30,29 @@ void LiftNode::initialize() {
 };
 
 void LiftNode::setLiftVoltage(int voltage) {
-    m_left_motor->moveVoltage(voltage);
-    m_right_motor->moveVoltage(voltage);
+    if (voltage < 0 && m_bottom_limit_switch->getValue() == 0) {
+        m_left_motor->moveVoltage(voltage);
+        m_right_motor->moveVoltage(voltage);
+    } else if (voltage > 0 && m_top_limit_switch->getValue() == 0) {
+        m_left_motor->moveVoltage(voltage);
+        m_right_motor->moveVoltage(voltage);
+    } else {
+        m_left_motor->moveVoltage(0);
+        m_right_motor->moveVoltage(0);
+    }
 };
 
 void LiftNode::setLiftVelocity(int velocity) {
-    m_left_motor->moveVelocity(velocity);
-    m_right_motor->moveVelocity(velocity);
+    if (velocity < 0 && m_bottom_limit_switch->getValue() == 0) {
+        m_left_motor->moveVelocity(voltage);
+        m_right_motor->moveVelocity(voltage);
+    } else if (velocity > 0 && m_top_limit_switch->getValue() == 0) {
+        m_left_motor->moveVelocity(voltage);
+        m_right_motor->moveVelocity(voltage);
+    } else {
+        m_left_motor->moveVelocity(0);
+        m_right_motor->moveVelocity(0);
+    }
 };
 
 void LiftNode::setLiftPosition(int position, int tolerance) {
@@ -69,15 +85,15 @@ void LiftNode::updateLiftState() {
 void LiftNode::teleopPeriodic() {
     if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1) && 
         !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-        m_left_motor->moveVoltage(MAX_MOTOR_VOLTAGE);
-        m_right_motor->moveVoltage(MAX_MOTOR_VOLTAGE);
+        m_left_motor->moveVelocity(MAX_MOTOR_VOLTAGE);
+        m_right_motor->moveVelocity(MAX_MOTOR_VOLTAGE);
     } else if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2) && 
         !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-        m_left_motor->moveVoltage(-MAX_MOTOR_VOLTAGE);
-        m_right_motor->moveVoltage(-MAX_MOTOR_VOLTAGE);
+        m_left_motor->moveVelocity(-MAX_MOTOR_VOLTAGE);
+        m_right_motor->moveVelocity(-MAX_MOTOR_VOLTAGE);
     } else {
-        m_left_motor->moveVoltage(0);
-		m_right_motor->moveVoltage(0);
+        m_left_motor->moveVelocity(0);
+		m_right_motor->moveVelocity(0);
     }
 };
 
