@@ -77,29 +77,37 @@ void TankDriveNode::initialize() {
     resetEncoders();
 }
 
-void TankDriveNode::setDriveVoltage(int x_voltage, int theta_voltage) {
-    IDriveKinematics::FourMotorPercentages motor_percentages = m_kinematics.inverseKinematics(x_voltage, 0, theta_voltage, MAX_MOTOR_VOLTAGE);
+void TankDriveNode::setDriveVoltage(int y_voltage, int theta_voltage) {
+    IDriveKinematics::FourMotorPercentages motor_percentages = m_kinematics.inverseKinematics(0, y_voltage, theta_voltage, MAX_MOTOR_VOLTAGE);
 
-    
+    m_setLeftVoltage(motor_percentages.left_front_percent * MAX_MOTOR_VOLTAGE);
+    m_setRightVoltage(motor_percentages.right_front_percent * MAX_MOTOR_VOLTAGE);
 }
 
-void TankDriveNode::setDriveVelocity(float x_velocity, float theta_velocity) { //incoming values should be in m/s so we convert to rpm here
+void TankDriveNode::setDriveVoltage(int x_voltage, int y_voltage, int theta_voltage) {
+    setDriveVoltage(y_voltage, theta_voltage);    
+}
+
+void TankDriveNode::setDriveVelocity(float y_velocity, float theta_velocity) {
     IDriveKinematics::FourMotorPercentages motor_percentages = 
-        m_kinematics.inverseKinematics(x_velocity, 0, theta_velocity, MAX_VELOCITY);
+        m_kinematics.inverseKinematics(0, y_velocity, theta_velocity, MAX_VELOCITY);
+
+    //std::cout << "Left: " << motor_percentages.left_front_percent << " | Right: " << motor_percentages.right_front_percent << std::endl;
 
     m_setLeftVelocity(motor_percentages.left_front_percent * MAX_VELOCITY);
     m_setRightVelocity(motor_percentages.right_front_percent * MAX_VELOCITY);
 }
 
+void TankDriveNode::setDriveVelocity(float x_velocity, float y_velocity, float theta_velocity) { //incoming values should be in m/s so we convert to rpm here
+    setDriveVelocity(y_velocity, theta_velocity);
+}
+
 void TankDriveNode::teleopPeriodic() {
     int left_y = m_controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    int right_x = m_controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+    int right_y = m_controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
 
-    int left = left_y + right_x;
-    int right = left_y - right_x;
-
-    m_setLeftVoltage(copysign(max(min(fabs(left) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, left));
-    m_setRightVoltage(copysign(max(min(fabs(right) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, right));
+    m_setLeftVoltage(copysign(max(min(fabs(left_y) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, left_y));
+    m_setRightVoltage(copysign(max(min(fabs(right_y) / 127.0, 127.0), 0.0) * MAX_MOTOR_VOLTAGE, right_y));
 }
 
 void TankDriveNode::autonPeriodic() {
