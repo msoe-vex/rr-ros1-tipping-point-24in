@@ -122,9 +122,9 @@ void initialize() {
 
 	leftLiftMotor = new MotorNode(nodeManager, 16, "leftLiftMotor", false);
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
-	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 7, "liftBottomLimitSwitch"); // not on robot
+	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 'F', "liftBottomLimitSwitch"); // not on robot
 	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");
-	liftPotentiometer = new ADIAnalogInNode(nodeManager, 8, "liftPotentiometer", false); // not on robot
+	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'G', "liftPotentiometer", false); // not on robot
 	
 	liftNode = new LiftNode(
 		nodeManager, 
@@ -141,9 +141,9 @@ void initialize() {
 
 	frontClaw = new ClawNode(nodeManager, "frontClaw", controller, frontClawPiston, pros::E_CONTROLLER_DIGITAL_B);
 
-	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'E', false);
+	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
 
-	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'F', false);
+	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false);
 
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);

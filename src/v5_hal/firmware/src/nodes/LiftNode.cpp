@@ -30,28 +30,22 @@ void LiftNode::initialize() {
 };
 
 void LiftNode::setLiftVoltage(int voltage) {
-    if (voltage < 0 && m_bottom_limit_switch->getValue() == 0) {
-        m_left_motor->moveVoltage(voltage);
-        m_right_motor->moveVoltage(voltage);
-    } else if (voltage > 0 && m_top_limit_switch->getValue() == 0) {
-        m_left_motor->moveVoltage(voltage);
-        m_right_motor->moveVoltage(voltage);
+    if (m_top_limit_switch->getValue() == 1) {
+        m_left_motor->moveVoltage(min(voltage, 0));
+        m_right_motor->moveVoltage(min(voltage, 0));
     } else {
-        m_left_motor->moveVoltage(0);
-        m_right_motor->moveVoltage(0);
+        m_left_motor->moveVoltage(voltage);
+        m_right_motor->moveVoltage(voltage);
     }
 };
 
 void LiftNode::setLiftVelocity(int velocity) {
-    if (velocity < 0 && m_bottom_limit_switch->getValue() == 0) {
-        m_left_motor->moveVelocity(velocity);
-        m_right_motor->moveVelocity(velocity);
-    } else if (velocity > 0 && m_top_limit_switch->getValue() == 0) {
-        m_left_motor->moveVelocity(velocity);
-        m_right_motor->moveVelocity(velocity);
+    if (m_top_limit_switch->getValue() == 1) {
+        m_left_motor->moveVelocity(min(velocity, 0));
+        m_right_motor->moveVelocity(min(velocity, 0));
     } else {
-        m_left_motor->moveVelocity(0);
-        m_right_motor->moveVelocity(0);
+        m_left_motor->moveVelocity(velocity);
+        m_right_motor->moveVelocity(velocity);
     }
 };
 
@@ -67,33 +61,22 @@ int LiftNode::getPosition() { // change back to use pot
 void LiftNode::updateLiftState() {
     int positionBoundUpper = getPosition() + m_tolerance;
     int positionBoundLower = getPosition() - m_tolerance;
-    pros::lcd::print(3, "m_target_position: %d\n", m_target_position);
-    pros::lcd::print(4, "Actual Position: %d\n", getPosition());
     if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
         m_lift_state = HOLDING;
     } else {
         m_lift_state = UPDATING;
-    }
-
-    if (m_lift_state == HOLDING) {
-        pros::lcd::print(2, "Lift State: Holding\n");
-    } else {
-        pros::lcd::print(2, "Lift State: Updating\n");
     }
 }
 
 void LiftNode::teleopPeriodic() {
     if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1) && 
         !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-        m_left_motor->moveVelocity(MAX_MOTOR_VOLTAGE);
-        m_right_motor->moveVelocity(MAX_MOTOR_VOLTAGE);
+        setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
     } else if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2) && 
         !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-        m_left_motor->moveVelocity(-MAX_MOTOR_VOLTAGE);
-        m_right_motor->moveVelocity(-MAX_MOTOR_VOLTAGE);
+        setLiftVoltage(-MAX_MOTOR_VOLTAGE);
     } else {
-        m_left_motor->moveVelocity(0);
-		m_right_motor->moveVelocity(0);
+        setLiftVelocity(0);
     }
 };
 
@@ -113,8 +96,8 @@ void LiftNode::autonPeriodic() {
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
     float lift_feedback = m_lift_pid.calculate(errorPosition);
-    pros::lcd::print(0, "errorPosition: %f\n", errorPosition);
-    pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
+    // pros::lcd::print(0, "errorPosition: %f\n", errorPosition);
+    // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
     setLiftVelocity(lift_feedback * MAX_VELOCITY);
 }
 

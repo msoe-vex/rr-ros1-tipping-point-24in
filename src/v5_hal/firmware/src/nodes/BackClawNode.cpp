@@ -76,8 +76,6 @@ void BackClawNode::autonPeriodic() {
     periodic();
 }
 
-// these ones and zeros need to be tested
-// I am assuming that 1 is piston retracted 
 void BackClawNode::periodic() {
     switch (m_state)
     {
