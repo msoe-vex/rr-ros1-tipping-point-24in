@@ -28,15 +28,16 @@ IntakeNode* flapConveyorNode;
 ClawNode* frontClaw;
 ADIDigitalOutNode* frontClawPiston;
 
-ClawNode* backClaw;
+BackClawNode* backClaw;
 ADIDigitalOutNode* backClawPiston;
-
-ClawNode* backTilt;
 ADIDigitalOutNode* backTiltPiston;
 
 LiftNode* liftNode;
 MotorNode* leftLiftMotor;
 MotorNode* rightLiftMotor;
+ADIDigitalInNode* liftBottomLimitSwitch;
+ADIDigitalInNode* liftTopLimitSwitch;
+ADIAnalogInNode* liftPotentiometer;
 
 ADIEncoderNode* yOdomEncoder;
 ADIEncoderNode* xOdomEncoder;
@@ -121,33 +122,34 @@ void initialize() {
 
 	leftLiftMotor = new MotorNode(nodeManager, 16, "leftLiftMotor", false);
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
-	//bottom_limit_switch_lift = new ADIDigitalInNode(node_manager, 7, "bottom_limit_switch_lift");
-	//top_limit_switch_lift = new ADIDigitalInNode(node_manager, 6, "top_limit_switch_lift");
-	//potentiometer_lift = new ADIAnalogInNode(node_manager, 8, "potentiometer_lift", false);
-
+	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 'F', "liftBottomLimitSwitch"); // not on robot
+	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");
+	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'G', "liftPotentiometer", false); // not on robot
+	
 	liftNode = new LiftNode(
 		nodeManager, 
 		"liftNode", 
         controller, 
 		leftLiftMotor, 
         rightLiftMotor,
-		pros::E_CONTROLLER_DIGITAL_R1,
-		pros::E_CONTROLLER_DIGITAL_R2
+		liftBottomLimitSwitch,
+		liftTopLimitSwitch,
+		liftPotentiometer
 	);
 
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
 
 	frontClaw = new ClawNode(nodeManager, "frontClaw", controller, frontClawPiston, pros::E_CONTROLLER_DIGITAL_B);
 
-	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'E', false);
+	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
 
-	backClaw = new ClawNode(nodeManager, "backClaw", controller, backClawPiston, pros::E_CONTROLLER_DIGITAL_LEFT);
+	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false);
 
-	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'F', false);
-	backTilt = new ClawNode(nodeManager, "backTilt", controller, backTiltPiston, pros::E_CONTROLLER_DIGITAL_DOWN);
+	backClaw = new BackClawNode(nodeManager, "backClaw", controller, pros::E_CONTROLLER_DIGITAL_DOWN, 
+		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 	
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, tankDriveNode, yOdomEncoder, inertialSensor);
+	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, yOdomEncoder, inertialSensor);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
