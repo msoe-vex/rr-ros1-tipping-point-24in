@@ -1,11 +1,14 @@
 #include "nodes/LiftNode.h"
 
 LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name, 
-        ControllerNode* controller, MotorNode* left_motor, 
+        ControllerNode* controller, pros::controller_digital_e_t upButton, 
+        pros::controller_digital_e_t downButton, MotorNode* left_motor, 
         MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
         ADIDigitalInNode* top_limit_switch, ADIAnalogInNode* potentiometer) : 
         ILiftNode(node_manager, handle_name), 
         m_controller(controller),
+        m_upButton(upButton),
+        m_downButton(downButton),
         m_left_motor(left_motor),
         m_right_motor(right_motor),
         m_bottom_limit_switch(bottom_limit_switch),
@@ -49,7 +52,7 @@ void LiftNode::setLiftVelocity(int velocity) {
     }
 };
 
-void LiftNode::setLiftPosition(int position, int tolerance) {
+void LiftNode::setLiftPosition(int position, int tolerance=5) {
     m_target_position = position;
     m_tolerance = tolerance;
 };
@@ -58,29 +61,89 @@ int LiftNode::getPosition() { // change back to use pot
     return m_left_motor->getPosition();
 }
 
-void LiftNode::updateLiftState() {
+void LiftNode::updateLiftPosition() {
     int positionBoundUpper = getPosition() + m_tolerance;
     int positionBoundLower = getPosition() - m_tolerance;
     if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
-        m_lift_state = HOLDING;
+        setLiftVelocity(0);
     } else {
-        m_lift_state = UPDATING;
+        m_setLiftPID();
+    }
+}
+
+void LiftNode:m_updateLiftState() {
+    bool moveUp = false;
+    bool moveDown = false;
+    
+    // this logic is the exact same as ClawNode I wonder 
+    // how we could combine the two
+    bool upButtonCurrentState = m_controller->get_digital(m_upButton);
+    bool downButtonCurrentState = m_controller->get_digital(m_downButton);
+
+    // there feels like there is a better way to do the state logic when a button is pressed
+	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
+            !(downButtonCurrentState == 1 && m_downButtonPreviousState == 0)) {
+        moveUp = true;
+    }
+
+    if ((downButtonCurrentState == 1 && m_downButtonPreviousState == 0) &&
+            !(upButtonCurrentState == 1 && m_upButtonPreivousState == 0)) {
+        moveDown = true;
+    }
+
+	m_upButtonPreivousState = upButtonCurrentState;
+    m_downButtonPreviousState = downButtonCurrentState;
+    
+    switch (m_lift_state) { // write this logic
+        case DOWN:
+
+        break;
+        
+        case UP_FOR_RINGS:
+
+        break;
+        
+        case FULLY_UP:
+
+        break;
     }
 }
 
 void LiftNode::teleopPeriodic() {
-    if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1) && 
-        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-        setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
-    } else if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2) && 
-        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-        setLiftVoltage(-MAX_MOTOR_VOLTAGE);
-    } else {
-        setLiftVelocity(0);
-    }
+    switch (m_lift_state) {
+        case DOWN:
+            setLiftPosition(1000); // UNTESTED
+            updateLiftPosition();
+        break;
+        
+        case UP_FOR_RINGS:
+            setLiftPosition(900); // UNTESTED
+            updateLiftPosition();
+        break;
+        
+        case FULLY_UP:
+            setLiftPosition(0); // UNTESTED
+            updateLiftPosition();
+        break;
+        
+        case FREE_MOVING: // This is not yet used
+            if (m_controller->getController()->get_digital(m_upButton) && 
+                !m_controller->getController()->get_digital(m_downButton)) {
+                setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
+            } else if (m_controller->getController()->get_digital(m_downButton) && 
+                !m_controller->getController()->get_digital(m_upButton)) {
+                setLiftVoltage(-MAX_MOTOR_VOLTAGE);
+            } else {
+                setLiftVelocity(0);
+            }   
+        break;
+        
+        default:
+            break;
+    } 
 };
 
-void LiftNode::autonPeriodic() {
+void LiftNode::autonPeriodic() { // this needs to be changed to reflect teleop changes
     updateLiftState();
     
     switch (m_lift_state) {

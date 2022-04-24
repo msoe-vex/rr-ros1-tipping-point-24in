@@ -12,11 +12,12 @@
 class LiftNode : public ILiftNode {
 public:
     enum LiftState {
-        DOWN, UP_FOR_RINGS, FULLY_UP, FREE_MOVING, HOLDING
+        DOWN, UP_FOR_RINGS, FULLY_UP, FREE_MOVING
     };
 
     LiftNode(NodeManager* node_manager, std::string handle_name, 
-        ControllerNode* controller, MotorNode* left_motor, 
+        ControllerNode* controller, pros::controller_digital_e_t upButton, 
+        pros::controller_digital_e_t downButton, MotorNode* left_motor, 
         MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
         ADIDigitalInNode* top_limit_switch, ADIAnalogInNode* potentiometer);
     
@@ -30,7 +31,7 @@ public:
 
     int getPosition();
 
-    void updateLiftState();
+    void updateLiftPosition();
 
     void teleopPeriodic();
 
@@ -40,6 +41,7 @@ public:
 
 private:    
     void m_setLiftPID();
+    void m_updateLiftState();
 
     ControllerNode* m_controller;
     MotorNode* m_left_motor;
@@ -48,8 +50,13 @@ private:
     ADIDigitalInNode* m_top_limit_switch;
     ADIAnalogInNode* m_potentiometer;
     LiftState m_lift_state;
+    pros::controller_digital_e_t m_upButton;
+    pros::controller_digital_e_t m_downButton;
 
     PID m_lift_pid;
+
+    bool m_upButtonPreivousState = false;
+    bool m_downButtonPreviousState = false;
 
     int m_target_position;
     int m_tolerance;
