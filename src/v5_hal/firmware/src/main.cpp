@@ -130,6 +130,8 @@ void initialize() {
 		nodeManager, 
 		"liftNode", 
         controller, 
+		DIGITAL_R1,
+		DIGITAL_R2,
 		leftLiftMotor, 
         rightLiftMotor,
 		liftBottomLimitSwitch,

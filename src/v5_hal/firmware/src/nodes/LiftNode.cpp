@@ -14,7 +14,7 @@ LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name,
         m_bottom_limit_switch(bottom_limit_switch),
         m_top_limit_switch(top_limit_switch),
         m_potentiometer(potentiometer),
-        m_lift_state(HOLDING),
+        m_lift_state(FULLY_UP),
         m_lift_pid(0.002, 0., 0., 0), 
         m_target_position(0),
         m_tolerance(10) {
@@ -57,11 +57,62 @@ void LiftNode::setLiftPosition(int position, int tolerance=5) {
     m_tolerance = tolerance;
 };
 
+/**
+ * This should only be called from autonomous 
+ * */
+void LiftNode::setLiftState(LiftState state) {
+    m_lift_state = state;
+}
+
 int LiftNode::getPosition() { // change back to use pot
     return m_left_motor->getPosition();
 }
 
-void LiftNode::updateLiftPosition() {
+void LiftNode::teleopPeriodic() {
+    m_updateLiftStateTeleop();
+    m_updateLiftPosition();
+        
+        // This is not yet used
+        // case FREE_MOVING: 
+        //     if (m_controller->getController()->get_digital(m_upButton) && 
+        //         !m_controller->getController()->get_digital(m_downButton)) {
+        //         setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
+        //     } else if (m_controller->getController()->get_digital(m_downButton) && 
+        //         !m_controller->getController()->get_digital(m_upButton)) {
+        //         setLiftVoltage(-MAX_MOTOR_VOLTAGE);
+        //     } else {
+        //         setLiftVelocity(0);
+        //     }   
+        // break;
+};
+
+void LiftNode::autonPeriodic() { 
+    m_updateLiftPosition();
+        
+        // This is not yet used
+        // case FREE_MOVING: 
+        //     // This just allows usage of setLiftPosition() by an autonomous action
+        // break;
+};
+
+void LiftNode::m_updateLiftPosition() {
+    switch (m_lift_state) {
+        case DOWN:
+            setLiftPosition(1000); // UNTESTED
+        break;
+        
+        case UP_FOR_RINGS: 
+            setLiftPosition(900); // UNTESTED
+        break;
+        
+        case FULLY_UP:
+            setLiftPosition(0); // UNTESTED
+        break;
+
+        default:
+        break;
+    }
+
     int positionBoundUpper = getPosition() + m_tolerance;
     int positionBoundLower = getPosition() - m_tolerance;
     if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
@@ -71,14 +122,18 @@ void LiftNode::updateLiftPosition() {
     }
 }
 
-void LiftNode:m_updateLiftState() {
+/**
+ * Only called in teleopPeriodic()
+ * Does not currently have a way to switch to the free moving state
+ * */
+void LiftNode::m_updateLiftStateTeleop() { 
     bool moveUp = false;
     bool moveDown = false;
     
     // this logic is the exact same as ClawNode I wonder 
     // how we could combine the two
-    bool upButtonCurrentState = m_controller->get_digital(m_upButton);
-    bool downButtonCurrentState = m_controller->get_digital(m_downButton);
+    bool upButtonCurrentState = m_controller->getController()->get_digital(m_upButton);
+    bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
 
     // there feels like there is a better way to do the state logic when a button is pressed
 	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
@@ -96,65 +151,26 @@ void LiftNode:m_updateLiftState() {
     
     switch (m_lift_state) { // write this logic
         case DOWN:
-
+            if (moveUp) {
+                m_lift_state = UP_FOR_RINGS;
+            }
         break;
         
         case UP_FOR_RINGS:
-
+            if (moveUp) {
+                m_lift_state = FULLY_UP;
+            } else if (moveDown) {
+                m_lift_state = DOWN;
+            }
         break;
         
         case FULLY_UP:
-
+            if (moveDown) {
+                m_lift_state = UP_FOR_RINGS;
+            }
         break;
     }
 }
-
-void LiftNode::teleopPeriodic() {
-    switch (m_lift_state) {
-        case DOWN:
-            setLiftPosition(1000); // UNTESTED
-            updateLiftPosition();
-        break;
-        
-        case UP_FOR_RINGS:
-            setLiftPosition(900); // UNTESTED
-            updateLiftPosition();
-        break;
-        
-        case FULLY_UP:
-            setLiftPosition(0); // UNTESTED
-            updateLiftPosition();
-        break;
-        
-        case FREE_MOVING: // This is not yet used
-            if (m_controller->getController()->get_digital(m_upButton) && 
-                !m_controller->getController()->get_digital(m_downButton)) {
-                setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
-            } else if (m_controller->getController()->get_digital(m_downButton) && 
-                !m_controller->getController()->get_digital(m_upButton)) {
-                setLiftVoltage(-MAX_MOTOR_VOLTAGE);
-            } else {
-                setLiftVelocity(0);
-            }   
-        break;
-        
-        default:
-            break;
-    } 
-};
-
-void LiftNode::autonPeriodic() { // this needs to be changed to reflect teleop changes
-    updateLiftState();
-    
-    switch (m_lift_state) {
-        case UPDATING:
-            m_setLiftPID();
-        break;
-        case HOLDING:
-            setLiftVelocity(0);
-        break;
-    }
-};
 
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();

@@ -12,7 +12,7 @@
 class LiftNode : public ILiftNode {
 public:
     enum LiftState {
-        DOWN, UP_FOR_RINGS, FULLY_UP, FREE_MOVING
+        DOWN, UP_FOR_RINGS, FULLY_UP
     };
 
     LiftNode(NodeManager* node_manager, std::string handle_name, 
@@ -28,10 +28,10 @@ public:
     void setLiftVelocity(int velocity);
 
     void setLiftPosition(int position, int tolerance);
+    
+    void setLiftState(LiftState state);
 
     int getPosition();
-
-    void updateLiftPosition();
 
     void teleopPeriodic();
 
@@ -41,7 +41,10 @@ public:
 
 private:    
     void m_setLiftPID();
-    void m_updateLiftState();
+
+    void m_updateLiftStateTeleop();
+
+    void m_updateLiftPosition();
 
     ControllerNode* m_controller;
     MotorNode* m_left_motor;
