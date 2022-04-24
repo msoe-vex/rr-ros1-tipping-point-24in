@@ -7,14 +7,14 @@ AutonManagerNode* autonManagerNode;
 ControllerNode* controller;
 
 TankDriveNode* tankDriveNode;
-MotorNode* leftFrontTopMotor;
-MotorNode* leftFrontBottomMotor;
-MotorNode* leftRearTopMotor;
-MotorNode* leftRearBottomMotor;
-MotorNode* rightFrontTopMotor;
-MotorNode* rightFrontBottomMotor;
-MotorNode* rightRearTopMotor;
-MotorNode* rightRearBottomMotor;
+MotorNode* left1Motor;
+MotorNode* left2Motor;
+MotorNode* left3Motor;
+MotorNode* left4Motor;
+MotorNode* right1Motor;
+MotorNode* right2Motor;
+MotorNode* right3Motor;
+MotorNode* right4Motor;
 
 MotorNode* intakeMotor;
 IntakeNode* intakeNode;
@@ -74,24 +74,24 @@ void initialize() {
 	odomNode = new OdometryNode(nodeManager, "odometry", xOdomEncoder, 
 	yOdomEncoder, inertialSensor, OdometryNode::FOLLOWER);
 
-	leftFrontTopMotor = new MotorNode(nodeManager, 21, "leftFrontTopMotor", true);
-	leftFrontBottomMotor = new MotorNode(nodeManager, 15, "leftFrontBottomMotor", true);
-	leftRearTopMotor = new MotorNode(nodeManager, 1, "leftRearTopMotor", true);
-	leftRearBottomMotor = new MotorNode(nodeManager, 11, "leftRearBottomMotor", true);
-	rightFrontTopMotor = new MotorNode(nodeManager, 18, "rightFrontTopMotor", false);
-	rightFrontBottomMotor = new MotorNode(nodeManager, 17, "rightFrontBottomMotor", false);
-	rightRearTopMotor = new MotorNode(nodeManager, 12, "rightRearTopMotor", false);
-	rightRearBottomMotor = new MotorNode(nodeManager, 2, "rightRearBottomMotor", false);
+	left1Motor = new MotorNode(nodeManager, 11, "leftFrontTopMotor", false);
+	left2Motor = new MotorNode(nodeManager, 1, "leftFrontBottomMotor", true);
+	left3Motor = new MotorNode(nodeManager, 15, "leftRearTopMotor", true);
+	left4Motor = new MotorNode(nodeManager, 21, "leftRearBottomMotor", false);
+	right1Motor = new MotorNode(nodeManager, 12, "rightFrontTopMotor", true);
+	right2Motor = new MotorNode(nodeManager, 2, "rightFrontBottomMotor", false);
+	right3Motor = new MotorNode(nodeManager, 18, "rightRearTopMotor", false);
+	right4Motor = new MotorNode(nodeManager, 17, "rightRearBottomMotor", true);
 
 	TankDriveNode::TankEightMotors tankMotors = {
-		leftFrontTopMotor,
-		leftFrontBottomMotor,
-		leftRearTopMotor,
-		leftRearBottomMotor,
-		rightFrontTopMotor,
-		rightFrontTopMotor,
-		rightRearTopMotor,
-		rightRearBottomMotor
+		left1Motor,
+		left2Motor,
+		left3Motor,
+		left4Motor,
+		right1Motor,
+		right2Motor,
+		right3Motor,
+		right4Motor
 	};
 
 	TankDriveKinematics::TankWheelLocations wheelLocations = {
