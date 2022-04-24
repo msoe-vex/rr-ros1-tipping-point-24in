@@ -12,7 +12,7 @@
 class LiftNode : public ILiftNode {
 public:
     enum LiftState {
-        UPDATING, HOLDING
+        DOWN, UP_FOR_RINGS, FULLY_UP, FREE_MOVING, HOLDING
     };
 
     LiftNode(NodeManager* node_manager, std::string handle_name, 
