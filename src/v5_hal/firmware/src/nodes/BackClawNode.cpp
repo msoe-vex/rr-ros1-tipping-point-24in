@@ -98,7 +98,14 @@ void BackClawNode::periodic() {
 
         case PIVOT_DOWN_CLAW_OPEN:
             m_pivot->setValue(0);
-            m_claw->setValue(0);     
+
+            if (m_previousState == PIVOT_DOWN_CLAW_CLOSED) {
+                m_claw->setValue(0);    
+            } else if (m_stateChange && m_previousState == PIVOT_BACK) {
+                m_timer.Start();
+            } else if (m_timer.Get() > 1) {
+                m_claw->setValue(0);    
+            }       
         break;
 
         case PIVOT_DOWN_CLAW_CLOSED:
