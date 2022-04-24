@@ -19,7 +19,8 @@ private:
     Auton* m_basic_auton;
 
 public:
-    AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node, IDriveNode* drive_node, ADIEncoderNode* y_odom_encoder, InertialSensorNode* inertial_sensor);
+    AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node, IDriveNode* drive_node, 
+        ADIEncoderNode* y_odom_encoder, InertialSensorNode* inertial_sensor);
 
     Auton* selected_auton;
 
