@@ -4,7 +4,8 @@ NodeManager* nodeManager;
 
 AutonManagerNode* autonManagerNode;
 
-ControllerNode* controller;
+ControllerNode* controller1;
+ControllerNode* controller2;
 
 TankDriveNode* tankDriveNode;
 MotorNode* left1Motor;
@@ -66,7 +67,8 @@ void initialize() {
 
 	// Initialize all robot nodes here:
 
-	controller = new ControllerNode(nodeManager, "controller");
+	controller1 = new ControllerNode(nodeManager, "controller1");
+	controller2 = new ControllerNode(nodeManager, "controller2", pros::E_CONTROLLER_PARTNER);
 
 	/* Define the odometry components */
 	xOdomEncoder = new ADIEncoderNode(nodeManager, 'A', 'B', "xOdomEncoder", false);
@@ -110,18 +112,18 @@ void initialize() {
 
 	TankDriveKinematics tankKinematics(encoderConfig, wheelLocations);
 
-	tankDriveNode = new TankDriveNode(nodeManager, "tank_drive_node", controller, 
+	tankDriveNode = new TankDriveNode(nodeManager, "tank_drive_node", controller1, 
         tankMotors, tankKinematics
 	);
 
 	intakeMotor = new MotorNode(nodeManager, 14, "intakeMotor", true);
-	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller, intakeMotor, pros::E_CONTROLLER_DIGITAL_L1);
+	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller1, intakeMotor, pros::E_CONTROLLER_DIGITAL_L1);
 	
 	flapConveyorMotor = new MotorNode(nodeManager, 9, "conveyorMotor", false);
-	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_X);
+	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
 
 	conveyorMotor = new MotorNode(nodeManager, 19, "conveyorMotor", false);
-	conveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller, conveyorMotor, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
+	conveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, conveyorMotor, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
 
 	leftLiftMotor = new MotorNode(nodeManager, 16, "leftLiftMotor", false);
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
@@ -132,7 +134,7 @@ void initialize() {
 	liftNode = new LiftNode(
 		nodeManager, 
 		"liftNode", 
-        controller, 
+        controller1, 
 		leftLiftMotor, 
         rightLiftMotor,
 		liftBottomLimitSwitch,
@@ -142,18 +144,18 @@ void initialize() {
 
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
 
-	frontClaw = new ClawNode(nodeManager, "frontClaw", controller, frontClawPiston, 
+	frontClaw = new ClawNode(nodeManager, "frontClaw", controller1, frontClawPiston, 
 		pros::E_CONTROLLER_DIGITAL_B, pros::E_CONTROLLER_DIGITAL_A);
 
 	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
 
 	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false);
 
-	backClaw = new BackClawNode(nodeManager, "backClaw", controller, pros::E_CONTROLLER_DIGITAL_DOWN, 
+	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 
 	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
-	wingArm = new ClawNode(nodeManager, "wingArm", controller, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
+	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
