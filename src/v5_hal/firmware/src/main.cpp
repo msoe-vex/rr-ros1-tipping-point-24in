@@ -67,7 +67,8 @@ void initialize() {
 
 	// Initialize all robot nodes here:
 
-	controller1 = new ControllerNode(nodeManager, "controller");
+	controller1 = new ControllerNode(nodeManager, "controller1");
+	controller2 = new ControllerNode(nodeManager, "controller2", pros::E_CONTROLLER_PARTNER);
 
 	/* Define the odometry components */
 	xOdomEncoder = new ADIEncoderNode(nodeManager, 'A', 'B', "xOdomEncoder", false);
