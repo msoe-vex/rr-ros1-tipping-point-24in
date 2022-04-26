@@ -115,7 +115,7 @@ void initialize() {
 	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller, intakeMotor, pros::E_CONTROLLER_DIGITAL_L1);
 	
 	flapConveyorMotor = new MotorNode(nodeManager, 9, "conveyorMotor", false);
-	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
+	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_X);
 
 	conveyorMotor = new MotorNode(nodeManager, 19, "conveyorMotor", false);
 	conveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller, conveyorMotor, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
@@ -139,7 +139,8 @@ void initialize() {
 
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
 
-	frontClaw = new ClawNode(nodeManager, "frontClaw", controller, frontClawPiston, pros::E_CONTROLLER_DIGITAL_B);
+	frontClaw = new ClawNode(nodeManager, "frontClaw", controller, frontClawPiston, 
+		pros::E_CONTROLLER_DIGITAL_B, pros::E_CONTROLLER_DIGITAL_A);
 
 	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
 
