@@ -26,7 +26,7 @@ public:
 
     void setLiftVelocity(int velocity);
 
-    void setLiftPosition(int position, int tolerance);
+    void setLiftPosition(int position, int tolerance = 20);
 
     int getPosition();
 

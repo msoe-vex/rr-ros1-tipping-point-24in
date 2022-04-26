@@ -103,7 +103,7 @@ void BackClawNode::periodic() {
                 m_claw->setValue(0);    
             } else if (m_stateChange && m_previousState == PIVOT_BACK) {
                 m_timer.Start();
-            } else if (m_timer.Get() > 1) {
+            } else if (m_timer.Get() > 0.7) {
                 m_claw->setValue(0);    
             }       
         break;
