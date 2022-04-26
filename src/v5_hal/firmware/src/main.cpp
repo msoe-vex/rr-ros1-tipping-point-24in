@@ -32,6 +32,9 @@ BackClawNode* backClaw;
 ADIDigitalOutNode* backClawPiston;
 ADIDigitalOutNode* backTiltPiston;
 
+ClawNode* wingArm;
+ADIDigitalOutNode* wingArmPiston;
+
 LiftNode* liftNode;
 MotorNode* leftLiftMotor;
 MotorNode* rightLiftMotor;
@@ -123,8 +126,8 @@ void initialize() {
 	leftLiftMotor = new MotorNode(nodeManager, 16, "leftLiftMotor", false);
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
 	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 'F', "liftBottomLimitSwitch"); // not on robot
-	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");
-	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'G', "liftPotentiometer", false); // not on robot
+	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");//now a button switch
+	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'G', "liftPotentiometer", false); // actually on robot but probably not accurate port
 	
 	liftNode = new LiftNode(
 		nodeManager, 
@@ -148,9 +151,12 @@ void initialize() {
 
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
+
+	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
+	wingArm = new ClawNode(nodeManager, "wingArm", controller, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
 	
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, yOdomEncoder, inertialSensor);
+	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
