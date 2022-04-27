@@ -71,13 +71,18 @@ void initialize() {
 	controller2 = new ControllerNode(nodeManager, "controller2", pros::E_CONTROLLER_PARTNER);
 
 	/* Define the odometry components */
-	xOdomEncoder = new ADIEncoderNode(nodeManager, 'A', 'B', "xOdomEncoder", false);
-	yOdomEncoder = new ADIEncoderNode(nodeManager, 'C', 'D', "yOdomEncoder", false);
+	xOdomEncoder = new ADIEncoderNode(nodeManager, 'C', 'D', "xOdomEncoder", false);
+	yOdomEncoder = new ADIEncoderNode(nodeManager, 'A', 'B', "yOdomEncoder", true);
 
 	inertialSensor = new InertialSensorNode(nodeManager, "inertialSensor", 20);
 
+	IOdometry::EncoderLocations encoderLocations {
+		Vector2d(-0.008, -4.882),
+		Vector2d(1.556, -1.263)
+	};
+
 	odomNode = new OdometryNode(nodeManager, "odometry", xOdomEncoder, 
-	yOdomEncoder, inertialSensor, OdometryNode::FOLLOWER);
+	yOdomEncoder, inertialSensor, OdometryNode::FOLLOWER, encoderLocations);
 
 	left1Motor = new MotorNode(nodeManager, 11, "leftFrontTopMotor", false);
 	left2Motor = new MotorNode(nodeManager, 1, "leftFrontBottomMotor", true);
@@ -107,7 +112,7 @@ void initialize() {
 	EncoderConfig encoderConfig = {
 		0, // Initial ticks
 		2400, // Ticks per RPM
-		1.975 // Wheel diameter
+		1.975, // Wheel diameter
 	};
 
 	TankDriveKinematics tankKinematics(encoderConfig, wheelLocations);
