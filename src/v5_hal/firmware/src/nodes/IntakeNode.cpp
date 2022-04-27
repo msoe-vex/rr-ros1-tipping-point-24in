@@ -1,7 +1,7 @@
 #include "nodes/IntakeNode.h"
 
 IntakeNode::IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, 
-        MotorNode* intake_motor, pros::controller_digital_e_t in_button) : Node(node_manager, 10), 
+        MotorNode* intake_motor, pros::controller_digital_e_t in_button) : IRollerIntakeNode(node_manager, handle_name), 
         m_controller(controller->getController()),
         m_intake_motor(intake_motor),
         m_in_button(in_button) {
@@ -10,7 +10,7 @@ IntakeNode::IntakeNode(NodeManager* node_manager, std::string handle_name, Contr
 }
 
 IntakeNode::IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, 
-        MotorNode* intake_motor, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button) : Node(node_manager, 10), 
+        MotorNode* intake_motor, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button) : IRollerIntakeNode(node_manager, handle_name), 
         m_controller(controller->getController()),
         m_intake_motor(intake_motor),
         m_in_button(in_button),
@@ -21,6 +21,10 @@ IntakeNode::IntakeNode(NodeManager* node_manager, std::string handle_name, Contr
 
 void IntakeNode::setIntakeVoltage(int voltage) {
     m_intake_motor->moveVoltage(voltage);
+}
+
+void IntakeNode::setIntakeVelocity(float velocity) {
+    m_intake_motor->moveVelocity(velocity);
 }
 
 void IntakeNode::initialize() {
