@@ -20,22 +20,17 @@ void MatchAuton::AddNodes() {
 
     AutonNode* forward = new AutonNode(2, new DriveStraightAction(m_driveNode, m_odomNode, 38, 70, 80));
 
-    AutonNode* clawCloseDelay = new AutonNode(1.2, new WaitAction(1.2));
-
     deploy->AddNext(forward);
-    deploy->AddNext(clawCloseDelay);
 
-    AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
-    clawCloseDelay ->AddNext(clawClose);
-
-    AutonNode* wait = new AutonNode(0.5, new WaitAction(0.5));
+    AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
 
     Path path = PathManager::GetInstance()->GetPath("TestPath");
     AutonNode* testPath = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
 
     forward -> AddNext(testPath);
+    forward -> AddNext(clawClose);
 
-    AutonNode* clawOpen =new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
+    AutonNode* clawOpen =new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
 
     Path NeutralToBluePath = PathManager::GetInstance()->GetPath("NeutralToBlue");
     AutonNode* NeutralToBlue = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(NeutralToBluePath), NeutralToBluePath, false));
@@ -43,7 +38,7 @@ void MatchAuton::AddNodes() {
     testPath -> AddNext(clawOpen);
     testPath -> AddNext(NeutralToBlue);
 
-    AutonNode* clawClose2 =new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
+    AutonNode* clawClose2 =new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
 
     NeutralToBlue -> AddNext(clawClose2);
 
