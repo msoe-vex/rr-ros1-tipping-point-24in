@@ -9,7 +9,7 @@
  * This file should not be modified by users, since it gets replaced whenever
  * a kernel upgrade occurs.
  *
- * \copyright (c) 2017-2018, Purdue University ACM SIGBots.
+ * \copyright (c) 2017-2021, Purdue University ACM SIGBots.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -20,6 +20,7 @@
 #define _PROS_MOTORS_HPP_
 
 #include <cstdint>
+
 #include "pros/motors.h"
 
 namespace pros {
@@ -183,6 +184,23 @@ class Motor {
 	 * failed, setting errno.
 	 */
 	virtual std::int32_t move_voltage(const std::int32_t voltage) const;
+
+	/**
+	 * Stops the motor using the currently configured brake mode.
+	 *
+	 * This function sets motor velocity to zero, which will cause it to act
+	 * according to the set brake mode. If brake mode is set to MOTOR_BRAKE_HOLD,
+	 * this function may behave differently than calling move_absolute(0)
+	 * or move_relative(0).
+	 *
+	 * This function uses the following values of errno when an error state is
+	 * reached:
+	 * ENODEV - The port cannot be configured as a motor
+	 *
+	 * \return 1 if the operation was successful or PROS_ERR if the operation
+	 * failed, setting errno.
+	 */
+	virtual std::int32_t brake(void) const;
 
 	/**
 	 * Changes the output velocity for a profiled movement (motor_move_absolute()
@@ -565,6 +583,7 @@ class Motor {
 	 *
 	 * \return A motor_pid_s_t struct formatted properly in 4.4.
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]]
 	static motor_pid_s_t convert_pid(double kf, double kp, double ki, double kd);
 
 	/**
@@ -594,8 +613,9 @@ class Motor {
 	 *
 	 * \return A motor_pid_s_t struct formatted properly in 4.4.
 	 */
-	static motor_pid_full_s_t convert_pid_full(double kf, double kp, double ki, double kd, double filter, double limit,
-	                                           double threshold, double loopspeed);
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]] 
+	static motor_pid_full_s_t convert_pid_full(double kf, double kp, double ki, double kd, double filter, double limit, double threshold,
+	                 double loopspeed);
 
 	/**
 	 * Sets one of motor_pid_s_t for the motor. This intended to just modify the
@@ -614,6 +634,7 @@ class Motor {
 	 * \return 1 if the operation was successful or PROS_ERR if the operation
 	 * failed, setting errno.
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]]
 	virtual std::int32_t set_pos_pid(const motor_pid_s_t pid) const;
 
 	/**
@@ -632,6 +653,7 @@ class Motor {
 	 * \return 1 if the operation was successful or PROS_ERR if the operation
 	 * failed, setting errno.
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]] 
 	virtual std::int32_t set_pos_pid_full(const motor_pid_full_s_t pid) const;
 
 	/**
@@ -651,6 +673,7 @@ class Motor {
 	 * \return 1 if the operation was successful or PROS_ERR if the operation
 	 * failed, setting errno.
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]] 
 	virtual std::int32_t set_vel_pid(const motor_pid_s_t pid) const;
 
 	/**
@@ -669,6 +692,7 @@ class Motor {
 	 * \return 1 if the operation was successful or PROS_ERR if the operation
 	 * failed, setting errno.
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]] 
 	virtual std::int32_t set_vel_pid_full(const motor_pid_full_s_t pid) const;
 
 	/**
@@ -768,6 +792,7 @@ class Motor {
 	 * \return A motor_pid_full_s_t containing the position PID constants last set
 	 * to the given motor
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]] 
 	virtual motor_pid_full_s_t get_pos_pid(void) const;
 
 	/**
@@ -785,6 +810,7 @@ class Motor {
 	 * \return A motor_pid_full_s_t containing the velocity PID constants last set
 	 * to the given motor
 	 */
+	[[deprecated("Changing these values is not supported by VEX and may lead to permanent motor damage.")]]
 	virtual motor_pid_full_s_t get_vel_pid(void) const;
 
 	/**
