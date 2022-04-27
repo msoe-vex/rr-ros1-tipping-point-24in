@@ -17,7 +17,7 @@ LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name,
         m_lift_state(FULLY_UP),
         m_lift_pid(0.002, 0., 0., 0), 
         m_target_position(0),
-        m_tolerance(10) {
+        m_tolerance(5) {
 
 }
 
@@ -42,17 +42,17 @@ void LiftNode::setLiftVoltage(int voltage) {
     }
 };
 
-void LiftNode::setLiftVelocity(int velocity) {
+void LiftNode::setLiftVelocity(float velocity) {
     if (m_top_limit_switch->getValue() == 1) {
-        m_left_motor->moveVelocity(min(velocity, 0));
-        m_right_motor->moveVelocity(min(velocity, 0));
+        m_left_motor->moveVelocity(min((int) velocity, 0));
+        m_right_motor->moveVelocity(min((int) velocity, 0));
     } else {
-        m_left_motor->moveVelocity(velocity);
-        m_right_motor->moveVelocity(velocity);
+        m_left_motor->moveVelocity((int) velocity);
+        m_right_motor->moveVelocity((int) velocity);
     }
 };
 
-void LiftNode::setLiftPosition(int position, int tolerance=5) {
+void LiftNode::setLiftPosition(int position, int tolerance) {
     m_target_position = position;
     m_tolerance = tolerance;
 };
@@ -98,28 +98,32 @@ void LiftNode::autonPeriodic() {
 void LiftNode::m_updateLiftPosition() {
     switch (m_lift_state) {
         case DOWN:
-            setLiftPosition(1000); // UNTESTED
+            setLiftPosition(-4000);
         break;
         
         case UP_FOR_RINGS: 
-            setLiftPosition(900); // UNTESTED
+            setLiftPosition(-3000);
         break;
         
         case FULLY_UP:
-            setLiftPosition(0); // UNTESTED
+            setLiftPosition(0);
         break;
 
         default:
         break;
     }
 
-    int positionBoundUpper = getPosition() + m_tolerance;
-    int positionBoundLower = getPosition() - m_tolerance;
-    if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
-        setLiftVelocity(0);
-    } else {
-        m_setLiftPID();
-    }
+    m_setLiftPID();
+    
+    pros::lcd::print(2, "Lift Position: %d\n", getPosition());
+
+    // int positionBoundUpper = getPosition() + m_tolerance;
+    // int positionBoundLower = getPosition() - m_tolerance;
+    // if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
+    //     setLiftVelocity(0);
+    // } else {
+    //     m_setLiftPID();
+    // }
 }
 
 /**

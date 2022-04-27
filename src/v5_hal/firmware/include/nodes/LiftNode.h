@@ -25,9 +25,9 @@ public:
 
     void setLiftVoltage(int voltage);
 
-    void setLiftVelocity(int velocity);
+    void setLiftVelocity(float velocity);
 
-    void setLiftPosition(int position, int tolerance);
+    void setLiftPosition(int position, int tolerance = 5);
     
     void setLiftState(LiftState state);
 
