@@ -142,7 +142,6 @@ void initialize() {
         controller1, 
 		leftLiftMotor, 
         rightLiftMotor,
-		liftBottomLimitSwitch,
 		liftTopLimitSwitch,
 		liftPotentiometer
 	);

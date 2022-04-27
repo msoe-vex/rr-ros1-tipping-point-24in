@@ -2,15 +2,14 @@
 
 LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name, 
         ControllerNode* controller, MotorNode* left_motor, 
-        MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
-        ADIDigitalInNode* top_limit_switch, ADIAnalogInNode* potentiometer) : 
+        MotorNode* right_motor, ADIDigitalInNode* top_limit_switch, 
+        ADIAnalogInNode* potentiometer) : 
         ILiftNode(node_manager, handle_name), 
         m_controller(controller),
         m_left_motor(left_motor),
         m_right_motor(right_motor),
-        m_bottom_limit_switch(bottom_limit_switch),
-        m_top_limit_switch(top_limit_switch),
-        m_potentiometer(potentiometer),
+        m_topLimitSwitch(top_limit_switch),
+        m_Potentiometer(potentiometer),
         m_lift_state(HOLDING),
         m_lift_pid(0.002, 0., 0., 0), 
         m_target_position(0),
@@ -30,7 +29,7 @@ void LiftNode::initialize() {
 };
 
 void LiftNode::setLiftVoltage(int voltage) {
-    if (m_top_limit_switch->getValue() == 1) {
+    if (m_topLimitSwitch->getValue() == 1) {
         m_left_motor->moveVoltage(min(voltage, 0));
         m_right_motor->moveVoltage(min(voltage, 0));
     } else {
@@ -40,7 +39,7 @@ void LiftNode::setLiftVoltage(int voltage) {
 };
 
 void LiftNode::setLiftVelocity(float velocity) {
-    if (m_top_limit_switch->getValue() == 1) {
+    if (m_topLimitSwitch->getValue() == 1) {
         m_left_motor->moveVelocity(min(velocity, 0.f));
         m_right_motor->moveVelocity(min(velocity, 0.f));
     } else {
@@ -70,10 +69,12 @@ void LiftNode::updateLiftState() {
 
 void LiftNode::teleopPeriodic() {
     if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1) && 
-        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
+        m_topLimitSwitch->getValue()) {
         setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
     } else if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2) && 
-        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+        m_Potentiometer->getValue() > m_lowerStop) {
         setLiftVoltage(-MAX_MOTOR_VOLTAGE);
     } else {
         setLiftVelocity(0);

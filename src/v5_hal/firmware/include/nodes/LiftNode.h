@@ -17,8 +17,8 @@ public:
 
     LiftNode(NodeManager* node_manager, std::string handle_name, 
         ControllerNode* controller, MotorNode* left_motor, 
-        MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
-        ADIDigitalInNode* top_limit_switch, ADIAnalogInNode* potentiometer);
+        MotorNode* right_motor, ADIDigitalInNode* top_limit_switch, 
+        ADIAnalogInNode* potentiometer);
     
     void initialize();
 
@@ -44,13 +44,13 @@ private:
     ControllerNode* m_controller;
     MotorNode* m_left_motor;
     MotorNode* m_right_motor;
-    ADIDigitalInNode* m_bottom_limit_switch;
-    ADIDigitalInNode* m_top_limit_switch;
-    ADIAnalogInNode* m_potentiometer;
+    ADIDigitalInNode* m_topLimitSwitch;
+    ADIAnalogInNode* m_Potentiometer;
     LiftState m_lift_state;
 
     PID m_lift_pid;
 
     int m_target_position;
     int m_tolerance;
+    int m_lowerStop;
 };
