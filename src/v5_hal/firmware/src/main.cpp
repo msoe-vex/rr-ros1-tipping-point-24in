@@ -139,9 +139,10 @@ void initialize() {
 	liftNode = new LiftNode(
 		nodeManager, 
 		"liftNode", 
-        controller, 
+        controller2, 
 		DIGITAL_R1,
 		DIGITAL_R2,
+		DIGITAL_X,
 		leftLiftMotor, 
         rightLiftMotor,
 		liftBottomLimitSwitch,

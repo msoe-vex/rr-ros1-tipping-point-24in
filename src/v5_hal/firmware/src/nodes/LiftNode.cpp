@@ -2,13 +2,14 @@
 
 LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name, 
         ControllerNode* controller, pros::controller_digital_e_t upButton, 
-        pros::controller_digital_e_t downButton, MotorNode* left_motor, 
-        MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
+        pros::controller_digital_e_t downButton, pros::controller_digital_e_t freeMoveButton,
+         MotorNode* left_motor, MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
         ADIDigitalInNode* top_limit_switch, ADIAnalogInNode* potentiometer) : 
         ILiftNode(node_manager, handle_name), 
         m_controller(controller),
         m_upButton(upButton),
         m_downButton(downButton),
+        m_freeMoveButton(freeMoveButton),
         m_left_motor(left_motor),
         m_right_motor(right_motor),
         m_bottom_limit_switch(bottom_limit_switch),
@@ -73,17 +74,7 @@ void LiftNode::teleopPeriodic() {
     m_updateLiftPosition();
         
         // This is not yet used
-        // case FREE_MOVING: 
-        //     if (m_controller->getController()->get_digital(m_upButton) && 
-        //         !m_controller->getController()->get_digital(m_downButton)) {
-        //         setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
-        //     } else if (m_controller->getController()->get_digital(m_downButton) && 
-        //         !m_controller->getController()->get_digital(m_upButton)) {
-        //         setLiftVoltage(-MAX_MOTOR_VOLTAGE);
-        //     } else {
-        //         setLiftVelocity(0);
-        //     }   
-        // break;
+
 };
 
 void LiftNode::autonPeriodic() { 
@@ -107,6 +98,18 @@ void LiftNode::m_updateLiftPosition() {
         
         case FULLY_UP:
             setLiftPosition(0);
+        break;
+        
+        case FREE_MOVING: 
+            if (m_controller->getController()->get_digital(m_upButton) && 
+                !m_controller->getController()->get_digital(m_downButton)) {
+                setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
+            } else if (m_controller->getController()->get_digital(m_downButton) && 
+                !m_controller->getController()->get_digital(m_upButton)) {
+                setLiftVoltage(-MAX_MOTOR_VOLTAGE);
+            } else {
+                setLiftPosition(0);
+            }   
         break;
 
         default:
@@ -133,11 +136,13 @@ void LiftNode::m_updateLiftPosition() {
 void LiftNode::m_updateLiftStateTeleop() { 
     bool moveUp = false;
     bool moveDown = false;
+    bool freeMoving = false;
     
     // this logic is the exact same as ClawNode I wonder 
     // how we could combine the two
     bool upButtonCurrentState = m_controller->getController()->get_digital(m_upButton);
     bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
+    bool freeMoveButtonCurrentState = m_controller->getController()->get_digital(m_freeMoveButton);
 
     // there feels like there is a better way to do the state logic when a button is pressed
 	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
@@ -150,26 +155,39 @@ void LiftNode::m_updateLiftStateTeleop() {
         moveDown = true;
     }
 
+    if (freeMoveButtonCurrentState == 1 && m_freeMoveButtonPreviousState == 0) {
+        freeMoving = !freeMoving;
+    }
+
 	m_upButtonPreivousState = upButtonCurrentState;
     m_downButtonPreviousState = downButtonCurrentState;
+    m_freeMoveButtonPreviousState = freeMoveButtonCurrentState;
     
     switch (m_lift_state) { // write this logic
         case DOWN:
-            if (moveUp) {
+            if (freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else if (moveUp) {
                 m_lift_state = UP_FOR_RINGS;
             }
         break;
         
         case UP_FOR_RINGS:
-            if (moveUp) {
-                m_lift_state = FULLY_UP;
-            } else if (moveDown) {
-                m_lift_state = DOWN;
+            if (freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else {
+                if (moveUp) {
+                    m_lift_state = FULLY_UP;
+                } else if (moveDown) {
+                    m_lift_state = DOWN;
+                }
             }
         break;
         
         case FULLY_UP:
-            if (moveDown) {
+            if (freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else if (moveDown) {
                 m_lift_state = UP_FOR_RINGS;
             }
         break;
