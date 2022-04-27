@@ -18,43 +18,43 @@ void MatchAuton::AddNodes() {
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
     Auton::AddFirstNode(deploy);
 
-    AutonNode* forward = new AutonNode(2, new DriveStraightAction(m_driveNode, m_odomNode, 38, 70, 80));
+    AutonNode* forward = new AutonNode(2, new DriveStraightAction(m_driveNode, m_odomNode, 40, 60, 1000));
 
     deploy->AddNext(forward);
 
     AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
 
-    Path path = PathManager::GetInstance()->GetPath("TestPath");
-    AutonNode* testPath = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+    //Path path = PathManager::GetInstance()->GetPath("TestPath");
+    //AutonNode* testPath = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
 
-    forward -> AddNext(testPath);
+    //forward -> AddNext(testPath);
     forward -> AddNext(clawClose);
 
-    AutonNode* clawOpen =new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
+    // AutonNode* clawOpen =new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
 
-    Path NeutralToBluePath = PathManager::GetInstance()->GetPath("NeutralToBlue");
-    AutonNode* NeutralToBlue = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(NeutralToBluePath), NeutralToBluePath, false));
+    // Path NeutralToBluePath = PathManager::GetInstance()->GetPath("NeutralToBlue");
+    // AutonNode* NeutralToBlue = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(NeutralToBluePath), NeutralToBluePath, false));
 
-    testPath -> AddNext(clawOpen);
-    testPath -> AddNext(NeutralToBlue);
+    // testPath -> AddNext(clawOpen);
+    // testPath -> AddNext(NeutralToBlue);
 
-    AutonNode* clawClose2 =new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
+    // AutonNode* clawClose2 =new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
 
-    NeutralToBlue -> AddNext(clawClose2);
+    // NeutralToBlue -> AddNext(clawClose2);
 
-    AutonNode* LiftAction = new AutonNode(5, new MoveLiftToPositionAction(m_liftNode, 100, 20));
+    // AutonNode* LiftAction = new AutonNode(5, new MoveLiftToPositionAction(m_liftNode, 100, 20));
 
-    Path BlueToMiddleNeutralPath = PathManager::GetInstance()->GetPath("BlueToMiddleNeutral");
-    AutonNode* BlueToMiddleNeutral = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(BlueToMiddleNeutralPath), BlueToMiddleNeutralPath, false));
+    // Path BlueToMiddleNeutralPath = PathManager::GetInstance()->GetPath("BlueToMiddleNeutral");
+    // AutonNode* BlueToMiddleNeutral = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(BlueToMiddleNeutralPath), BlueToMiddleNeutralPath, false));
 
-    AutonNode* startSuckingAndDontStop = new AutonNode(30, new RollerIntakeAction(m_intakeNode));
+    // AutonNode* startSuckingAndDontStop = new AutonNode(30, new RollerIntakeAction(m_intakeNode));
 
-    clawClose2 ->AddNext(LiftAction);
-    clawClose2 ->AddNext(startSuckingAndDontStop);
-    clawClose2 ->AddNext(BlueToMiddleNeutral);
+    // clawClose2 ->AddNext(LiftAction);
+    // clawClose2 ->AddNext(startSuckingAndDontStop);
+    // clawClose2 ->AddNext(BlueToMiddleNeutral);
 
-    Path MiddleNeutralToOurRingsPath = PathManager::GetInstance()->GetPath("MiddleNeutralToOurRings");
-    AutonNode* MiddleNeutralToOurRings = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(MiddleNeutralToOurRingsPath), MiddleNeutralToOurRingsPath, false));
+    // Path MiddleNeutralToOurRingsPath = PathManager::GetInstance()->GetPath("MiddleNeutralToOurRings");
+    // AutonNode* MiddleNeutralToOurRings = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(MiddleNeutralToOurRingsPath), MiddleNeutralToOurRingsPath, false));
 
 
 
