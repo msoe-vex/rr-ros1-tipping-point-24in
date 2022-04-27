@@ -163,7 +163,7 @@ void initialize() {
 	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
 	
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
+	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, liftNode, intakeNode);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();

@@ -12,13 +12,15 @@ private:
     IDriveNode* m_driveNode;
     OdometryNode* m_odomNode;
     IClawNode* m_frontClawNode;
+    ILiftNode* m_liftNode;
+    IRollerIntakeNode* m_intakeNode;
 
     Auton* m_test_path_auton;
     Auton* m_prog_skills;
     Auton* m_match_auton;
 
 public:
-    AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node, IDriveNode* drive_node, IClawNode* front_claw_node);
+    AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node, IDriveNode* drive_node, IClawNode* front_claw_node, ILiftNode* lift_node, IRollerIntakeNode* intake_node);
 
     Auton* selected_auton;
 
