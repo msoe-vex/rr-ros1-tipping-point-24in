@@ -85,17 +85,20 @@ void LiftNode::teleopPeriodic() {
     switch (m_lift_state) {
         case DOWN:
             setLiftPosition(m_downPosition);
-            pros::lcd::print(2, "Lift State: DOWN");
+            // pros::lcd::print(2, "Lift State: DOWN");
+            m_setLiftPID();
         break;
         
         case UP_FOR_RINGS: 
             setLiftPosition(m_upForRingsPosition);
-            pros::lcd::print(2, "Lift State: UP_FOR_RINGS");
+            // pros::lcd::print(2, "Lift State: UP_FOR_RINGS");
+            m_setLiftPID();
         break;
         
         case FULLY_UP:
             setLiftPosition(m_fullyUpPosition);
-            pros::lcd::print(2, "Lift State: FULLY_UP");
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
+            m_setLiftPID();
         break;
         
         case FREE_MOVING: 
@@ -106,18 +109,17 @@ void LiftNode::teleopPeriodic() {
                 !m_controller->getController()->get_digital(m_upButton)) {
                 setLiftVoltage(-MAX_MOTOR_VOLTAGE);
             } else {
-                setLiftPosition(0);
+                setLiftVelocity(0);
             }   
-            pros::lcd::print(2, "Lift State: FREE_MOVING");
+            // pros::lcd::print(2, "Lift State: FREE_MOVING");
         break;
 
         default:
             setLiftPosition(m_target_position);
-            pros::lcd::print(2, "Lift State: default");
+            m_setLiftPID();
+            // pros::lcd::print(2, "Lift State: default");
         break;
     }
-
-    m_setLiftPID();
 };
 
 void LiftNode::autonPeriodic() { 
@@ -148,7 +150,6 @@ void LiftNode::autonPeriodic() {
 void LiftNode::m_updateLiftStateTeleop() { 
     bool moveUp = false;
     bool moveDown = false;
-    bool freeMoving = false;
     
     // this logic is the exact same as ClawNode I wonder 
     // how we could combine the two
@@ -167,7 +168,7 @@ void LiftNode::m_updateLiftStateTeleop() {
     }
 
     if (freeMoveButtonCurrentState == 1 && m_freeMoveButtonPreviousState == 0) {
-        freeMoving = !freeMoving;
+        m_freeMoving = !m_freeMoving;
     }
 
 	m_upButtonPreivousState = upButtonCurrentState;
@@ -176,7 +177,7 @@ void LiftNode::m_updateLiftStateTeleop() {
     
     switch (m_lift_state) { 
         case DOWN:
-            if (freeMoving) {
+            if (m_freeMoving) {
                 m_lift_state = FREE_MOVING;
             } else if (moveUp) {
                 m_lift_state = UP_FOR_RINGS;
@@ -184,7 +185,7 @@ void LiftNode::m_updateLiftStateTeleop() {
         break;
         
         case UP_FOR_RINGS:
-            if (freeMoving) {
+            if (m_freeMoving) {
                 m_lift_state = FREE_MOVING;
             } else {
                 if (moveUp) {
@@ -196,7 +197,7 @@ void LiftNode::m_updateLiftStateTeleop() {
         break;
         
         case FULLY_UP:
-            if (freeMoving) {
+            if (m_freeMoving) {
                 m_lift_state = FREE_MOVING;
             } else if (moveDown) {
                 m_lift_state = UP_FOR_RINGS;
@@ -204,20 +205,26 @@ void LiftNode::m_updateLiftStateTeleop() {
         break;
 
         case FREE_MOVING:
-            if (!freeMoving) {
+            if (!m_freeMoving) {
                 m_goToClosestState();
             }
         break;
     }
+
+    // pros::lcd::print(3, "m_freeMoving: %d\n", m_freeMoving);
+
 }
+
 
 void LiftNode::m_goToClosestState() {
     int currentPosition = getPosition();
+    int middleOfDownAndUpForRings = (m_upForRingsPosition + m_downPosition) / 2;
+    int middleOfUpForRingsAndFullyUp = (m_fullyUpPosition + m_upForRingsPosition) / 2;
     
-    if (currentPosition <= -3500) {
+    if (currentPosition <= middleOfDownAndUpForRings) {
         // the lift is closer to the DOWN position than any other position
         m_lift_state = DOWN;
-    } else if (-3500 < currentPosition && currentPosition < -1500) {
+    } else if (middleOfDownAndUpForRings < currentPosition && currentPosition < middleOfUpForRingsAndFullyUp) {
         // the lift is closer to the UP_FOR_RINGS position than FULLY_UP or DOWN
         m_lift_state = UP_FOR_RINGS;
     } else {
@@ -228,11 +235,10 @@ void LiftNode::m_goToClosestState() {
 
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
-    pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
-    pros::lcd::print(3, "errorPosition: %d\n", errorPosition);
+    // pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
     float lift_feedback = m_lift_pid.calculate(errorPosition);
-    pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
-    pros::lcd::print(0, "encoder: %d\n", getPosition());
+    // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
+    // pros::lcd::print(0, "encoder: %d\n", getPosition());
     setLiftVelocity(lift_feedback * MAX_VELOCITY);
 }
 
