@@ -12,7 +12,7 @@ MatchAuton::MatchAuton(IDriveNode* drive_node, OdometryNode* odom_node, IClawNod
 
 void MatchAuton::AddNodes() {
     // Set the starting position, as measured on the field
-    Pose startingPose(Vector2d(-44.75, 16.75), Rotation2Dd(1.449));
+    Pose startingPose(Vector2d(39, 14.3125), Rotation2Dd(M_PI_2));
     m_odomNode->setCurrentPose(startingPose);
 
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
