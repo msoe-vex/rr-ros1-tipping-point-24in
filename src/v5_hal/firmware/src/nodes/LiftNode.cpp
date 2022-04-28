@@ -34,9 +34,14 @@ void LiftNode::initialize() {
 };
 
 void LiftNode::setLiftVoltage(int voltage) {
-    if (m_top_limit_switch->getValue() == 1) {
+    int currentPosition = getPosition();
+
+    if (m_top_limit_switch->getValue() == 1 || currentPosition > 0) {
         m_left_motor->moveVoltage(min(voltage, 0));
         m_right_motor->moveVoltage(min(voltage, 0));
+    } else if (currentPosition < -4000) {
+        m_left_motor->moveVoltage(max(voltage, 0));
+        m_right_motor->moveVoltage(max(voltage, 0));
     } else {
         m_left_motor->moveVoltage(voltage);
         m_right_motor->moveVoltage(voltage);
@@ -44,12 +49,17 @@ void LiftNode::setLiftVoltage(int voltage) {
 };
 
 void LiftNode::setLiftVelocity(float velocity) {
-    if (m_top_limit_switch->getValue() == 1) {
+    int currentPosition = getPosition();
+    
+    if (m_top_limit_switch->getValue() == 1 || currentPosition > 0) {
         m_left_motor->moveVelocity(min((int) velocity, 0));
         m_right_motor->moveVelocity(min((int) velocity, 0));
+    } else if (currentPosition < -4000) {
+        m_left_motor->moveVelocity(max(velocity, 0));
+        m_right_motor->moveVelocity(max(velocity, 0));
     } else {
-        m_left_motor->moveVelocity((int) velocity);
-        m_right_motor->moveVelocity((int) velocity);
+        m_left_motor->moveVelocity(velocity);
+        m_right_motor->moveVelocity(velocity);
     }
 };
 
@@ -66,7 +76,7 @@ void LiftNode::setLiftState(LiftState state) {
 }
 
 int LiftNode::getPosition() { // change back to use pot
-    return m_left_motor->getPosition();
+    return m_potentiometer->getValue();
 }
 
 void LiftNode::teleopPeriodic() {
@@ -129,7 +139,6 @@ void LiftNode::autonPeriodic() {
 
 /**
  * Only called in teleopPeriodic()
- * Does not currently have a way to switch to the free moving state
  * */
 void LiftNode::m_updateLiftStateTeleop() { 
     bool moveUp = false;
@@ -142,7 +151,6 @@ void LiftNode::m_updateLiftStateTeleop() {
     bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
     bool freeMoveButtonCurrentState = m_controller->getController()->get_digital(m_freeMoveButton);
 
-    // there feels like there is a better way to do the state logic when a button is pressed
 	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
             !(downButtonCurrentState == 1 && m_downButtonPreviousState == 0)) {
         moveUp = true;
@@ -161,7 +169,7 @@ void LiftNode::m_updateLiftStateTeleop() {
     m_downButtonPreviousState = downButtonCurrentState;
     m_freeMoveButtonPreviousState = freeMoveButtonCurrentState;
     
-    switch (m_lift_state) { // write this logic
+    switch (m_lift_state) { 
         case DOWN:
             if (freeMoving) {
                 m_lift_state = FREE_MOVING;
@@ -215,8 +223,6 @@ void LiftNode::m_goToClosestState() {
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
     float lift_feedback = m_lift_pid.calculate(errorPosition);
-    // pros::lcd::print(0, "errorPosition: %f\n", errorPosition);
-    // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
     setLiftVelocity(lift_feedback * MAX_VELOCITY);
 }
 
