@@ -125,15 +125,15 @@ void LiftNode::teleopPeriodic() {
 void LiftNode::autonPeriodic() { 
     switch (m_lift_state) {
         case DOWN:
-            setLiftPosition(-4000);
+            setLiftPosition(m_downPosition);
         break;
         
         case UP_FOR_RINGS: 
-            setLiftPosition(-3000);
+            setLiftPosition(m_upForRingsPosition);
         break;
         
         case FULLY_UP:
-            setLiftPosition(0);
+            setLiftPosition(m_fullyUpPosition);
         break;
 
         default:
