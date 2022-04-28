@@ -44,7 +44,7 @@ private:
 
     void m_updateLiftStateTeleop();
 
-    void m_updateLiftPosition();
+    void m_goToClosestState();
 
     ControllerNode* m_controller;
     MotorNode* m_left_motor;

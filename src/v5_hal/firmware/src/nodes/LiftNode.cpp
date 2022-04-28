@@ -71,22 +71,7 @@ int LiftNode::getPosition() { // change back to use pot
 
 void LiftNode::teleopPeriodic() {
     m_updateLiftStateTeleop();
-    m_updateLiftPosition();
-        
-        // This is not yet used
 
-};
-
-void LiftNode::autonPeriodic() { 
-    m_updateLiftPosition();
-        
-        // This is not yet used
-        // case FREE_MOVING: 
-        //     // This just allows usage of setLiftPosition() by an autonomous action
-        // break;
-};
-
-void LiftNode::m_updateLiftPosition() {
     switch (m_lift_state) {
         case DOWN:
             setLiftPosition(-4000);
@@ -113,21 +98,34 @@ void LiftNode::m_updateLiftPosition() {
         break;
 
         default:
+            setLiftPosition(m_target_position);
         break;
     }
 
     m_setLiftPID();
-    
-    pros::lcd::print(2, "Lift Position: %d\n", getPosition());
+};
 
-    // int positionBoundUpper = getPosition() + m_tolerance;
-    // int positionBoundLower = getPosition() - m_tolerance;
-    // if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
-    //     setLiftVelocity(0);
-    // } else {
-    //     m_setLiftPID();
-    // }
-}
+void LiftNode::autonPeriodic() { 
+    switch (m_lift_state) {
+        case DOWN:
+            setLiftPosition(-4000);
+        break;
+        
+        case UP_FOR_RINGS: 
+            setLiftPosition(-3000);
+        break;
+        
+        case FULLY_UP:
+            setLiftPosition(0);
+        break;
+
+        default:
+            setLiftPosition(m_target_position);
+        break;
+    }
+
+    m_setLiftPID();
+};
 
 /**
  * Only called in teleopPeriodic()
@@ -191,6 +189,26 @@ void LiftNode::m_updateLiftStateTeleop() {
                 m_lift_state = UP_FOR_RINGS;
             }
         break;
+
+        case FREE_MOVING:
+            if (!freeMoving) {
+                m_goToClosestState();
+            }
+    }
+}
+
+void LiftNode::m_goToClosestState() {
+    int currentPosition = getPosition();
+    
+    if (currentPosition <= -3500) {
+        // the lift is closer to the DOWN position than any other position
+        m_lift_state = DOWN;
+    } else if (-3500 < currentPosition && currentPosition < -1500) {
+        // the lift is closer to the UP_FOR_RINGS position than FULLY_UP or DOWN
+        m_lift_state = UP_FOR_RINGS;
+    } else {
+        // the lift is closer to the FULLY_UP position than any other position
+        m_lift_state = FULLY_UP;
     }
 }
 
