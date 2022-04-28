@@ -63,6 +63,10 @@ private:
     bool m_downButtonPreviousState = false;
     bool m_freeMoveButtonPreviousState = false;
 
+    int m_downPosition = 900;
+    int m_upForRingsPosition = 1000;
+    int m_fullyUpPosition = 2600;
+
     int m_target_position;
     int m_tolerance;
 };

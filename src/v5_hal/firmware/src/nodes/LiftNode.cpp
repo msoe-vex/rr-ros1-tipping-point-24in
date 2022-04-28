@@ -36,10 +36,10 @@ void LiftNode::initialize() {
 void LiftNode::setLiftVoltage(int voltage) {
     int currentPosition = getPosition();
 
-    if (m_top_limit_switch->getValue() == 1 || currentPosition > 0) {
+    if (m_top_limit_switch->getValue() == 1 || currentPosition > m_fullyUpPosition) {
         m_left_motor->moveVoltage(min(voltage, 0));
         m_right_motor->moveVoltage(min(voltage, 0));
-    } else if (currentPosition < -4000) {
+    } else if (currentPosition < m_downPosition) {
         m_left_motor->moveVoltage(max(voltage, 0));
         m_right_motor->moveVoltage(max(voltage, 0));
     } else {
@@ -51,12 +51,12 @@ void LiftNode::setLiftVoltage(int voltage) {
 void LiftNode::setLiftVelocity(float velocity) {
     int currentPosition = getPosition();
     
-    if (m_top_limit_switch->getValue() == 1 || currentPosition > 0) {
-        m_left_motor->moveVelocity(min((int) velocity, 0));
-        m_right_motor->moveVelocity(min((int) velocity, 0));
-    } else if (currentPosition < -4000) {
-        m_left_motor->moveVelocity(max(velocity, 0));
-        m_right_motor->moveVelocity(max(velocity, 0));
+    if (m_top_limit_switch->getValue() == 1 || currentPosition > m_fullyUpPosition) {
+        m_left_motor->moveVelocity(min(velocity, 0.f));
+        m_right_motor->moveVelocity(min(velocity, 0.f));
+    } else if (currentPosition < m_downPosition) {
+        m_left_motor->moveVelocity(max(velocity, 0.f));
+        m_right_motor->moveVelocity(max(velocity, 0.f));
     } else {
         m_left_motor->moveVelocity(velocity);
         m_right_motor->moveVelocity(velocity);
@@ -84,15 +84,18 @@ void LiftNode::teleopPeriodic() {
 
     switch (m_lift_state) {
         case DOWN:
-            setLiftPosition(-4000);
+            setLiftPosition(m_downPosition);
+            pros::lcd::print(2, "Lift State: DOWN");
         break;
         
         case UP_FOR_RINGS: 
-            setLiftPosition(-3000);
+            setLiftPosition(m_upForRingsPosition);
+            pros::lcd::print(2, "Lift State: UP_FOR_RINGS");
         break;
         
         case FULLY_UP:
-            setLiftPosition(0);
+            setLiftPosition(m_fullyUpPosition);
+            pros::lcd::print(2, "Lift State: FULLY_UP");
         break;
         
         case FREE_MOVING: 
@@ -105,10 +108,12 @@ void LiftNode::teleopPeriodic() {
             } else {
                 setLiftPosition(0);
             }   
+            pros::lcd::print(2, "Lift State: FREE_MOVING");
         break;
 
         default:
             setLiftPosition(m_target_position);
+            pros::lcd::print(2, "Lift State: default");
         break;
     }
 
@@ -202,6 +207,7 @@ void LiftNode::m_updateLiftStateTeleop() {
             if (!freeMoving) {
                 m_goToClosestState();
             }
+        break;
     }
 }
 
@@ -222,7 +228,11 @@ void LiftNode::m_goToClosestState() {
 
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
+    pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
+    pros::lcd::print(3, "errorPosition: %d\n", errorPosition);
     float lift_feedback = m_lift_pid.calculate(errorPosition);
+    pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
+    pros::lcd::print(0, "encoder: %d\n", getPosition());
     setLiftVelocity(lift_feedback * MAX_VELOCITY);
 }
 
