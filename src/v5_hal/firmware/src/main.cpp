@@ -71,8 +71,8 @@ void initialize() {
 	controller2 = new ControllerNode(nodeManager, "controller2", pros::E_CONTROLLER_PARTNER);
 
 	/* Define the odometry components */
-	xOdomEncoder = new ADIEncoderNode(nodeManager, 'C', 'D', "xOdomEncoder", false);
-	yOdomEncoder = new ADIEncoderNode(nodeManager, 'A', 'B', "yOdomEncoder", true);
+	xOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'C', 'D'}, "xOdomEncoder", false);
+	yOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'A', 'B'}, "yOdomEncoder", false);
 
 	inertialSensor = new InertialSensorNode(nodeManager, "inertialSensor", 20);
 
@@ -134,12 +134,12 @@ void initialize() {
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
 	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 'F', "liftBottomLimitSwitch"); // not on robot
 	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");//now a button switch
-	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'G', "liftPotentiometer", false); // actually on robot but probably not accurate port
+	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'A', "liftPotentiometer", false); // actually on robot but probably not accurate port
 	
 	liftNode = new LiftNode(
 		nodeManager, 
 		"liftNode", 
-        controller2, 
+        controller1, 
 		DIGITAL_R1,
 		DIGITAL_R2,
 		DIGITAL_X,
@@ -162,8 +162,8 @@ void initialize() {
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 
-	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
-	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
+	// wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
+	// wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
