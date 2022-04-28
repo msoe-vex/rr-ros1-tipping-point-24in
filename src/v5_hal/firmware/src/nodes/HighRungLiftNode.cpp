@@ -70,7 +70,7 @@ void HighRungLiftNode::teleopPeriodic() {
 };
 
 void HighRungLiftNode::autonPeriodic() { 
-    switch (m_lift_state) {
+    switch (m_state) {
         case LOADING:
             setLiftPosition(m_loadingPosition);
         break;
@@ -90,95 +90,6 @@ void HighRungLiftNode::autonPeriodic() {
 
     m_setLiftPID();
 };
-
-/**
- * Only called in teleopPeriodic()
- * */
-// void HighRungLiftNode::m_updateLiftStateTeleop() { 
-//     bool moveUp = false;
-//     bool moveDown = false;
-    
-//     // this logic is the exact same as ClawNode I wonder 
-//     // how we could combine the two
-//     bool upButtonCurrentState = m_controller->getController()->get_digital(m_upButton);
-//     bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
-//     bool freeMoveButtonCurrentState = m_controller->getController()->get_digital(m_freeMoveButton);
-
-// 	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
-//             !(downButtonCurrentState == 1 && m_downButtonPreviousState == 0)) {
-//         moveUp = true;
-//     }
-
-//     if ((downButtonCurrentState == 1 && m_downButtonPreviousState == 0) &&
-//             !(upButtonCurrentState == 1 && m_upButtonPreivousState == 0)) {
-//         moveDown = true;
-//     }
-
-//     if (freeMoveButtonCurrentState == 1 && m_freeMoveButtonPreviousState == 0) {
-//         m_freeMoving = !m_freeMoving;
-//     }
-
-// 	m_upButtonPreivousState = upButtonCurrentState;
-//     m_downButtonPreviousState = downButtonCurrentState;
-//     m_freeMoveButtonPreviousState = freeMoveButtonCurrentState;
-    
-//     switch (m_lift_state) { 
-//         case DOWN:
-//             if (m_freeMoving) {
-//                 m_lift_state = FREE_MOVING;
-//             } else if (moveUp) {
-//                 m_lift_state = UP_FOR_RINGS;
-//             }
-//         break;
-        
-//         case UP_FOR_RINGS:
-//             if (m_freeMoving) {
-//                 m_lift_state = FREE_MOVING;
-//             } else {
-//                 if (moveUp) {
-//                     m_lift_state = FULLY_UP;
-//                 } else if (moveDown) {
-//                     m_lift_state = DOWN;
-//                 }
-//             }
-//         break;
-        
-//         case FULLY_UP:
-//             if (m_freeMoving) {
-//                 m_lift_state = FREE_MOVING;
-//             } else if (moveDown) {
-//                 m_lift_state = UP_FOR_RINGS;
-//             }
-//         break;
-
-//         case FREE_MOVING:
-//             if (!m_freeMoving) {
-//                 m_goToClosestState();
-//             }
-//         break;
-//     }
-
-//     // pros::lcd::print(3, "m_freeMoving: %d\n", m_freeMoving);
-
-// }
-
-
-// void HighRungLiftNode::m_goToClosestState() {
-//     int currentPosition = getPosition();
-//     int middleOfDownAndUpForRings = (m_upForRingsPosition + m_downPosition) / 2;
-//     int middleOfUpForRingsAndFullyUp = (m_fullyUpPosition + m_upForRingsPosition) / 2;
-    
-//     if (currentPosition <= middleOfDownAndUpForRings) {
-//         // the lift is closer to the DOWN position than any other position
-//         m_lift_state = DOWN;
-//     } else if (middleOfDownAndUpForRings < currentPosition && currentPosition < middleOfUpForRingsAndFullyUp) {
-//         // the lift is closer to the UP_FOR_RINGS position than FULLY_UP or DOWN
-//         m_lift_state = UP_FOR_RINGS;
-//     } else {
-//         // the lift is closer to the FULLY_UP position than any other position
-//         m_lift_state = FULLY_UP;
-//     }
-// }
 
 void HighRungLiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
