@@ -160,7 +160,7 @@ void initialize() {
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 
 	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
-	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
+	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A);
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, liftNode, intakeNode);
