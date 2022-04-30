@@ -15,6 +15,7 @@ private:
     bool m_claw_open;
     bool m_a_previous_state;
     bool m_isToggle;
+    bool m_disabled;
 
     
 public:
@@ -27,6 +28,8 @@ public:
     void initialize();
 
     void useClaw(bool opened);
+    
+    void setDisabled(bool disabled);
 
     void teleopPeriodic();
 
