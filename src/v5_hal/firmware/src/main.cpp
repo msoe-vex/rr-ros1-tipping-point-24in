@@ -43,6 +43,10 @@ ADIDigitalInNode* liftBottomLimitSwitch;
 ADIDigitalInNode* liftTopLimitSwitch;
 ADIAnalogInNode* liftPotentiometer;
 
+MotorNode* highRungLiftMotor;
+ADIAnalogInNode* highRungLiftPotentiometer;
+HighRungLiftNode* highRungLift;
+
 ADIEncoderNode* yOdomEncoder;
 ADIEncoderNode* xOdomEncoder;
 
@@ -148,6 +152,17 @@ void initialize() {
 		liftBottomLimitSwitch,
 		liftTopLimitSwitch,
 		liftPotentiometer
+	);
+
+	highRungLiftMotor = new MotorNode(nodeManager, 6, "highRungLiftMotor", true);
+	highRungLiftPotentiometer = new ADIAnalogInNode(nodeManager, 'B', "highRungLiftPotentiometer", false); 
+	highRungLift = new HighRungLiftNode(
+		nodeManager, 
+		"highRungLift", 
+		controller2, 
+		ANALOG_LEFT_X, 
+		highRungLiftMotor, 
+		highRungLiftPotentiometer
 	);
 
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);

@@ -68,6 +68,7 @@
 #include "nodes/TankDriveNode.h"
 #include "nodes/LiftNode.h"
 #include "nodes/IntakeNode.h"
+#include "nodes/HighRungLiftNode.h"
 
    /**
     * You should add more #includes here
