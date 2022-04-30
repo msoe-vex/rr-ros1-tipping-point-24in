@@ -162,7 +162,7 @@ void initialize() {
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 
-	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
+	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'D', false); //not the actual port, just made it up for rn
 	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, DIGITAL_LEFT); 
 	
 	// Initialize the autonomous manager
