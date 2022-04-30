@@ -129,7 +129,7 @@ void initialize() {
 	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller2, intakeMotor, DIGITAL_A, true);
 	
 	flapConveyorMotor = new MotorNode(nodeManager, 9, "conveyorMotor", false);
-	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
+	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_R1, pros::E_CONTROLLER_DIGITAL_R2);
 
 	conveyorMotor = new MotorNode(nodeManager, 19, "conveyorMotor", false);
 	conveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, conveyorMotor, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
@@ -177,8 +177,8 @@ void initialize() {
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 
-	// wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
-	// wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
+	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'D', false); //not the actual port, just made it up for rn
+	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, DIGITAL_LEFT); 
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
