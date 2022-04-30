@@ -122,7 +122,7 @@ void initialize() {
 	);
 
 	intakeMotor = new MotorNode(nodeManager, 14, "intakeMotor", true);
-	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller1, intakeMotor, pros::E_CONTROLLER_DIGITAL_L1);
+	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller2, intakeMotor, DIGITAL_A, true);
 	
 	flapConveyorMotor = new MotorNode(nodeManager, 9, "conveyorMotor", false);
 	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
