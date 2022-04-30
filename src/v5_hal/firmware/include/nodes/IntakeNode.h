@@ -20,9 +20,12 @@ private:
     std::string m_handle_name;
 
     bool m_open = false;
+    bool m_toggle = false;
+    bool m_running = false;
+    bool m_inButtonPreivousState = false;
 
 public:
-    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, pros::controller_digital_e_t in_button);
+    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, pros::controller_digital_e_t in_button, bool toggle);
 
     IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button);
 
