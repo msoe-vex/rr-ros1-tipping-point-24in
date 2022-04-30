@@ -11,7 +11,7 @@
 class HighRungLiftNode : public ILiftNode {
 public:
     enum HighRungLiftState {
-        LOADING, STRAIGHT_UP, SCORING, FREE_MOVING
+        LOADING, STRAIGHT_UP, SCORING, FREE_MOVING, FOLLOW_POSITION
     };
 
     HighRungLiftNode(NodeManager* node_manager, std::string handle_name, 

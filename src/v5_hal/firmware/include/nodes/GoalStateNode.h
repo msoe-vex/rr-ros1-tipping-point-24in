@@ -34,6 +34,8 @@ public:
 private:
     void m_updateStateTeleOp();
 
+    void m_highRungLiftFollowsLift();
+
     GoalState m_state;
     GoalState m_previousState;
     Timer m_timer;
@@ -51,6 +53,10 @@ private:
     bool m_clawButtonPreviousState = false;
     bool m_endgameMode = false;
     bool m_stateChange = false;
+
+    // HighRungLift to Lift function
+    float m_slope = -55.0; // NEEDS TO BE CHANGED
+    float m_intercept = 15.0; // NEEDS TO BE CHANGED
 
     void periodic();
 };

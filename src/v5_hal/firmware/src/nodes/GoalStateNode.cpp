@@ -31,7 +31,10 @@ void GoalStateNode::teleopPeriodic() {
     
     case FOLLOW_LIFT:
         // HighRungLift follows Lift
+        m_highRungLiftFollowsLift();
         // all other nodes have free movement
+        m_goalSpinner->setSpinnerState(GoalSpinnerNode::SpinnerState::FREE_MOVING);
+        m_frontClaw->setDisabled(false);
     default:
 
     case FREE_MOVING:
@@ -145,6 +148,15 @@ void GoalStateNode::m_updateStateTeleOp() {
 
 	m_endgameToggleButtonnPreivousState = endgameToggleButtonnCurrentState;
     // m_clawButtonPreviousState = clawButtonCurrentState;
+}
+
+void GoalStateNode::m_highRungLiftFollowsLift() {
+    int liftPosition = m_lift->getPosition();
+
+    //formula to translate Lift position to HighRungLiftPosition
+    int highRungLiftTargetPosition = liftPosition * m_slope + m_intercept;
+
+    m_highRungLift->setLiftPosition(highRungLiftTargetPosition);
 }
 
 GoalStateNode::~GoalStateNode() {

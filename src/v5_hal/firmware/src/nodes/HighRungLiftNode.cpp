@@ -61,12 +61,23 @@ int HighRungLiftNode::getPosition() { // change back to use pot
 }
 
 void HighRungLiftNode::teleopPeriodic() {
-    pros::lcd::print(0, "pot: %d", getPosition());
+    // pros::lcd::print(0, "pot: %d", getPosition());
     
-    // gets controller input and scales it to [-1, 1]
-    double controllerInput = m_controller->getController()->get_analog(m_joystick) / 127.0;
+    switch (m_state) {
+    
+    case FOLLOW_POSITION:
+        // outside node updates position
+        m_setLiftPID();
+    break;
+    
+    default:
+        // gets controller input and scales it to [-1, 1]
+        double controllerInput = m_controller->getController()->get_analog(m_joystick) / 127.0;
 
-    setLiftVoltage(controllerInput * MAX_MOTOR_VOLTAGE);
+        setLiftVoltage(controllerInput * MAX_MOTOR_VOLTAGE);
+    break;
+    }
+    
 };
 
 void HighRungLiftNode::autonPeriodic() { 

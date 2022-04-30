@@ -72,12 +72,14 @@ void GoalSpinnerNode::teleopPeriodic() {
             // pros::lcd::print(2, "Lift State: FREE_MOVING");
         break;
         
+        // should not be used in tele-op
         case SPIN_180:
             setLiftPosition(m_spin180);
             // pros::lcd::print(2, "Lift State: FULLY_UP");
             m_setLiftPID();
         break;
         
+        // should not be used in tele-op
         case SPIN_STRAIGHT:
             setLiftPosition(m_spinStraight);
             // pros::lcd::print(2, "Lift State: FULLY_UP");
