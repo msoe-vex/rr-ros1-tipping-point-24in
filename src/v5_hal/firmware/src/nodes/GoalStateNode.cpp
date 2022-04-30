@@ -1,81 +1,80 @@
 #include "nodes/GoalStateNode.h"
 
 GoalStateNode::GoalStateNode(NodeManager* node_manager, std::string handle_name,
-        ControllerNode* controller, pros::controller_digital_e_t pivotButton, 
-        pros::controller_digital_e_t clawButton, ADIDigitalOutNode* pivot,
-        ADIDigitalOutNode* claw) : Node(node_manager, 5),
+        ControllerNode* controller, GoalSpinnerNode* goalSpinner, 
+        IClawNode* frontClaw, LiftNode* lift, HighRungLiftNode* highRungLift,
+        pros::controller_digital_e_t endgameToggleButton) : Node(node_manager, 5),
         m_controller(controller->getController()),
-        m_pivotButton(pivotButton),
-        m_clawButton(clawButton),
-        m_pivot(pivot),
-        m_claw(claw) {
+        m_goalSpinner(goalSpinner),
+        m_frontClaw(frontClaw),
+        m_lift(lift),
+        m_highRungLift(highRungLift),
+        m_endgameToggleButton(endgameToggleButton) {
     m_handle_name = handle_name.insert(0, "robot/");
 }
 
 
 void GoalStateNode::initialize() {
-    m_state = PIVOT_BACK;
+    m_state = STARTING;
 }
 
-void GoalStateNode::setState(GoalStates state) {
+void GoalStateNode::setState(GoalState state) {
     m_previousState = m_state;
     m_state = state;
     m_stateChange = true;
 }
 
-// if the claw is pivotted back, pivot it forward and open the claw
-// if not, pivot it back
-void GoalStateNode::togglePivot() {
-    if (m_state == PIVOT_BACK) {
-        setState(PIVOT_DOWN_CLAW_OPEN);
-    } else {
-        setState(PIVOT_BACK);
-    }
-}
-
-// if the claw is pivotted back, pivot it forward and open the claw
-// if not, toggle the position of the claw
-void GoalStateNode::toggleClaw() {
-    if (m_state == PIVOT_BACK) {
-        setState(PIVOT_DOWN_CLAW_OPEN);
-    } else {
-        if (m_state == PIVOT_DOWN_CLAW_OPEN) {
-            setState(PIVOT_DOWN_CLAW_CLOSED);
-        } else {
-            setState(PIVOT_DOWN_CLAW_OPEN);
-        }
-    }
-}
-
 void GoalStateNode::teleopPeriodic() {
-    periodic();
+    m_updateStateTeleOp();
 
-    // this logic is the exact same as ClawNode I wonder 
-    // how we could combine the two
-    bool pivotButtonCurrentState = m_controller->get_digital(m_pivotButton);
-    bool clawButtonCurrentState = m_controller->get_digital(m_clawButton);
+    switch (m_state) {
+    
+    case FOLLOW_LIFT:
+        // HighRungLift follows Lift
+        // all other nodes have free movement
+    default:
 
-    // there feels like there is a better way to do the state logic when a button is pressed
-	if (pivotButtonCurrentState == 1 && m_pivotButtonPreivousState == 0) {
-        // pivot button has been pressed
-        // if the claw is pivotted back, pivot it forward and open the claw
-        // if not, pivot it back
-        togglePivot();
+    case FREE_MOVING:
+        // Free movement of HighRungLift
+        // Change state of claw and spinner based on HighRungLift position
+    break;
+
+    default:
+        // don't know yet
+    break;
     }
-
-    if (clawButtonCurrentState == 1 && m_clawButtonPreviousState == 0) {
-        // claw button has been pressed
-        // if the claw is pivotted back, pivot it forward and open the claw
-        // if not, toggle the position of the claw
-        toggleClaw();
-    }
-
-	m_pivotButtonPreivousState = pivotButtonCurrentState;
-    m_clawButtonPreviousState = clawButtonCurrentState;
 }
 
 void GoalStateNode::autonPeriodic() {
-    periodic();
+    switch (m_state) {
+    case STARTING:
+        // HighRungNode in loading
+        // all other nodes in free movement
+    break;
+
+    case FOLLOW_LIFT:
+        // same as tele-op
+    break;
+
+    case LOADING:
+        // HighRungLift to loading position
+        // Change state of claw and spinner based on HighRungLift position
+    break;
+
+    case STRAIGHT_UP:
+        // HighRungLift to straight up position
+        // Change state of claw and spinner based on HighRungLift position
+    break;
+
+    case SCORING:
+        // HighRungLift to scoring up position
+        // Change state of claw and spinner based on HighRungLift position
+    break;
+
+    default:
+    
+    break;
+    }
 }
 
 // these ones and zeros need to be tested
@@ -118,6 +117,34 @@ void GoalStateNode::periodic() {
     }
 
     m_stateChange = false;
+}
+
+void GoalStateNode::m_updateStateTeleOp() {
+    // this logic is the exact same as ClawNode I wonder 
+    // how we could combine the two
+    bool endgameToggleButtonnCurrentState = m_controller->get_digital(m_endgameToggleButton);
+    // bool clawButtonCurrentState = m_controller->get_digital(m_clawButton);
+
+    // there feels like there is a better way to do the state logic when a button is pressed
+	if (endgameToggleButtonnCurrentState == 1 && m_endgameToggleButtonnPreivousState == 0) {
+        m_endgameMode = !m_endgameMode
+    }
+
+    if (m_endgameMode) {
+        m_state = FREE_MOVING;
+    } else {
+        m_state = FOLLOW_LIFT;
+    }
+
+    // if (clawButtonCurrentState == 1 && m_clawButtonPreviousState == 0) {
+    //     // claw button has been pressed
+    //     // if the claw is pivotted back, pivot it forward and open the claw
+    //     // if not, toggle the position of the claw
+    //     toggleClaw();
+    // }
+
+	m_endgameToggleButtonnPreivousState = endgameToggleButtonnCurrentState;
+    // m_clawButtonPreviousState = clawButtonCurrentState;
 }
 
 GoalStateNode::~GoalStateNode() {
