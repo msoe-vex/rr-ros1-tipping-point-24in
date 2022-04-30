@@ -36,12 +36,19 @@ ADIDigitalOutNode* backTiltPiston;
 ClawNode* wingArm;
 ADIDigitalOutNode* wingArmPiston;
 
+ADIDigitalOutNode* buddyClimbPiston;
+ClawNode* buddyClimb;
+
 LiftNode* liftNode;
 MotorNode* leftLiftMotor;
 MotorNode* rightLiftMotor;
 ADIDigitalInNode* liftBottomLimitSwitch;
 ADIDigitalInNode* liftTopLimitSwitch;
 ADIAnalogInNode* liftPotentiometer;
+
+MotorNode* highRungLiftMotor;
+ADIAnalogInNode* highRungLiftPotentiometer;
+HighRungLiftNode* highRungLift;
 
 ADIEncoderNode* yOdomEncoder;
 ADIEncoderNode* xOdomEncoder;
@@ -71,8 +78,8 @@ void initialize() {
 	controller2 = new ControllerNode(nodeManager, "controller2", pros::E_CONTROLLER_PARTNER);
 
 	/* Define the odometry components */
-	xOdomEncoder = new ADIEncoderNode(nodeManager, 'C', 'D', "xOdomEncoder", false);
-	yOdomEncoder = new ADIEncoderNode(nodeManager, 'A', 'B', "yOdomEncoder", true);
+	xOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'C', 'D'}, "xOdomEncoder", false);
+	yOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'A', 'B'}, "yOdomEncoder", false);
 
 	inertialSensor = new InertialSensorNode(nodeManager, "inertialSensor", 20);
 
@@ -122,10 +129,10 @@ void initialize() {
 	);
 
 	intakeMotor = new MotorNode(nodeManager, 14, "intakeMotor", true);
-	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller1, intakeMotor, pros::E_CONTROLLER_DIGITAL_L1);
+	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller2, intakeMotor, DIGITAL_A, true);
 	
 	flapConveyorMotor = new MotorNode(nodeManager, 9, "conveyorMotor", false);
-	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
+	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_R1, pros::E_CONTROLLER_DIGITAL_R2);
 
 	conveyorMotor = new MotorNode(nodeManager, 19, "conveyorMotor", false);
 	conveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, conveyorMotor, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
@@ -134,17 +141,31 @@ void initialize() {
 	rightLiftMotor = new MotorNode(nodeManager, 10, "rightLiftMotor", true);
 	liftBottomLimitSwitch = new ADIDigitalInNode(nodeManager, 'F', "liftBottomLimitSwitch"); // not on robot
 	liftTopLimitSwitch = new ADIDigitalInNode(nodeManager, 'H', "liftTopLimitSwitch");//now a button switch
-	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'G', "liftPotentiometer", false); // actually on robot but probably not accurate port
+	liftPotentiometer = new ADIAnalogInNode(nodeManager, 'A', "liftPotentiometer", false); // actually on robot but probably not accurate port
 	
 	liftNode = new LiftNode(
 		nodeManager, 
 		"liftNode", 
         controller1, 
+		DIGITAL_R1,
+		DIGITAL_R2,
+		DIGITAL_X,
 		leftLiftMotor, 
         rightLiftMotor,
 		liftBottomLimitSwitch,
 		liftTopLimitSwitch,
 		liftPotentiometer
+	);
+
+	highRungLiftMotor = new MotorNode(nodeManager, 6, "highRungLiftMotor", true);
+	highRungLiftPotentiometer = new ADIAnalogInNode(nodeManager, 'B', "highRungLiftPotentiometer", false); 
+	highRungLift = new HighRungLiftNode(
+		nodeManager, 
+		"highRungLift", 
+		controller2, 
+		ANALOG_LEFT_X, 
+		highRungLiftMotor, 
+		highRungLiftPotentiometer
 	);
 
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
@@ -159,9 +180,12 @@ void initialize() {
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, pros::E_CONTROLLER_DIGITAL_DOWN, 
 		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
 
-	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
-	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A);
+	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'D', false); //not the actual port, just made it up for rn
+	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, DIGITAL_LEFT); 
 	
+	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
+	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
+
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, liftNode, intakeNode);
 

@@ -1,20 +1,24 @@
 #include "nodes/LiftNode.h"
 
 LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name, 
-        ControllerNode* controller, MotorNode* left_motor, 
-        MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
+        ControllerNode* controller, pros::controller_digital_e_t upButton, 
+        pros::controller_digital_e_t downButton, pros::controller_digital_e_t freeMoveButton,
+         MotorNode* left_motor, MotorNode* right_motor, ADIDigitalInNode* bottom_limit_switch, 
         ADIDigitalInNode* top_limit_switch, ADIAnalogInNode* potentiometer) : 
         ILiftNode(node_manager, handle_name), 
         m_controller(controller),
+        m_upButton(upButton),
+        m_downButton(downButton),
+        m_freeMoveButton(freeMoveButton),
         m_left_motor(left_motor),
         m_right_motor(right_motor),
         m_bottom_limit_switch(bottom_limit_switch),
         m_top_limit_switch(top_limit_switch),
         m_potentiometer(potentiometer),
-        m_lift_state(HOLDING),
+        m_lift_state(FULLY_UP),
         m_lift_pid(0.002, 0., 0., 0), 
         m_target_position(0),
-        m_tolerance(10) {
+        m_tolerance(5) {
 
 }
 
@@ -30,9 +34,14 @@ void LiftNode::initialize() {
 };
 
 void LiftNode::setLiftVoltage(int voltage) {
-    if (m_top_limit_switch->getValue() == 1) {
+    int currentPosition = getPosition();
+
+    if (m_top_limit_switch->getValue() == 1 || currentPosition > m_fullyUpPosition) {
         m_left_motor->moveVoltage(min(voltage, 0));
         m_right_motor->moveVoltage(min(voltage, 0));
+    } else if (currentPosition < m_downPosition) {
+        m_left_motor->moveVoltage(max(voltage, 0));
+        m_right_motor->moveVoltage(max(voltage, 0));
     } else {
         m_left_motor->moveVoltage(voltage);
         m_right_motor->moveVoltage(voltage);
@@ -40,9 +49,14 @@ void LiftNode::setLiftVoltage(int voltage) {
 };
 
 void LiftNode::setLiftVelocity(float velocity) {
-    if (m_top_limit_switch->getValue() == 1) {
+    int currentPosition = getPosition();
+    
+    if (m_top_limit_switch->getValue() == 1 || currentPosition > m_fullyUpPosition) {
         m_left_motor->moveVelocity(min(velocity, 0.f));
         m_right_motor->moveVelocity(min(velocity, 0.f));
+    } else if (currentPosition < m_downPosition) {
+        m_left_motor->moveVelocity(max(velocity, 0.f));
+        m_right_motor->moveVelocity(max(velocity, 0.f));
     } else {
         m_left_motor->moveVelocity(velocity);
         m_right_motor->moveVelocity(velocity);
@@ -54,50 +68,177 @@ void LiftNode::setLiftPosition(int position, int tolerance) {
     m_tolerance = tolerance;
 };
 
-int LiftNode::getPosition() { // change back to use pot
-    return m_left_motor->getPosition();
+/**
+ * This should only be called from autonomous 
+ * */
+void LiftNode::setLiftState(LiftState state) {
+    m_lift_state = state;
 }
 
-void LiftNode::updateLiftState() {
-    int positionBoundUpper = getPosition() + m_tolerance;
-    int positionBoundLower = getPosition() - m_tolerance;
-    if(positionBoundLower < m_target_position && m_target_position < positionBoundUpper) {
-        m_lift_state = HOLDING;
-    } else {
-        m_lift_state = UPDATING;
-    }
+int LiftNode::getPosition() { // change back to use pot
+    return m_potentiometer->getValue();
 }
 
 void LiftNode::teleopPeriodic() {
-    if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1) && 
-        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-        setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
-    } else if (m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R2) && 
-        !m_controller->getController()->get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-        setLiftVoltage(-MAX_MOTOR_VOLTAGE);
-    } else {
-        setLiftVelocity(0);
+    m_updateLiftStateTeleop();
+
+    switch (m_lift_state) {
+        case DOWN:
+            setLiftPosition(m_downPosition);
+            // pros::lcd::print(2, "Lift State: DOWN");
+            m_setLiftPID();
+        break;
+        
+        case UP_FOR_RINGS: 
+            setLiftPosition(m_upForRingsPosition);
+            // pros::lcd::print(2, "Lift State: UP_FOR_RINGS");
+            m_setLiftPID();
+        break;
+        
+        case FULLY_UP:
+            setLiftPosition(m_fullyUpPosition);
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
+            m_setLiftPID();
+        break;
+        
+        case FREE_MOVING: 
+            if (m_controller->getController()->get_digital(m_upButton) && 
+                !m_controller->getController()->get_digital(m_downButton)) {
+                setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
+            } else if (m_controller->getController()->get_digital(m_downButton) && 
+                !m_controller->getController()->get_digital(m_upButton)) {
+                setLiftVoltage(-MAX_MOTOR_VOLTAGE);
+            } else {
+                setLiftVelocity(0);
+            }   
+            // pros::lcd::print(2, "Lift State: FREE_MOVING");
+        break;
+
+        default:
+            setLiftPosition(m_target_position);
+            m_setLiftPID();
+            // pros::lcd::print(2, "Lift State: default");
+        break;
     }
 };
 
-void LiftNode::autonPeriodic() {
-    updateLiftState();
-    
+void LiftNode::autonPeriodic() { 
     switch (m_lift_state) {
-        case UPDATING:
-            m_setLiftPID();
+        case DOWN:
+            setLiftPosition(m_downPosition);
         break;
-        case HOLDING:
-            setLiftVelocity(0);
+        
+        case UP_FOR_RINGS: 
+            setLiftPosition(m_upForRingsPosition);
+        break;
+        
+        case FULLY_UP:
+            setLiftPosition(m_fullyUpPosition);
+        break;
+
+        default:
+            setLiftPosition(m_target_position);
         break;
     }
+
+    m_setLiftPID();
 };
+
+/**
+ * Only called in teleopPeriodic()
+ * */
+void LiftNode::m_updateLiftStateTeleop() { 
+    bool moveUp = false;
+    bool moveDown = false;
+    
+    // this logic is the exact same as ClawNode I wonder 
+    // how we could combine the two
+    bool upButtonCurrentState = m_controller->getController()->get_digital(m_upButton);
+    bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
+    bool freeMoveButtonCurrentState = m_controller->getController()->get_digital(m_freeMoveButton);
+
+	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
+            !(downButtonCurrentState == 1 && m_downButtonPreviousState == 0)) {
+        moveUp = true;
+    }
+
+    if ((downButtonCurrentState == 1 && m_downButtonPreviousState == 0) &&
+            !(upButtonCurrentState == 1 && m_upButtonPreivousState == 0)) {
+        moveDown = true;
+    }
+
+    if (freeMoveButtonCurrentState == 1 && m_freeMoveButtonPreviousState == 0) {
+        m_freeMoving = !m_freeMoving;
+    }
+
+	m_upButtonPreivousState = upButtonCurrentState;
+    m_downButtonPreviousState = downButtonCurrentState;
+    m_freeMoveButtonPreviousState = freeMoveButtonCurrentState;
+    
+    switch (m_lift_state) { 
+        case DOWN:
+            if (m_freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else if (moveUp) {
+                m_lift_state = UP_FOR_RINGS;
+            }
+        break;
+        
+        case UP_FOR_RINGS:
+            if (m_freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else {
+                if (moveUp) {
+                    m_lift_state = FULLY_UP;
+                } else if (moveDown) {
+                    m_lift_state = DOWN;
+                }
+            }
+        break;
+        
+        case FULLY_UP:
+            if (m_freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else if (moveDown) {
+                m_lift_state = UP_FOR_RINGS;
+            }
+        break;
+
+        case FREE_MOVING:
+            if (!m_freeMoving) {
+                m_goToClosestState();
+            }
+        break;
+    }
+
+    // pros::lcd::print(3, "m_freeMoving: %d\n", m_freeMoving);
+
+}
+
+
+void LiftNode::m_goToClosestState() {
+    int currentPosition = getPosition();
+    int middleOfDownAndUpForRings = (m_upForRingsPosition + m_downPosition) / 2;
+    int middleOfUpForRingsAndFullyUp = (m_fullyUpPosition + m_upForRingsPosition) / 2;
+    
+    if (currentPosition <= middleOfDownAndUpForRings) {
+        // the lift is closer to the DOWN position than any other position
+        m_lift_state = DOWN;
+    } else if (middleOfDownAndUpForRings < currentPosition && currentPosition < middleOfUpForRingsAndFullyUp) {
+        // the lift is closer to the UP_FOR_RINGS position than FULLY_UP or DOWN
+        m_lift_state = UP_FOR_RINGS;
+    } else {
+        // the lift is closer to the FULLY_UP position than any other position
+        m_lift_state = FULLY_UP;
+    }
+}
 
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
+    // pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
     float lift_feedback = m_lift_pid.calculate(errorPosition);
-    // pros::lcd::print(0, "errorPosition: %f\n", errorPosition);
     // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
+    // pros::lcd::print(0, "encoder: %d\n", getPosition());
     setLiftVelocity(lift_feedback * MAX_VELOCITY);
 }
 
