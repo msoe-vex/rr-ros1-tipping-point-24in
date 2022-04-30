@@ -36,6 +36,9 @@ ADIDigitalOutNode* backTiltPiston;
 ClawNode* wingArm;
 ADIDigitalOutNode* wingArmPiston;
 
+ADIDigitalOutNode* buddyClimbPiston;
+ClawNode* buddyClimb;
+
 LiftNode* liftNode;
 MotorNode* leftLiftMotor;
 MotorNode* rightLiftMotor;
@@ -165,6 +168,9 @@ void initialize() {
 	// wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'H', false); //not the actual port, just made it up for rn
 	// wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, pros::E_CONTROLLER_DIGITAL_A); //should be controller2 and a different(?) button
 	
+	buddyClimbPiston new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
+	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
+
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
 
