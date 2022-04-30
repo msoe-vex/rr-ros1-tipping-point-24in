@@ -54,32 +54,34 @@ void GoalSpinnerNode::teleopPeriodic() {
 
     switch (m_state) {
         case HOLDING:
-            setLiftPosition(m_target_position);
+            setSpinnerPosition(m_target_position);
             // pros::lcd::print(2, "Lift State: DOWN");
             m_setLiftPID();
         break;
         
         case FREE_MOVING: 
-            setSpinnerVelocity(0);
+            if (m_controller->getController()->get_digital(m_leftSpinButton) && 
+                !m_controller->getController()->get_digital(m_rightSpinButton)) {
+                setSpinnerVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
+            } else if (m_controller->getController()->get_digital(m_rightSpinButton) && 
+                !m_controller->getController()->get_digital(m_leftSpinButton)) {
+                setSpinnerVoltage(-MAX_MOTOR_VOLTAGE);
+            } else {
+                setSpinnerVelocity(0);
+            }   
+            // pros::lcd::print(2, "Lift State: FREE_MOVING");
         break;
         
         case SPIN_180:
-            setLiftPosition(m_fullyUpPosition);
+            setLiftPosition(m_spin180);
             // pros::lcd::print(2, "Lift State: FULLY_UP");
             m_setLiftPID();
         break;
         
-        case FREE_MOVING: 
-            if (m_controller->getController()->get_digital(m_upButton) && 
-                !m_controller->getController()->get_digital(m_downButton)) {
-                setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
-            } else if (m_controller->getController()->get_digital(m_downButton) && 
-                !m_controller->getController()->get_digital(m_upButton)) {
-                setLiftVoltage(-MAX_MOTOR_VOLTAGE);
-            } else {
-                setLiftVelocity(0);
-            }   
-            // pros::lcd::print(2, "Lift State: FREE_MOVING");
+        case SPIN_STRAIGHT:
+            setLiftPosition(m_spinStraight);
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
+            m_setLiftPID();
         break;
 
         default:
@@ -91,21 +93,20 @@ void GoalSpinnerNode::teleopPeriodic() {
 };
 
 void GoalSpinnerNode::autonPeriodic() { 
-    switch (m_lift_state) {
-        case DOWN:
-            setLiftPosition(m_downPosition);
+    switch (m_state) {
+        case SPIN_180:
+            setLiftPosition(m_spin180);
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
         break;
         
-        case UP_FOR_RINGS: 
-            setLiftPosition(m_upForRingsPosition);
-        break;
-        
-        case FULLY_UP:
-            setLiftPosition(m_fullyUpPosition);
+        case SPIN_STRAIGHT:
+            setLiftPosition(m_spinStraight);
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
         break;
 
         default:
             setLiftPosition(m_target_position);
+            // pros::lcd::print(2, "Lift State: default");
         break;
     }
 
@@ -115,99 +116,99 @@ void GoalSpinnerNode::autonPeriodic() {
 /**
  * Only called in teleopPeriodic()
  * */
-void GoalSpinnerNode::m_updateSpinnerStateTeleop() { 
-    bool moveUp = false;
-    bool moveDown = false;
+// void GoalSpinnerNode::m_updateSpinnerStateTeleop() { 
+//     bool moveUp = false;
+//     bool moveDown = false;
     
-    // this logic is the exact same as ClawNode I wonder 
-    // how we could combine the two
-    bool upButtonCurrentState = m_controller->getController()->get_digital(m_upButton);
-    bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
-    bool freeMoveButtonCurrentState = m_controller->getController()->get_digital(m_freeMoveButton);
+//     // this logic is the exact same as ClawNode I wonder 
+//     // how we could combine the two
+//     bool upButtonCurrentState = m_controller->getController()->get_digital(m_upButton);
+//     bool downButtonCurrentState = m_controller->getController()->get_digital(m_downButton);
+//     bool freeMoveButtonCurrentState = m_controller->getController()->get_digital(m_freeMoveButton);
 
-	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
-            !(downButtonCurrentState == 1 && m_downButtonPreviousState == 0)) {
-        moveUp = true;
-    }
+// 	if ((upButtonCurrentState == 1 && m_upButtonPreivousState == 0) &&
+//             !(downButtonCurrentState == 1 && m_downButtonPreviousState == 0)) {
+//         moveUp = true;
+//     }
 
-    if ((downButtonCurrentState == 1 && m_downButtonPreviousState == 0) &&
-            !(upButtonCurrentState == 1 && m_upButtonPreivousState == 0)) {
-        moveDown = true;
-    }
+//     if ((downButtonCurrentState == 1 && m_downButtonPreviousState == 0) &&
+//             !(upButtonCurrentState == 1 && m_upButtonPreivousState == 0)) {
+//         moveDown = true;
+//     }
 
-    if (freeMoveButtonCurrentState == 1 && m_freeMoveButtonPreviousState == 0) {
-        m_freeMoving = !m_freeMoving;
-    }
+//     if (freeMoveButtonCurrentState == 1 && m_freeMoveButtonPreviousState == 0) {
+//         m_freeMoving = !m_freeMoving;
+//     }
 
-	m_upButtonPreivousState = upButtonCurrentState;
-    m_downButtonPreviousState = downButtonCurrentState;
-    m_freeMoveButtonPreviousState = freeMoveButtonCurrentState;
+// 	m_upButtonPreivousState = upButtonCurrentState;
+//     m_downButtonPreviousState = downButtonCurrentState;
+//     m_freeMoveButtonPreviousState = freeMoveButtonCurrentState;
     
-    switch (m_lift_state) { 
-        case DOWN:
-            if (m_freeMoving) {
-                m_lift_state = FREE_MOVING;
-            } else if (moveUp) {
-                m_lift_state = UP_FOR_RINGS;
-            }
-        break;
+//     switch (m_lift_state) { 
+//         case DOWN:
+//             if (m_freeMoving) {
+//                 m_lift_state = FREE_MOVING;
+//             } else if (moveUp) {
+//                 m_lift_state = UP_FOR_RINGS;
+//             }
+//         break;
         
-        case UP_FOR_RINGS:
-            if (m_freeMoving) {
-                m_lift_state = FREE_MOVING;
-            } else {
-                if (moveUp) {
-                    m_lift_state = FULLY_UP;
-                } else if (moveDown) {
-                    m_lift_state = DOWN;
-                }
-            }
-        break;
+//         case UP_FOR_RINGS:
+//             if (m_freeMoving) {
+//                 m_lift_state = FREE_MOVING;
+//             } else {
+//                 if (moveUp) {
+//                     m_lift_state = FULLY_UP;
+//                 } else if (moveDown) {
+//                     m_lift_state = DOWN;
+//                 }
+//             }
+//         break;
         
-        case FULLY_UP:
-            if (m_freeMoving) {
-                m_lift_state = FREE_MOVING;
-            } else if (moveDown) {
-                m_lift_state = UP_FOR_RINGS;
-            }
-        break;
+//         case FULLY_UP:
+//             if (m_freeMoving) {
+//                 m_lift_state = FREE_MOVING;
+//             } else if (moveDown) {
+//                 m_lift_state = UP_FOR_RINGS;
+//             }
+//         break;
 
-        case FREE_MOVING:
-            if (!m_freeMoving) {
-                m_goToClosestState();
-            }
-        break;
-    }
+//         case FREE_MOVING:
+//             if (!m_freeMoving) {
+//                 m_goToClosestState();
+//             }
+//         break;
+//     }
 
-    // pros::lcd::print(3, "m_freeMoving: %d\n", m_freeMoving);
+//     // pros::lcd::print(3, "m_freeMoving: %d\n", m_freeMoving);
 
-}
+// }
 
 
-void GoalSpinnerNode::m_goToClosestState() {
-    int currentPosition = getPosition();
-    int middleOfDownAndUpForRings = (m_upForRingsPosition + m_downPosition) / 2;
-    int middleOfUpForRingsAndFullyUp = (m_fullyUpPosition + m_upForRingsPosition) / 2;
+// void GoalSpinnerNode::m_goToClosestState() {
+//     int currentPosition = getPosition();
+//     int middleOfDownAndUpForRings = (m_upForRingsPosition + m_downPosition) / 2;
+//     int middleOfUpForRingsAndFullyUp = (m_fullyUpPosition + m_upForRingsPosition) / 2;
     
-    if (currentPosition <= middleOfDownAndUpForRings) {
-        // the lift is closer to the DOWN position than any other position
-        m_lift_state = DOWN;
-    } else if (middleOfDownAndUpForRings < currentPosition && currentPosition < middleOfUpForRingsAndFullyUp) {
-        // the lift is closer to the UP_FOR_RINGS position than FULLY_UP or DOWN
-        m_lift_state = UP_FOR_RINGS;
-    } else {
-        // the lift is closer to the FULLY_UP position than any other position
-        m_lift_state = FULLY_UP;
-    }
-}
+//     if (currentPosition <= middleOfDownAndUpForRings) {
+//         // the lift is closer to the DOWN position than any other position
+//         m_lift_state = DOWN;
+//     } else if (middleOfDownAndUpForRings < currentPosition && currentPosition < middleOfUpForRingsAndFullyUp) {
+//         // the lift is closer to the UP_FOR_RINGS position than FULLY_UP or DOWN
+//         m_lift_state = UP_FOR_RINGS;
+//     } else {
+//         // the lift is closer to the FULLY_UP position than any other position
+//         m_lift_state = FULLY_UP;
+//     }
+// }
 
 void GoalSpinnerNode::m_setSpinnerPID() {
     int errorPosition = m_target_position - getPosition();
     // pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
-    float lift_feedback = m_lift_pid.calculate(errorPosition);
+    float feedback = m_lift_pid.calculate(errorPosition);
     // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
     // pros::lcd::print(0, "encoder: %d\n", getPosition());
-    setLiftVelocity(lift_feedback * MAX_VELOCITY);
+    setLiftVelocity(feedback * MAX_VELOCITY);
 }
 
 GoalSpinnerNode::~GoalSpinnerNode() {

@@ -38,9 +38,9 @@ public:
     ~GoalSpinnerNode();
 
 private:    
-    void m_updateSpinnerStateTeleop();
+    // void m_updateSpinnerStateTeleop();
 
-    void m_goToClosestState();
+    // void m_goToClosestState();
     
     void m_setSpinnerPID();
 
@@ -54,12 +54,9 @@ private:
 
     bool m_leftSpinButtonPreivousState = false;
     bool m_rightSpinButtonPreviousState = false;
-    bool m_freeMoveButtonPreviousState = false;
-    bool m_freeMoving = false;
 
-    int m_downPosition = 800;
-    int m_upForRingsPosition = 1000;
-    int m_ = 2600;
+    int m_spinStraight = 1000;
+    int m_spin180 = 2600;
 
     int m_target_position;
     int m_tolerance;
