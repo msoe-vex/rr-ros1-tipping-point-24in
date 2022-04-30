@@ -64,7 +64,7 @@ void HighRungLiftNode::teleopPeriodic() {
     pros::lcd::print(0, "pot: %d", getPosition());
     
     // gets controller input and scales it to [-1, 1]
-    double controllerInput = m_controller->getController()->get_analog(m_joystick) / 127;
+    double controllerInput = m_controller->getController()->get_analog(m_joystick) / 127.0;
 
     setLiftVoltage(controllerInput * MAX_MOTOR_VOLTAGE);
 };
