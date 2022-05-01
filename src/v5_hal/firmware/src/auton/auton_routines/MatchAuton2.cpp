@@ -26,11 +26,16 @@ void MatchAuton2::AddNodes() {
     AutonNode* clawCloseDelay = new AutonNode(1.2, new WaitAction(1.2));
     deploy->AddNext(clawCloseDelay);
     
-    AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
+    AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
     clawCloseDelay->AddNext(clawClose);
 
     Path path = PathManager::GetInstance()->GetPath("FirstBacking");
-    AutonNode* driveBackFromYellowGoal = new AutonNode(4, new FollowPathAction(m_drive_node, m_odom_node, new TankPathPursuit(path), path, false));
+    AutonNode* driveBackFromYellowGoal = new AutonNode(10, new FollowPathAction(m_drive_node, m_odom_node, new TankPathPursuit(path), path, false));
     clawClose->AddNext(driveBackFromYellowGoal);
-
+    
+    AutonNode* clawOpen = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
+    driveBackFromYellowGoal->AddNext(clawOpen);
+    
+    // AutonNode* backClawOpen = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
+    // driveBackFromYellowGoal->AddNext(clawOpen);
 }

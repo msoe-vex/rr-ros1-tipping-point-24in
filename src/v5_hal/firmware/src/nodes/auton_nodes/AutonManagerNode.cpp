@@ -13,7 +13,7 @@ AutonManagerNode::AutonManagerNode(NodeManager* node_manager, OdometryNode* odom
 }
 
 void AutonManagerNode::initialize() {
-    PathManager::GetInstance()->LoadPathsFile("/usd/24inch_v1.json");
+    PathManager::GetInstance()->LoadPathsFile("/usd/24inch_v3.json");
 }
 
 void AutonManagerNode::autonPeriodic() {
