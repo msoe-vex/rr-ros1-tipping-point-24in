@@ -9,6 +9,7 @@
 #include "auton/auton_routines/BasicAuton.h"
 #include "lib-rr/pathing/PathManager.h"
 #include "nodes/LiftNode.h"
+#include "nodes/BackClawNode.h"
 
 class AutonManagerNode : public Node {
 private:
@@ -17,6 +18,10 @@ private:
     IClawNode* m_frontClawNode;
     LiftNode* m_liftNode;
     HighRungLiftNode* m_high_rung_lift_node;
+    BackClawNode* m_backClawNode;
+    IRollerIntakeNode* m_intakeNode;
+    IRollerIntakeNode* m_conveyorNode;
+    IRollerIntakeNode* m_flapConveyorNode;
 
     Auton* m_test_path_auton;
     Auton* m_prog_skills;
@@ -26,7 +31,9 @@ private:
 public:
     AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node,
         IDriveNode* drive_node, IClawNode* front_claw_node, LiftNode* liftNode,
-        HighRungLiftNode* high_rung_lift_node);
+        HighRungLiftNode* high_rung_lift_node, BackClawNode* backClawNode,
+        IRollerIntakeNode* intakeNode, IRollerIntakeNode* conveyorNode, 
+        IRollerIntakeNode* flapConveyorNode);
 
     Auton* selected_auton;
 

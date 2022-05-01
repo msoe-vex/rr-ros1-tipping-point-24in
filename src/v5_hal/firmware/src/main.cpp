@@ -192,7 +192,8 @@ void initialize() {
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, liftNode, highRungLift);
+	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, liftNode, highRungLift, 
+		backClaw, intakeNode, conveyorNode, flapConveyorNode);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
