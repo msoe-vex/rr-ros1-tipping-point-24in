@@ -129,7 +129,7 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     waitAfterColorGoalGrab->AddNext(redRampToRedRingStop);
     redRampToRedRingStop->AddAction(new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
-    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_intakeNode))
-
-
+    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_intakeNode));
+    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_conveyorNode));
+    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_flapConveyorNode));
 }

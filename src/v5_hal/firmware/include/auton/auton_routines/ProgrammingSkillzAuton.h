@@ -45,7 +45,7 @@ private:
     BackClawNode* m_backClaw;
     IClawNode* m_wingArms;
     IClawNode* m_buddyClimb;
-    ILiftNode* m_liftNode;
+    LiftNode* m_liftNode;
     HighRungLiftNode* m_highRungLiftNode;
 
 };
