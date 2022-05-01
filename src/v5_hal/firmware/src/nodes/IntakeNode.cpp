@@ -20,12 +20,30 @@ IntakeNode::IntakeNode(NodeManager* node_manager, std::string handle_name, Contr
     m_canReverse = true;
 }
 
+IntakeNode::IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, 
+        MotorNode* intake_motor, MotorNode* intake_motor2, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button) : IRollerIntakeNode(node_manager, handle_name), 
+        m_controller(controller->getController()),
+        m_intake_motor(intake_motor),
+        m_intake_motor2(intake_motor2),
+        m_in_button(in_button),
+        m_out_button(out_button) {
+    m_handle_name = handle_name.insert(0, "robot/");
+    m_canReverse = true;
+    m_twoMotors = true;
+}
+
 void IntakeNode::setIntakeVoltage(int voltage) {
     m_intake_motor->moveVoltage(voltage);
+    if (m_twoMotors) {
+        m_intake_motor2->moveVoltage(voltage);
+    }
 }
 
 void IntakeNode::setIntakeVelocity(float velocity) {
     m_intake_motor->moveVelocity(velocity);
+    if (m_twoMotors) {
+        m_intake_motor2->moveVelocity(velocity);
+    }
 }
 
 void IntakeNode::initialize() {

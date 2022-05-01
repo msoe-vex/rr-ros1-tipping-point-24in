@@ -69,6 +69,7 @@
 #include "nodes/LiftNode.h"
 #include "nodes/IntakeNode.h"
 #include "nodes/HighRungLiftNode.h"
+#include "nodes/GoalSpinnerNode.h"
 
    /**
     * You should add more #includes here
