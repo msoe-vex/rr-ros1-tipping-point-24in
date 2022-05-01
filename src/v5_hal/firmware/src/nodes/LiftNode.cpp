@@ -257,10 +257,16 @@ void LiftNode::m_goToClosestState() {
 void LiftNode::m_setLiftPID() {
     int errorPosition = m_target_position - getPosition();
     // pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
-    float lift_feedback = m_lift_pid.calculate(errorPosition);
-    // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
-    // pros::lcd::print(0, "encoder: %d\n", getPosition());
-    setLiftVelocity(lift_feedback * MAX_VELOCITY);
+    int upperBound = m_target_position + m_tolerance;
+    int lowerBound = m_target_position - m_tolerance;
+    if (lowerBound <= errorPosition && errorPosition <= upperBound) {
+        setLiftVelocity(0);    
+    } else {
+        float lift_feedback = m_lift_pid.calculate(errorPosition);
+        // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
+        // pros::lcd::print(0, "encoder: %d\n", getPosition());
+        setLiftVelocity(lift_feedback * MAX_VELOCITY);
+    }
 }
 
 LiftNode::~LiftNode() {

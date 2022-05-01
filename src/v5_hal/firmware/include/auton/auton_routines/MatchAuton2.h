@@ -10,12 +10,14 @@
 #include "lib-rr/auton/auton_actions/UseClawAction.h"
 #include "lib-rr/auton/auton_actions/MoveLiftToPositionAction.h"
 #include "lib-rr/auton/auton_actions/FollowPathAction.h"
+#include "lib-rr/pursuit/path_pursuit/TankPathPursuit.h"
 #include "lib-rr/nodes/subsystems/ILiftNode.h"
 #include "lib-rr/nodes/subsystems/IClawNode.h"
 #include "auton/auton_actions/DeployAction.h"
 #include "lib-rr/util/Constants.h"
 #include "lib-rr/eigen/Eigen/Dense"
 #include "nodes/LiftNode.h"
+#include "lib-rr/pathing/PathManager.h"
 
 class MatchAuton2 : public Auton {
 public:
