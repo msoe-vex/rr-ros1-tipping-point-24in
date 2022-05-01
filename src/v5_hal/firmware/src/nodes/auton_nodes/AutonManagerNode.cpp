@@ -19,7 +19,7 @@ AutonManagerNode::AutonManagerNode(NodeManager* node_manager, OdometryNode* odom
 }
 
 void AutonManagerNode::initialize() {
-    PathManager::GetInstance()->LoadPathsFile("/usd/vsilly2.json");
+    PathManager::GetInstance()->LoadPathsFile("/usd/v12old.json");
 }
 
 void AutonManagerNode::autonPeriodic() {
