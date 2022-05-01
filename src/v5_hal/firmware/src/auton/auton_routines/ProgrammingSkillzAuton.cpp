@@ -24,8 +24,8 @@ void ProgrammingSkillzAuton::AddNodes() {
     // Pose startingPose(Vector2d(39, 14.3125), Rotation2Dd(M_PI_2));
     // m_odomNode->setCurrentPose(startingPose);
 
-    // AutonNode* deploy = new AutonNode(0.1, new DeployAction());
-    // Auton::AddFirstNode(deploy);
+    AutonNode* deploy = new AutonNode(0.1, new DeployAction());
+    Auton::AddFirstNode(deploy);
 
     // AutonNode* forward = new AutonNode(2, new DriveStraightAction(m_driveNode, m_odomNode, 40, 60, 1000));
 
@@ -66,7 +66,49 @@ void ProgrammingSkillzAuton::AddNodes() {
     // // AutonNode* MiddleNeutralToOurRings = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(MiddleNeutralToOurRingsPath), MiddleNeutralToOurRingsPath, false));
 
 
+    // // // // START OF PART II (Asher Sprigler (spriglera@msoe.edu))
 
+    //
+    // Part 1: Move to reverse into the red goal holding down the platform
+    AutonNode* releaseColorGoalCorner = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+    
+    Path PrepareToReverseToRedPath = PathManager::GetInstance() -> GetPath("TestPath");
+
+    AutonNode* prepareToReverseToRed = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(
+                PrepareToReverseToRedPath),
+                PrepareToReverseToRedPath,
+                false
+            )
+        );
+
+    //Part 2: Move to the goal holding down the platform, grab the goal
+
+    Path MidToRedRampPath = PathManager::GetInstance() -> GetPath("MidToRedRamp");
+
+    AutonNode* MidToRedRamp = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(
+                MidToRedRampPath),
+                MidToRedRampPath,
+                false
+            )
+        )
+    );
+
+    AutonNode* grabColorGoalCorner new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::BackClawNode::PIVOT_BACK);
+
+    //Part 3: Lift the goal to ring height, turn on the conveyor belt,
+    //Follow the path
+
+    AutonNode 
 
 
 }

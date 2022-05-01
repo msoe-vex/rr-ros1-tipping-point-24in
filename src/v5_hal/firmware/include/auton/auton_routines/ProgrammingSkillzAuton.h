@@ -10,6 +10,7 @@
 #include "lib-rr/auton/auton_actions/MoveLiftToPositionAction.h"
 #include "lib-rr/auton/auton_actions/RollerIntakeAction.h"
 #include "lib-rr/auton/auton_actions/FollowPathAction.h"
+#inculde "lib-rr/auton/auton_actions/SetBackClawStateAction.h"
 #include "lib-rr/pursuit/path_pursuit/TankPathPursuit.h"
 #include "lib-rr/nodes/subsystems/ILiftNode.h"
 #include "lib-rr/nodes/subsystems/IClawNode.h"
@@ -22,6 +23,7 @@
 #include "nodes/BackClawNode.h"
 #include "nodes/LiftNode.h"
 #include "nodes/HighRungLiftNode.h"
+
 
 class ProgrammingSkillzAuton : public Auton {
 public:
