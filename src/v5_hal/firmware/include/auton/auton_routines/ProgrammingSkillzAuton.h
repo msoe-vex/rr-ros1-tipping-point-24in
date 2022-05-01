@@ -22,12 +22,13 @@
 #include "nodes/BackClawNode.h"
 #include "nodes/LiftNode.h"
 #include "nodes/HighRungLiftNode.h"
+#include "utils/Constants.h"
 
 class ProgrammingSkillzAuton : public Auton {
 public:
     ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNode* odomNode, IRollerIntakeNode* intakeNode, 
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
-        BackClawNode* backClaw, IClawNode* wingArms, IClawNode* buddyClimb, LiftNode* liftNode, 
+        BackClawNode* backClaw, IClawNode* buddyClimb, LiftNode* liftNode, 
         HighRungLiftNode* highRungLiftNode);
 
     void AddNodes();
@@ -40,7 +41,6 @@ private:
     IRollerIntakeNode* m_flapConveyorNode;
     IClawNode* m_frontClawNode;
     BackClawNode* m_backClaw;
-    IClawNode* m_wingArms;
     IClawNode* m_buddyClimb;
     ILiftNode* m_liftNode;
     HighRungLiftNode* m_highRungLiftNode;
