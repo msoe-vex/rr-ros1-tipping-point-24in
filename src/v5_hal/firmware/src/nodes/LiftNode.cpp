@@ -15,7 +15,7 @@ LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name,
         m_bottom_limit_switch(bottom_limit_switch),
         m_top_limit_switch(top_limit_switch),
         m_potentiometer(potentiometer),
-        m_lift_state(FULLY_UP),
+        m_lift_state(STARTING_CONFIGURATION),
         m_lift_pid(0.002, 0., 0., 0), 
         m_target_position(0),
         m_tolerance(5) {
@@ -100,6 +100,11 @@ void LiftNode::teleopPeriodic() {
             // pros::lcd::print(2, "Lift State: FULLY_UP");
             m_setLiftPID();
         break;
+
+        case STARTING_CONFIGURATION:
+            setLiftPosition(m_startingConfiguaration);
+            m_setLiftPID();
+        break;
         
         case FREE_MOVING: 
             if (m_controller->getController()->get_digital(m_upButton) && 
@@ -111,7 +116,7 @@ void LiftNode::teleopPeriodic() {
             } else {
                 setLiftVelocity(0);
             }   
-            // pros::lcd::print(2, "Lift State: FREE_MOVING");
+            pros::lcd::print(2, "Lift Pos: %d", getPosition());
         break;
 
         default:
@@ -134,6 +139,10 @@ void LiftNode::autonPeriodic() {
         
         case FULLY_UP:
             setLiftPosition(m_fullyUpPosition);
+        break;
+
+        case STARTING_CONFIGURATION:
+            setLiftPosition(m_startingConfiguaration);
         break;
 
         default:
@@ -201,6 +210,18 @@ void LiftNode::m_updateLiftStateTeleop() {
                 m_lift_state = FREE_MOVING;
             } else if (moveDown) {
                 m_lift_state = UP_FOR_RINGS;
+            }
+        break;
+
+        case STARTING_CONFIGURATION:
+            if (m_freeMoving) {
+                m_lift_state = FREE_MOVING;
+            } else {
+                if (moveUp) {
+                    m_lift_state = FULLY_UP;
+                } else if (moveDown) {
+                    m_lift_state = UP_FOR_RINGS;
+                }
             }
         break;
 

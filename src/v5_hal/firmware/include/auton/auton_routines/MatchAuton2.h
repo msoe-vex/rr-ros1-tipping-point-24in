@@ -6,6 +6,7 @@
 #include "lib-rr/nodes/sensor_nodes/InertialSensorNode.h"
 #include "lib-rr/auton/auton_actions/DriveStraightAction.h"
 #include "auton/auton_actions/PlatformBalance.h"
+#include "auton/auton_actions/SetLiftStateAction.h"
 #include "lib-rr/auton/auton_actions/UseClawAction.h"
 #include "lib-rr/auton/auton_actions/MoveLiftToPositionAction.h"
 #include "lib-rr/nodes/subsystems/ILiftNode.h"
@@ -13,10 +14,11 @@
 #include "auton/auton_actions/DeployAction.h"
 #include "lib-rr/util/Constants.h"
 #include "lib-rr/eigen/Eigen/Dense"
+#include "nodes/LiftNode.h"
 
 class MatchAuton2 : public Auton {
 public:
-    MatchAuton2(IDriveNode* drive_node, OdometryNode* odom_node, ADIEncoderNode* y_odom_encoder, InertialSensorNode* inertial_sensor, IClawNode* front_claw_node);
+    MatchAuton2(IDriveNode* drive_node, OdometryNode* odom_node, IClawNode* front_claw_node, LiftNode* liftNode);
 
     void AddNodes();
 
@@ -26,4 +28,5 @@ private:
     InertialSensorNode* m_inertial_sensor;
     OdometryNode* m_odom_node;
     IClawNode* m_front_claw_node;
+    LiftNode* m_liftNode;
 };

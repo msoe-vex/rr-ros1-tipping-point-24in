@@ -12,7 +12,7 @@
 class LiftNode : public ILiftNode {
 public:
     enum LiftState {
-        DOWN, UP_FOR_RINGS, FULLY_UP, FREE_MOVING
+        DOWN, UP_FOR_RINGS, FULLY_UP, FREE_MOVING, STARTING_CONFIGURATION
     };
 
     LiftNode(NodeManager* node_manager, std::string handle_name, 
@@ -66,7 +66,8 @@ private:
 
     int m_downPosition = 800;
     int m_upForRingsPosition = 1000;
-    int m_fullyUpPosition = 2600;
+    int m_startingConfiguaration = 1400;
+    int m_fullyUpPosition = 1700; 
 
     int m_target_position;
     int m_tolerance;
