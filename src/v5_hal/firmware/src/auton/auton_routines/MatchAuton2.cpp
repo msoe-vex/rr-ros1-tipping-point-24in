@@ -28,7 +28,4 @@ void MatchAuton2::AddNodes() {
     
     AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
     clawCloseDelay->AddNext(clawClose);
-
-    AutonNode* backwardFromYellowGoal = new AutonNode(2, new DriveStraightAction(m_drive_node, m_odom_node, -10, 70, 80));
-    clawClose->AddNext(backwardFromYellowGoal);
 }

@@ -1,7 +1,7 @@
 #include "nodes/auton_nodes/AutonManagerNode.h"
 
 AutonManagerNode::AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node,
-        IDriveNode* drive_node, IClawNode* front_claw_node, LiftNode* liftNode) : 
+        IDriveNode* drive_node, IClawNode* front_claw_node, LiftNode* liftNode, HighRungLiftNode* high_rung_lift_node) : 
         Node(node_manager, 50),
         m_odomNode(odom_node),
         m_driveNode(drive_node),

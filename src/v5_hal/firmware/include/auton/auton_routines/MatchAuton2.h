@@ -9,6 +9,7 @@
 #include "auton/auton_actions/SetLiftStateAction.h"
 #include "lib-rr/auton/auton_actions/UseClawAction.h"
 #include "lib-rr/auton/auton_actions/MoveLiftToPositionAction.h"
+#include "lib-rr/auton/auton_actions/FollowPathAction.h"
 #include "lib-rr/nodes/subsystems/ILiftNode.h"
 #include "lib-rr/nodes/subsystems/IClawNode.h"
 #include "auton/auton_actions/DeployAction.h"
