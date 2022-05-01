@@ -4,7 +4,7 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
         BackClawNode* backClaw, IClawNode* wingArms, IClawNode* buddyClimb, LiftNode* liftNode, 
         HighRungLiftNode* highRungLiftNode) : 
-        Auton("Test Turn Node"), 
+        Auton("Programming Skills"), 
         m_driveNode(driveNode),
         m_odomNode(odomNode),
         m_intakeNode(intakeNode),
@@ -71,44 +71,65 @@ void ProgrammingSkillzAuton::AddNodes() {
     //
     // Part 1: Move to reverse into the red goal holding down the platform
     AutonNode* releaseColorGoalCorner = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+
+    deploy->AddNext(releaseColorGoalCorner);
     
-    Path PrepareToReverseToRedPath = PathManager::GetInstance() -> GetPath("TestPath");
-
-    AutonNode* prepareToReverseToRed = new AutonNode(
+    Path cornerToRedReversePointPath = PathManager::GetInstance() -> GetPath("CornerToRedReversePoint");
+    AutonNode* cornerToRedReversePoint = new AutonNode(
         5,
         new FollowPathAction(
             m_driveNode,
             m_odomNode,
-            new TankPathPursuit(
-                PrepareToReverseToRedPath),
-                PrepareToReverseToRedPath,
-                false
-            )
-        );
-
-    //Part 2: Move to the goal holding down the platform, grab the goal
-
-    Path MidToRedRampPath = PathManager::GetInstance() -> GetPath("MidToRedRamp");
-
-    AutonNode* MidToRedRamp = new AutonNode(
-        5,
-        new FollowPathAction(
-            m_driveNode,
-            m_odomNode,
-            new TankPathPursuit(
-                MidToRedRampPath),
-                MidToRedRampPath,
-                false
-            )
+            new TankPathPursuit(cornerToRedReversePointPath),
+            cornerToRedReversePointPath,
+            false
         )
     );
 
-    AutonNode* grabColorGoalCorner new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::BackClawNode::PIVOT_BACK);
+    releaseColorGoalCorner->AddNext(cornerToRedReversePoint);
+
+    //Part 2: Move to the goal holding down the platform, grab the goal
+
+    Path midToRedRampPath = PathManager::GetInstance()->GetPath("MidToRedRamp");
+    AutonNode* midToRedRamp = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(midToRedRampPath),
+            midToRedRampPath,
+            false
+        )
+    );
+
+    cornerToRedReversePoint->AddNext(midToRedRamp);
+
+    AutonNode* grabColorGoalCorner = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
+
+    midToRedRamp->AddNext(grabColorGoalCorner);
+
+    AutonNode* waitAfterColorGoalGrab = new AutonNode(0.5, new WaitAction(0.5));
+
+    grabColorGoalCorner->AddNext(waitAfterColorGoalGrab);
 
     //Part 3: Lift the goal to ring height, turn on the conveyor belt,
     //Follow the path
 
-    AutonNode 
+    Path redRampToRedRingStopPath = PathManager::GetInstance()->GetPath("RedRampToRedRingStop");
+    AutonNode* redRampToRedRingStop = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(redRampToRedRingStopPath),
+            redRampToRedRingStopPath,
+            false
+        )
+    );
+
+    waitAfterColorGoalGrab->AddNext(redRampToRedRingStop);
+    redRampToRedRingStop->AddAction(new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
+    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_intakeNode))
 
 
 }
