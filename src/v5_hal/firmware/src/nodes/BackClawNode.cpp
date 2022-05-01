@@ -27,7 +27,7 @@ void BackClawNode::setState(BackClawState state) {
 // if not, pivot it back
 void BackClawNode::togglePivot() {
     if (m_state == PIVOT_BACK) {
-        setState(PIVOT_DOWN_CLAW_OPEN);
+        setState(PIVOT_DOWN_CLAW_CLOSED);
     } else {
         setState(PIVOT_BACK);
     }

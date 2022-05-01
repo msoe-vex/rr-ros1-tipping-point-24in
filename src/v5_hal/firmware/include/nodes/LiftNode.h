@@ -27,7 +27,7 @@ public:
 
     void setLiftVelocity(float velocity);
 
-    void setLiftPosition(int position, int tolerance = 5);
+    void setLiftPosition(int position, int tolerance = 20);
     
     void setLiftState(LiftState state);
 
