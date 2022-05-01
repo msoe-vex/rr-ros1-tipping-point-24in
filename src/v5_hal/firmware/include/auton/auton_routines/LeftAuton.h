@@ -8,6 +8,7 @@
 #include "auton/auton_actions/PlatformBalance.h"
 #include "auton/auton_actions/SetLiftStateAction.h"
 #include "auton/auton_actions/SetBackClawStateAction.h"
+#include "auton/auton_actions/SetHighRungLiftStateAction.h"
 #include "lib-rr/auton/auton_actions/UseClawAction.h"
 #include "lib-rr/auton/auton_actions/MoveLiftToPositionAction.h"
 #include "lib-rr/auton/auton_actions/RollerIntakeAction.h"
@@ -22,10 +23,10 @@
 #include "lib-rr/pathing/PathManager.h"
 #include "utils/Constants.h"
 
-class MatchAuton2 : public Auton {
+class LeftAuton : public Auton {
 public:
-    MatchAuton2(IDriveNode* drive_node, OdometryNode* odom_node, IClawNode* front_claw_node, 
-        LiftNode* liftNode, BackClawNode* backClawNode, IRollerIntakeNode* intakeNode,
+    LeftAuton(IDriveNode* drive_node, OdometryNode* odom_node, IClawNode* front_claw_node, 
+        LiftNode* liftNode, HighRungLiftNode* highRingLiftNode, BackClawNode* backClawNode, IRollerIntakeNode* intakeNode,
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode);
 
     void AddNodes();
@@ -37,6 +38,7 @@ private:
     OdometryNode* m_odom_node;
     IClawNode* m_front_claw_node;
     LiftNode* m_liftNode;
+    HighRungLiftNode* m_highRungLiftNode;
     BackClawNode* m_backClawNode;
     IRollerIntakeNode* m_intakeNode;
     IRollerIntakeNode* m_conveyorNode;
