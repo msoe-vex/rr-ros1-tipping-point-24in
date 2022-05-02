@@ -61,10 +61,6 @@ InertialSensorNode* inertialSensor;
 
 OdometryNode* odomNode;
 
-// Declare all autons
-Auton* progSkills;
-Auton* leftMatchAuton;
-
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -192,18 +188,9 @@ void initialize() {
 	
 	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
-
-	// autons
-	MatchAuton* matchAuton = new MatchAuton(tankDriveNode, odomNode, frontClaw);
-    LeftAuton* leftAuton = new LeftAuton(tankDriveNode, odomNode, frontClaw, 
-        liftNode, highRungLift, backClaw, intakeNode, conveyorNode, flapConveyorNode);
-	BackClawTestAuton* backClawTestAuton = new BackClawTestAuton(tankDriveNode, odomNode, 
-		yOdomEncoder, inertialSensor, backClaw);
 	
-	std::vector<Auton*> autons = { matchAuton, leftAuton, backClawTestAuton };
-	
-	// Define main
-	progSkills = new ProgrammingSkillzAuton(
+	// Declare all autons
+	ProgrammingSkillzAuton* progSkills = new ProgrammingSkillzAuton(
 		tankDriveNode, 
 		odomNode, 
 		intakeNode, 
@@ -217,7 +204,7 @@ void initialize() {
 		highRungLift
 	);
 
-	leftMatchAuton = new LeftAuton(
+	LeftAuton* leftMatchAuton = new LeftAuton(
 		tankDriveNode,
 		odomNode,
 		frontClaw,
@@ -230,12 +217,12 @@ void initialize() {
 	);
 
 	// Initialize the autonomous manager
-	vector<Auton*> autonRoutines{
-		progSkills,
-		leftMatchAuton
+	std::vector<Auton*> autons = { 
+		leftMatchAuton,
+		progSkills
 	};
 
-	autonManagerNode = new AutonManagerNode(nodeManager, autonRoutines);
+	autonManagerNode = new AutonManagerNode(nodeManager, autons);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
