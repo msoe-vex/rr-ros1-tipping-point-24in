@@ -83,7 +83,7 @@ void initialize() {
 
 	/* Define the odometry components */
 	xOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'C', 'D'}, "xOdomEncoder", false);
-	yOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'A', 'B'}, "yOdomEncoder", false);
+	yOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'A', 'B'}, "yOdomEncoder", true);
 
 	inertialSensor = new InertialSensorNode(nodeManager, "inertialSensor", 20);
 
@@ -192,7 +192,8 @@ void initialize() {
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, highRungLift);
+	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw, liftNode, highRungLift, 
+		backClaw, intakeNode, conveyorNode, flapConveyorNode);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
