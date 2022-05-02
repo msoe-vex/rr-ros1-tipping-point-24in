@@ -197,6 +197,15 @@ void initialize() {
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
+	
+	// controller selection menus
+	bool needsPath = selectAuton(controller1, autonManagerNode);
+	pros::delay(500);
+	if (needsPath) {
+		selectPathJSON(controller1, autonManagerNode);
+		pros::delay(500);
+	}
+	controller1->updateDisplay("Selection Complete");
 }
 
 /**
