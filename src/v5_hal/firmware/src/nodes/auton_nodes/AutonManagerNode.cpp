@@ -18,11 +18,11 @@ AutonManagerNode::AutonManagerNode(NodeManager* node_manager, OdometryNode* odom
     m_match_auton = new BasicAuton(m_driveNode, m_odomNode, m_highRungLiftNode);
     m_prog_skills = new ProgrammingSkillzAuton(m_driveNode, m_odomNode, m_intakeNode, m_conveyorNode, 
         m_flapConveyorNode, m_frontClawNode, m_backClaw, m_buddyClimb, m_liftNode, m_highRungLiftNode);
-    selected_auton = m_match_auton;
+    selected_auton = m_prog_skills;
 }
 
 void AutonManagerNode::initialize() {
-    PathManager::GetInstance()->LoadPathsFile("/usd/24inLeft.json");
+    PathManager::GetInstance()->LoadPathsFile("/usd/path24inProgPt1v2.json");
 }
 
 void AutonManagerNode::autonPeriodic() {
