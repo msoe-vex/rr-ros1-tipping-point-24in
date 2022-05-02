@@ -20,7 +20,7 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
 
 void ProgrammingSkillzAuton::AddNodes() {
     // Set the starting position, as measured on the field
-    Pose startingPose(Vector2d(35.1875, 13.625), Rotation2Dd(3.525);
+    Pose startingPose(Vector2d(35.1875, 13.625), Rotation2Dd(3.525));
     m_odomNode->setCurrentPose(startingPose);
     // 1. Deploy
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
@@ -40,7 +40,7 @@ void ProgrammingSkillzAuton::AddNodes() {
     // 3b. Close Back Claw
     AutonNode* CloseBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
 
-    PathToFirstGoal->AddNext(CloseBackClaw1);
+    // PathToFirstGoal->AddNext(CloseBackClaw1);
 
     // 4b. Path to Second Goal
     Path PathToSecondGoal = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
@@ -51,16 +51,16 @@ void ProgrammingSkillzAuton::AddNodes() {
     // 4c. Open Front Claw
     AutonNode* OpenFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
 
-    CloseBackClaw1->AddNext(OpenFrontClaw1);
+    // CloseBackClaw1->AddNext(OpenFrontClaw1);
 
     // 5b. Close Front Claw
     AutonNode* CloseFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, true));
 
-    PathToSecondGoal->AddNext(CloseFrontClaw1);
+    // PathToSecondGoal->AddNext(CloseFrontClaw1);
 
     // 6b. Raise Goal
     
-    AutoNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
+    AutonNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
     
     CloseFrontClaw1->Addnext(RaiseGoal1);
 
@@ -126,4 +126,4 @@ void ProgrammingSkillzAuton::AddNodes() {
 
 
 
-}
+};
