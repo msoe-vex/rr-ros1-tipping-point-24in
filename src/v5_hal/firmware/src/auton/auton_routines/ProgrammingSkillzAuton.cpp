@@ -20,28 +20,45 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
 
 void ProgrammingSkillzAuton::AddNodes() {
     // Set the starting position, as measured on the field
-    Pose startingPose(Vector2d(44.8125, 13.875), Rotation2Dd(M_PI + M_PI_4));
+    Pose startingPose(Vector2d(35.1875, 13.625), Rotation2Dd(3.525);
     m_odomNode->setCurrentPose(startingPose);
     // 1. Deploy
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
     Auton::AddFirstNode(deploy);
     
     // 2a. Open Back Claw
-    AutonNode* OpenBackClaw1 = new AutonNode(2, new SetBackClawStateAction());
-
-    deploy->AddNext(forward);
-
+    AutonNode* OpenBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw,BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+    
+    deploy->AddNext(OpenBackClaw1);
 
     // 2b. Path to First Goal
+    AutonNode* PathToFirstGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+
+    deploy->AddNext(PathToFirstGoal);
 
     // 3b. Close Back Claw
+    AutonNode* CloseBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
+
+    PathToFirstGoal->AddNext(CloseBackClaw1);
 
     // 4b. Path to Second Goal
+    AutonNode* PathToSecondGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+
+    CloseBackClaw1->AddNext(PathToSecondGoal);
+
     // 4c. Open Front Claw
+    AutonNode* OpenFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
+
+    CloseBackClaw1->AddNext(OpenFrontClaw1);
 
     // 5b. Close Front Claw
+    AutonNode* CloseFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, true));
+
+    PathToSecondGoal->AddNext(CloseFrontClaw1);
 
     // 6b. Raise Goal
+    
+
 
     // 7b. Path to Pre-Ring Intake Position
     // 7d. Turn on Ring Intake
