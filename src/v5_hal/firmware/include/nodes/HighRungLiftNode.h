@@ -53,7 +53,7 @@ private:
 
     bool m_freeMoving = false;
 
-    int m_loadingPosition = 400;
+    int m_loadingPosition = 440;
     int m_straightUpPosition = 2400;
     int m_scoringPosition = 3000;
 

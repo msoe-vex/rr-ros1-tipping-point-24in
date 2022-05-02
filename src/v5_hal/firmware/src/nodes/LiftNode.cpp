@@ -15,7 +15,7 @@ LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name,
         m_bottom_limit_switch(bottom_limit_switch),
         m_top_limit_switch(top_limit_switch),
         m_potentiometer(potentiometer),
-        m_lift_state(STARTING_CONFIGURATION),
+        m_lift_state(FREE_MOVING),
         m_lift_pid(0.002, 0., 0., 0), 
         m_target_position(0),
         m_tolerance(5) {
