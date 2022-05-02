@@ -16,6 +16,7 @@
 #include "lib-rr/nodes/subsystems/IRollerIntakeNode.h"
 #include "auton/auton_actions/DeployAction.h"
 #include "auton/auton_actions/SetBackClawStateAction.h"
+#include "auton/auton_actions/SetLiftStateAction.h"
 #include "lib-rr/pathing/PathManager.h"
 #include "lib-rr/math/Pose.h"
 #include "lib-rr/util/Constants.h"
@@ -43,7 +44,7 @@ private:
     IClawNode* m_frontClawNode;
     BackClawNode* m_backClaw;
     IClawNode* m_buddyClimb;
-    ILiftNode* m_liftNode;
+    LiftNode* m_liftNode;
     HighRungLiftNode* m_highRungLiftNode;
 
 };

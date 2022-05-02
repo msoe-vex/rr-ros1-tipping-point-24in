@@ -60,7 +60,7 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     // 6b. Raise Goal
     
-    AutoNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP))
+    AutonNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
     // 7b. Path to Pre-Ring Intake Position
     // 7d. Turn on Ring Intake
 
@@ -113,4 +113,4 @@ void ProgrammingSkillzAuton::AddNodes() {
 
 
 
-}
+};
