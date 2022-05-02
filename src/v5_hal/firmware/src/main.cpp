@@ -201,7 +201,7 @@ void initialize() {
 	std::vector<Auton*> autons = { matchAuton, leftAuton, backClawTestAuton };
 	
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, autons);
+	autonManagerNode = new AutonManagerNode(nodeManager, tankDriveNode, odomNode, intakeNode, conveyorNode, flapConveyorNode, frontClaw, backClaw, wingArm, buddyClimb, liftNode, highRungLift);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
