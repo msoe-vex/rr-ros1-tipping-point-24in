@@ -82,7 +82,7 @@ void ProgrammingSkillzAuton::AddNodes() {
             m_odomNode,
             new TankPathPursuit(cornerToRedReversePointPath),
             cornerToRedReversePointPath,
-            false
+            true
         )
     );
 
