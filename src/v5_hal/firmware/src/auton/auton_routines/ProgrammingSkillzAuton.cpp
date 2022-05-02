@@ -35,7 +35,7 @@ void ProgrammingSkillzAuton::AddNodes() {
     Path PathToFirstGoal = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
     AutonNode* PathToFirstGoalNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToFirstGoal), PathToFirstGoal, false));
 
-    deploy->AddNext(PathToFirstGoal);
+    deploy->AddNext(PathToFirstGoalNode);
 
     // 3b. Close Back Claw
     AutonNode* CloseBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
@@ -60,9 +60,22 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     // 6b. Raise Goal
     
-    AutoNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP))
+    AutoNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
+    
+    CloseFrontClaw1->Addnext(RaiseGoal1);
+
     // 7b. Path to Pre-Ring Intake Position
+
+    Path PathToPreRingIntake = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
+    AutonNode* PathToPreRingIntakeNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToPreRingIntake), PathToPreRingIntake, false));
+
+    CloseFrontClaw1->AddNext(PathToPreRingIntakeNode);
+
     // 7d. Turn on Ring Intake
+
+    AutoNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
+    
+    CloseFrontClaw1->Addnext(RaiseGoal1);
 
     // 8b. Path to Ring Cluster
 
