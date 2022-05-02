@@ -3,7 +3,7 @@
 LeftAuton::LeftAuton(IDriveNode* drive_node, OdometryNode* odom_node, 
     IClawNode* front_claw_node, LiftNode* liftNode, HighRungLiftNode* highRingLiftNode, BackClawNode* backClawNode,
     IRollerIntakeNode* intakeNode, IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode) : 
-        Auton("Default Left Auton"), 
+        Auton("Left Match Auton", "/usd/paths/24inLeft.json"), 
         m_drive_node(drive_node),
         m_odom_node(odom_node),
         m_front_claw_node(front_claw_node),
