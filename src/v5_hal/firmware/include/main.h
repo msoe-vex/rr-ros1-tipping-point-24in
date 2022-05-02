@@ -79,6 +79,7 @@
 #include "lib-rr/auton/auton_routines/TestTurnAuton.h"
 #include "auton/auton_routines/MatchAuton.h"
 #include "auton/auton_routines/LeftAuton.h"
+#include "auton/auton_routines/ProgrammingSkillzAuton.h"
 #include "auton/auton_routines/BasicAuton.h"
 
    /**

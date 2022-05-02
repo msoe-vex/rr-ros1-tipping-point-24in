@@ -191,12 +191,36 @@ void initialize() {
 	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 
-	// autons
-	MatchAuton* matchAuton = new MatchAuton(tankDriveNode, odomNode, frontClaw);
-    LeftAuton* leftAuton = new LeftAuton(tankDriveNode, odomNode, frontClaw, 
-        liftNode, highRungLift, backClaw, intakeNode, conveyorNode, flapConveyorNode);
+	// Define auton nodes
+    LeftAuton* leftAuton = new LeftAuton(
+		tankDriveNode, 
+		odomNode, 
+		frontClaw, 
+        liftNode, 
+		highRungLift, 
+		backClaw, 
+		intakeNode, 
+		conveyorNode, 
+		flapConveyorNode
+	);
+
+	ProgrammingSkillzAuton* progSkills = new ProgrammingSkillzAuton(
+		tankDriveNode,
+		odomNode,
+		intakeNode,
+		conveyorNode,
+		flapConveyorNode,
+		frontClaw,
+		backClaw,
+		buddyClimb,
+		liftNode,
+		highRungLift
+	);
 	
-	std::vector<Auton*> autons = { matchAuton, leftAuton };
+	std::vector<Auton*> autons = {
+		leftAuton,
+		progSkills
+	};
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, autons);
