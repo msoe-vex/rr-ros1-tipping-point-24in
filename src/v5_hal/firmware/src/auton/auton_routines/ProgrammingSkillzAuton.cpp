@@ -32,7 +32,7 @@ void ProgrammingSkillzAuton::AddNodes() {
     deploy->AddNext(OpenBackClaw1);
 
     // Put the High Rung Lift straight up
-    AutonNode* HighRungLiftStraightUp = new AutonNode(0.1, new SetHighRungLiftAction(m_highRungLift, HighRungLiftNode::STRAIGHT_UP));
+    AutonNode* HighRungLiftStraightUp = new AutonNode(0.1, new SetHighRungLiftStateAction(m_highRungLiftNode, HighRungLiftNode::STRAIGHT_UP));
     
     deploy->AddNext(HighRungLiftStraightUp);
 
