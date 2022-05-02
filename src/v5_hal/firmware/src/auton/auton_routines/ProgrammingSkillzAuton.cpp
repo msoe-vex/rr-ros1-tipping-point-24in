@@ -32,7 +32,8 @@ void ProgrammingSkillzAuton::AddNodes() {
     deploy->AddNext(OpenBackClaw1);
 
     // 2b. Path to First Goal
-    AutonNode* PathToFirstGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+    Path PathToFirstGoal = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
+    AutonNode* PathToFirstGoalNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToFirstGoal), PathToFirstGoal, false));
 
     deploy->AddNext(PathToFirstGoal);
 
@@ -42,9 +43,10 @@ void ProgrammingSkillzAuton::AddNodes() {
     PathToFirstGoal->AddNext(CloseBackClaw1);
 
     // 4b. Path to Second Goal
-    AutonNode* PathToSecondGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+    Path PathToSecondGoal = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
+    AutonNode* PathToSecondGoalNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToSecondGoal), PathToSecondGoal, false));
 
-    CloseBackClaw1->AddNext(PathToSecondGoal);
+    CloseBackClaw1->AddNext(PathToSecondGoalNode);
 
     // 4c. Open Front Claw
     AutonNode* OpenFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
@@ -58,8 +60,7 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     // 6b. Raise Goal
     
-
-
+    AutoNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP))
     // 7b. Path to Pre-Ring Intake Position
     // 7d. Turn on Ring Intake
 
