@@ -27,6 +27,8 @@ private:
     Auton* m_prog_skills;
     Auton* m_match_auton;
     Auton* m_leftAuton;
+    
+    std::string pathJSON;
 
 public:
     AutonManagerNode(NodeManager* node_manager, OdometryNode* odom_node,
@@ -36,8 +38,11 @@ public:
         IRollerIntakeNode* flapConveyorNode);
 
     Auton* selected_auton;
+    std::vector<Auton*> autons;
 
     void initialize();
+    
+    void setPathsFile(std::string);
 
     void autonPeriodic();
 };

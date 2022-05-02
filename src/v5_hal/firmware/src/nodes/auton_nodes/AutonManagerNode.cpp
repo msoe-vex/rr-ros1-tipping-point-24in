@@ -16,11 +16,18 @@ AutonManagerNode::AutonManagerNode(NodeManager* node_manager, OdometryNode* odom
     m_match_auton = new MatchAuton(m_driveNode, m_odomNode, m_frontClawNode);
     m_leftAuton = new LeftAuton(m_driveNode, m_odomNode, m_frontClawNode, 
         m_liftNode, m_highRungLiftNode, m_backClawNode, m_intakeNode, m_conveyorNode, m_flapConveyorNode);
-    selected_auton = m_leftAuton;
+       autons.insert(autons.end(), { m_match_auton, m_leftAuton });
+    selected_auton = autons.at(0);
+    pathJSON = "/usd/paths/path.json";
 }
 
 void AutonManagerNode::initialize() {
-    PathManager::GetInstance()->LoadPathsFile("/usd/24inLeft.json");
+    PathManager::GetInstance()->LoadPathsFile(pathJSON);
+}
+
+void AutonManagerNode::setPathsFile(std::string filename) {
+    pathJSON = "/usd/paths/" + filename;
+    PathManager::GetInstance()->LoadPathsFile(pathJSON);
 }
 
 void AutonManagerNode::autonPeriodic() {
