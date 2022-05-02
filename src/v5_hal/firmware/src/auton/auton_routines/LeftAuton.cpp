@@ -139,6 +139,32 @@ void LeftAuton::AddNodes() {
     fifthReverseForTallGoal->AddNext(clawOpenForTallGoal);
     fifthReverseForTallGoal->AddNext(waitForLift);
 
+    AutonNode* clawCloseForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
+
+    waitForLift->AddNext(clawCloseForTallGoal);
+
+    AutonNode* waitForPullTallGoalClose = new AutonNode(0.2, new WaitAction(0.2));
+
+    clawCloseForTallGoal->AddNext(waitForPullTallGoalClose);
+
+    Path backwardsTallGoalGrabPath = PathManager::GetInstance()->GetPath("BackwardsTallGoalGrab");
+    AutonNode* backwardsTallGoalGrab = new AutonNode(
+        4, 
+        new FollowPathAction(
+            m_drive_node, 
+            m_odom_node, 
+            new TankPathPursuit(backwardsTallGoalGrabPath), 
+            backwardsTallGoalGrabPath, 
+            false
+        )
+    );
+
+    waitForPullTallGoalClose->AddNext(backwardsTallGoalGrab);
+
+    AutonNode* clawOpenFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
+
+    backwardsTallGoalGrab->AddNext(clawOpenFinalForTallGoal);
+
     Path sixthMoveToTallGoalPath = PathManager::GetInstance()->GetPath("Sixth");
     AutonNode* sixthMovetoTallGoal = new AutonNode(
         4, 
@@ -151,14 +177,14 @@ void LeftAuton::AddNodes() {
         )
     );
 
-    waitForLift->AddNext(sixthMovetoTallGoal);
+    clawOpenFinalForTallGoal->AddNext(sixthMovetoTallGoal);
 
-    AutonNode* clawCloseForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
+    AutonNode* clawCloseFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
 
-    sixthMovetoTallGoal->AddNext(clawCloseForTallGoal);
+    sixthMovetoTallGoal->AddNext(clawCloseFinalForTallGoal);
 
     AutonNode* waitForTallGoalClose = new AutonNode(0.5, new WaitAction(0.5));
-    clawCloseForTallGoal->AddNext(waitForTallGoalClose);
+    clawCloseFinalForTallGoal->AddNext(waitForTallGoalClose);
 
     AutonNode* raiseLiftTallGoal = new AutonNode(2, new SetLiftStateAction(m_liftNode, LiftNode::LiftState::FULLY_UP));
     waitForTallGoalClose->AddNext(raiseLiftTallGoal);
@@ -178,5 +204,29 @@ void LeftAuton::AddNodes() {
         )
     );
 
+    AutonNode* stopFlapConveyor = new AutonNode(0.5, new RollerIntakeAction(m_flapConveyorNode, 0));
+
+    waitForTallGoalLiftUp->AddNext(stopFlapConveyor);
     waitForTallGoalLiftUp->AddNext(seventhPickUpRings);
+
+    Path eighthProtectNeutralPath = PathManager::GetInstance()->GetPath("Eighth");
+    AutonNode* eighthProtectNeutral = new AutonNode(
+        10, 
+        new FollowPathAction(
+            m_drive_node, 
+            m_odom_node, 
+            new TankPathPursuit(eighthProtectNeutralPath), 
+            eighthProtectNeutralPath, 
+            false
+        )
+    );
+
+    seventhPickUpRings->AddNext(eighthProtectNeutral);
+
+    AutonNode* stopRingIntake = new AutonNode(0.5, new RollerIntakeAction(m_intakeNode, 0));
+
+    AutonNode* stopConveyor = new AutonNode(0.5, new RollerIntakeAction(m_conveyorNode, 0));
+
+    eighthProtectNeutral->AddNext(stopRingIntake);
+    eighthProtectNeutral->AddNext(stopConveyor);
 }

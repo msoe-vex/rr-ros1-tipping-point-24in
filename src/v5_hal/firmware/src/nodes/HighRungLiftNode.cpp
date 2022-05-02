@@ -61,7 +61,7 @@ int HighRungLiftNode::getPosition() { // change back to use pot
 }
 
 void HighRungLiftNode::teleopPeriodic() {
-    // pros::lcd::print(0, "pot: %d", getPosition());
+    pros::lcd::print(2, "pot: %d", getPosition());
     
     // gets controller input and scales it to [-1, 1]
     double controllerInput = m_controller->getController()->get_analog(m_joystick) / 127.0;
