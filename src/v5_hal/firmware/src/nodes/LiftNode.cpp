@@ -17,7 +17,7 @@ LiftNode::LiftNode(NodeManager* node_manager, std::string handle_name,
         m_potentiometer(potentiometer),
         m_lift_state(FREE_MOVING),
         m_lift_pid(0.002, 0., 0., 0), 
-        m_target_position(0),
+        m_target_position(m_downPosition),
         m_tolerance(5) {
 
 }
