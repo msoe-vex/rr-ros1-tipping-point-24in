@@ -10,7 +10,7 @@ HighRungLiftNode::HighRungLiftNode(NodeManager* node_manager, std::string handle
         m_potentiometer(potentiometer),
         m_state(FREE_MOVING),
         m_lift_pid(0.002, 0., 0., 0), 
-        m_target_position(0),
+        m_target_position(m_loadingPosition),
         m_tolerance(5) {
 
 }
