@@ -15,6 +15,7 @@
 #include "lib-rr/nodes/subsystems/IClawNode.h"
 #include "lib-rr/nodes/subsystems/IRollerIntakeNode.h"
 #include "auton/auton_actions/DeployAction.h"
+#include "auton/auton_actions/SetBackClawStateAction.h"
 #include "lib-rr/pathing/PathManager.h"
 #include "lib-rr/math/Pose.h"
 #include "lib-rr/util/Constants.h"

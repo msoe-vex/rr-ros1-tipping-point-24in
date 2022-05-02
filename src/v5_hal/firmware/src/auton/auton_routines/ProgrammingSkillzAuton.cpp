@@ -20,7 +20,7 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
 
 void ProgrammingSkillzAuton::AddNodes() {
     // Set the starting position, as measured on the field
-    Pose startingPose(Vector2d(35.1875, 13.625), Rotation2Dd(3.525);
+    Pose startingPose(Vector2d(35.1875, 13.625), Rotation2Dd(3.525));
     m_odomNode->setCurrentPose(startingPose);
     // 1. Deploy
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
@@ -32,29 +32,29 @@ void ProgrammingSkillzAuton::AddNodes() {
     deploy->AddNext(OpenBackClaw1);
 
     // 2b. Path to First Goal
-    AutonNode* PathToFirstGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+    // AutonNode* PathToFirstGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
 
-    deploy->AddNext(PathToFirstGoal);
+    // deploy->AddNext(PathToFirstGoal);
 
     // 3b. Close Back Claw
     AutonNode* CloseBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
 
-    PathToFirstGoal->AddNext(CloseBackClaw1);
+    // PathToFirstGoal->AddNext(CloseBackClaw1);
 
     // 4b. Path to Second Goal
-    AutonNode* PathToSecondGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
+    // AutonNode* PathToSecondGoal = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
 
-    CloseBackClaw1->AddNext(PathToSecondGoal);
+    // CloseBackClaw1->AddNext(PathToSecondGoal);
 
     // 4c. Open Front Claw
     AutonNode* OpenFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
 
-    CloseBackClaw1->AddNext(OpenFrontClaw1);
+    // CloseBackClaw1->AddNext(OpenFrontClaw1);
 
     // 5b. Close Front Claw
     AutonNode* CloseFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, true));
 
-    PathToSecondGoal->AddNext(CloseFrontClaw1);
+    // PathToSecondGoal->AddNext(CloseFrontClaw1);
 
     // 6b. Raise Goal
     
