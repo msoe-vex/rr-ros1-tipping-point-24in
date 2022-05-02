@@ -37,7 +37,7 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     deploy->AddNext(PathToFirstGoalNode);
 
-    // 3b. Close Back Claw
+    // 3b. Close Back Claw= Grab First Goal
     AutonNode* CloseBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
 
     PathToFirstGoalNode->AddNext(CloseBackClaw1);
@@ -53,77 +53,47 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     CloseBackClaw1->AddNext(OpenFrontClaw1);
 
-    // 5b. Close Front Claw
+    // 5b. Close Front Claw = Grab Second Goal
     AutonNode* CloseFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, true));
 
     PathToSecondGoalNode->AddNext(CloseFrontClaw1);
 
-    // 6b. Raise Goal
-    
+    // 6b. Raise Second Goal
     AutonNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
     
     CloseFrontClaw1->AddNext(RaiseGoal1);
 
     // 7b. Path to Pre-Ring Intake Position
-
     Path PathToPreRingIntake = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
     AutonNode* PathToPreRingIntakeNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToPreRingIntake), PathToPreRingIntake, false));
 
-    CloseFrontClaw1->AddNext(PathToPreRingIntakeNode);
+    RaiseGoal1->AddNext(PathToPreRingIntakeNode);
 
     // 7d. Turn on Ring Intake
-
-    //AutonNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
+    AutonNode* EnableRingIntake = new AutonNode(0.1, new RollerIntakeAction(m_intakeNode));
     
-    //CloseFrontClaw1->AddNext(RaiseGoal1);
+    RaiseGoal1->AddNext(EnableRingIntake);
 
     // 8b. Path to Ring Cluster
+    Path PathToRingCluster = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
+    AutonNode* PathToRingClusterNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToRingCluster), PathToRingCluster, false));
+
+    PathToPreRingIntakeNode->AddNext(PathToRingClusterNode);
 
     // 9b. Path to Corner
+    Path PathToCorner = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
+    AutonNode* PathToCornerNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToCorner), PathToCorner, false));
+
+    PathToRingClusterNode->AddNext(PathToCornerNode);
+
     // 9c. Turn off Ring Intake
-    // 10b. Drop Goal
-
-
+    AutonNode* DisableRingIntake = new AutonNode(0.1, new RollerIntakeAction(m_intakeNode, 0));
     
+    PathToRingClusterNode->AddNext(DisableRingIntake);
 
-   
+    // 10b. Open Back Claw = Drop Goal
+    AutonNode* OpenBackClaw2 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
 
-    // AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
-
-    // Path path = PathManager::GetInstance()->GetPath("TestPath");
-    // AutonNode* testPath = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(path), path, false));
-
-    // //forward -> AddNext(testPath);
-    // forward -> AddNext(clawClose);
-
-    // AutonNode* clawOpen =new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
-
-    // Path NeutralToBluePath = PathManager::GetInstance()->GetPath("NeutralToBlue");
-    // AutonNode* NeutralToBlue = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(NeutralToBluePath), NeutralToBluePath, false));
-
-    // testPath -> AddNext(clawOpen);
-    // testPath -> AddNext(NeutralToBlue);
-
-    // AutonNode* clawClose2 =new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
-
-    // NeutralToBlue -> AddNext(clawClose2);
-
-    // AutonNode* LiftAction = new AutonNode(5, new MoveLiftToPositionAction(m_liftNode, 100, 20));
-
-    // Path BlueToMiddleNeutralPath = PathManager::GetInstance()->GetPath("BlueToMiddleNeutral");
-    // AutonNode* BlueToMiddleNeutral = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(BlueToMiddleNeutralPath), BlueToMiddleNeutralPath, false));
-
-    // AutonNode* startSuckingAndDontStop = new AutonNode(30, new RollerIntakeAction(m_intakeNode));
-
-    // clawClose2 ->AddNext(LiftAction);
-    // clawClose2 ->AddNext(startSuckingAndDontStop);
-    // clawClose2 ->AddNext(BlueToMiddleNeutral);
-
-    // Path MiddleNeutralToOurRingsPath = PathManager::GetInstance()->GetPath("MiddleNeutralToOurRings");
-    // AutonNode* MiddleNeutralToOurRings = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(MiddleNeutralToOurRingsPath), MiddleNeutralToOurRingsPath, false));
-
-
-
-
+    PathToFirstGoalNode->AddNext(OpenBackClaw2);
 
 };
