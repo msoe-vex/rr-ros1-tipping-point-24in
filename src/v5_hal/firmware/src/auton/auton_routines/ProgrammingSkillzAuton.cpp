@@ -4,7 +4,7 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
         BackClawNode* backClaw, IClawNode* wingArms, IClawNode* buddyClimb, LiftNode* liftNode, 
         HighRungLiftNode* highRungLiftNode) : 
-        Auton("Programming Skills"), 
+        Auton("Programming Skills", "/usd/paths/path24inProgPt2.json"), 
         m_driveNode(driveNode),
         m_odomNode(odomNode),
         m_intakeNode(intakeNode),

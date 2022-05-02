@@ -61,7 +61,9 @@ InertialSensorNode* inertialSensor;
 
 OdometryNode* odomNode;
 
-// Declare all robot nodes here:
+// Declare all autons
+Auton* progSkills;
+Auton* leftMatchAuton;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -200,8 +202,40 @@ void initialize() {
 	
 	std::vector<Auton*> autons = { matchAuton, leftAuton, backClawTestAuton };
 	
+	// Define main
+	progSkills = new ProgrammingSkillzAuton(
+		tankDriveNode, 
+		odomNode, 
+		intakeNode, 
+		conveyorNode, 
+		flapConveyorNode, 
+		frontClaw, 
+		backClaw, 
+		wingArm, 
+		buddyClimb,
+		liftNode, 
+		highRungLift
+	);
+
+	leftMatchAuton = new LeftAuton(
+		tankDriveNode,
+		odomNode,
+		frontClaw,
+		liftNode,
+		highRungLift,
+		backClaw,
+		intakeNode,
+		conveyorNode,
+		flapConveyorNode
+	);
+
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, tankDriveNode, odomNode, intakeNode, conveyorNode, flapConveyorNode, frontClaw, backClaw, wingArm, buddyClimb, liftNode, highRungLift);
+	vector<Auton*> autonRoutines{
+		progSkills,
+		leftMatchAuton
+	};
+
+	autonManagerNode = new AutonManagerNode(nodeManager, autonRoutines);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
