@@ -6,6 +6,7 @@
 #include "lib-rr/auton/auton_routines/TestTurnAuton.h"
 #include "lib-rr/nodes/subsystems/IRollerIntakeNode.h"
 #include "auton/auton_routines/MatchAuton.h"
+#include "auton/auton_routines/LeftAuton.h"
 #include "auton/auton_routines/BasicAuton.h"
 #include "auton/auton_routines/ProgrammingSkillzAuton.h"
 #include "lib-rr/pathing/PathManager.h"
@@ -29,6 +30,7 @@ private:
     Auton* m_test_path_auton;
     Auton* m_prog_skills;
     Auton* m_match_auton;
+    Auton* m_leftAuton;
 
 public:
     AutonManagerNode(NodeManager* node_manager, OdometryNode* odomNode, 

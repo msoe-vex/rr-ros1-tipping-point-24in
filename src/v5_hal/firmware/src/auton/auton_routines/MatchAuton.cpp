@@ -16,7 +16,7 @@ void MatchAuton::AddNodes() {
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
     Auton::AddFirstNode(deploy);
 
-    AutonNode* forward = new AutonNode(2, new DriveStraightAction(m_driveNode, m_odomNode, DRIVE_PARAMS, 38, 70, 80));
+    AutonNode* forward = new AutonNode(2, new DriveStraightAction(m_driveNode, m_odomNode, DRIVE_PARAMS, 38., 70., 80.));
 
     AutonNode* clawCloseDelay = new AutonNode(1.2, new WaitAction(1.2));
 
