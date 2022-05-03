@@ -12,8 +12,10 @@ class IntakeNode : public IRollerIntakeNode {
 private:
     pros::Controller* m_controller;
     MotorNode* m_intake_motor;
+    MotorNode* m_intake_motor2;
 
     bool m_canReverse = false;
+    bool m_twoMotors = false;
     pros::controller_digital_e_t m_in_button;
     pros::controller_digital_e_t m_out_button;
 
@@ -28,6 +30,8 @@ public:
     IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, pros::controller_digital_e_t in_button, bool toggle);
 
     IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button);
+
+    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, MotorNode* intake_motor2, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button);
 
     void setIntakeVoltage(int voltage);
     

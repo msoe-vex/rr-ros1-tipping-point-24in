@@ -58,10 +58,11 @@
 #include "lib-rr/auton/auton_actions/FollowPathAction.h"
 #include "lib-rr/eigen/Eigen/Dense"
 #include "lib-rr/pathing/PathManager.h"
+#include "lib-rr/pathing/PathSelector.h"
 #include "lib-rr/util/Logger.h"
 
 // Project-specific includes
-#include "nodes/auton_nodes/AutonManagerNode.h"
+#include "lib-rr/auton/AutonManagerNode.h"
 #include "auton/auton_actions/DeployAction.h"
 #include "nodes/ClawNode.h"
 #include "nodes/BackClawNode.h"
@@ -69,6 +70,16 @@
 #include "nodes/LiftNode.h"
 #include "nodes/IntakeNode.h"
 #include "nodes/HighRungLiftNode.h"
+#include "nodes/GoalSpinnerNode.h"
+
+//autons
+#include "lib-rr/auton/AutonSelector.h"
+#include "lib-rr/auton/auton_routines/TestPathAuton.h"
+#include "lib-rr/auton/auton_routines/TestPoseAuton.h"
+#include "lib-rr/auton/auton_routines/TestTurnAuton.h"
+#include "auton/auton_routines/MatchAuton.h"
+#include "auton/auton_routines/LeftAuton.h"
+#include "auton/auton_routines/BasicAuton.h"
 
    /**
     * You should add more #includes here

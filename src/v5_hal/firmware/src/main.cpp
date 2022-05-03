@@ -23,11 +23,15 @@ IntakeNode* intakeNode;
 MotorNode* conveyorMotor;
 IntakeNode* conveyorNode;
 
+MotorNode* spindexerMotor;
 MotorNode* flapConveyorMotor;
 IntakeNode* flapConveyorNode;
 
 ClawNode* frontClaw;
 ADIDigitalOutNode* frontClawPiston;
+
+MotorNode* goalSpinnerMotor;
+GoalSpinnerNode* goalSpinner;
 
 BackClawNode* backClaw;
 ADIDigitalOutNode* backClawPiston;
@@ -79,7 +83,7 @@ void initialize() {
 
 	/* Define the odometry components */
 	xOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'C', 'D'}, "xOdomEncoder", false);
-	yOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'A', 'B'}, "yOdomEncoder", false);
+	yOdomEncoder = new ADIEncoderNode(nodeManager, {3, 'A', 'B'}, "yOdomEncoder", true);
 
 	inertialSensor = new InertialSensorNode(nodeManager, "inertialSensor", 20);
 
@@ -131,8 +135,9 @@ void initialize() {
 	intakeMotor = new MotorNode(nodeManager, 14, "intakeMotor", true);
 	intakeNode = new IntakeNode(nodeManager, "intakeNode", controller2, intakeMotor, DIGITAL_A, true);
 	
+	spindexerMotor = new MotorNode(nodeManager, 8, "spindexerMotor", false);
 	flapConveyorMotor = new MotorNode(nodeManager, 9, "conveyorMotor", false);
-	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, pros::E_CONTROLLER_DIGITAL_R1, pros::E_CONTROLLER_DIGITAL_R2);
+	flapConveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, flapConveyorMotor, spindexerMotor, pros::E_CONTROLLER_DIGITAL_R1, pros::E_CONTROLLER_DIGITAL_R2);
 
 	conveyorMotor = new MotorNode(nodeManager, 19, "conveyorMotor", false);
 	conveyorNode = new IntakeNode(nodeManager, "conveyorNode", controller2, conveyorMotor, pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
@@ -171,26 +176,42 @@ void initialize() {
 	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
 
 	frontClaw = new ClawNode(nodeManager, "frontClaw", controller1, frontClawPiston, 
-		pros::E_CONTROLLER_DIGITAL_B, pros::E_CONTROLLER_DIGITAL_A);
+		DIGITAL_L1);
+
+	goalSpinnerMotor = new MotorNode(nodeManager, 5, "goalSpinnerMotor", true);
+	goalSpinner = new GoalSpinnerNode(nodeManager, "goalSpinner", controller1, DIGITAL_A, DIGITAL_Y, goalSpinnerMotor);
 
 	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
 
 	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false);
 
-	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, pros::E_CONTROLLER_DIGITAL_DOWN, 
-		pros::E_CONTROLLER_DIGITAL_LEFT, backTiltPiston, backClawPiston);
-
-	wingArmPiston = new ADIDigitalOutNode(nodeManager, "wingArmPiston", 'D', false); //not the actual port, just made it up for rn
-	wingArm = new ClawNode(nodeManager, "wingArm", controller2, wingArmPiston, DIGITAL_LEFT); 
+	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, DIGITAL_L2, 
+		DIGITAL_DOWN, backTiltPiston, backClawPiston);
 	
 	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 
+	// autons
+	MatchAuton* matchAuton = new MatchAuton(tankDriveNode, odomNode, frontClaw);
+    LeftAuton* leftAuton = new LeftAuton(tankDriveNode, odomNode, frontClaw, 
+        liftNode, highRungLift, backClaw, intakeNode, conveyorNode, flapConveyorNode);
+	
+	std::vector<Auton*> autons = { matchAuton, leftAuton };
+	
 	// Initialize the autonomous manager
-	autonManagerNode = new AutonManagerNode(nodeManager, odomNode, tankDriveNode, frontClaw);
+	autonManagerNode = new AutonManagerNode(nodeManager, autons);
 
 	// Call the node manager to initialize all of the nodes above
 	nodeManager->initialize();
+	
+	// controller selection menus
+	bool needsPath = selectAuton(controller1, autonManagerNode);
+	pros::delay(500);
+	if (needsPath) {
+		selectPathJSON(controller1, autonManagerNode);
+		pros::delay(500);
+	}
+	controller1->updateDisplay("Selection Complete");
 }
 
 /**

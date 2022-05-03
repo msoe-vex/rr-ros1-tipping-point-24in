@@ -44,6 +44,7 @@ void ClawNode::teleopPeriodic() {
 		if (m_isToggle) {
 			bool a_current_state = m_controller->getController()->get_digital(m_button1);
 
+<<<<<<< HEAD
 			if (a_current_state == 1 && m_a_previous_state == 0) {
 					m_claw_open = !m_claw_open;
 				}
@@ -55,6 +56,18 @@ void ClawNode::teleopPeriodic() {
 			if (m_controller->getController()->get_digital(m_button1) == 1) {
 				useClaw(true);
 			}
+=======
+		if (a_current_state == 1 && m_a_previous_state == 0) {
+				m_claw_open = !m_claw_open;
+				useClaw(m_claw_open);
+			}
+
+		m_a_previous_state = a_current_state;
+	} else {
+		if (m_controller->getController()->get_digital(m_button1) == 1) {
+			useClaw(true);
+		}
+>>>>>>> main
 
 			if (m_controller->getController()->get_digital(m_button2) == 1) {
 				useClaw(false);

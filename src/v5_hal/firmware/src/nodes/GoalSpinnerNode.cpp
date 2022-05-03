@@ -3,13 +3,21 @@
 GoalSpinnerNode::GoalSpinnerNode(NodeManager* node_manager, std::string handle_name, 
         ControllerNode* controller, pros::controller_digital_e_t leftSpinButton, 
         pros::controller_digital_e_t rightSpinButton, MotorNode* motor) : 
+<<<<<<< HEAD
         Node(node_manager, handle_name), 
+=======
+        Node(node_manager, 10), 
+>>>>>>> main
         m_controller(controller),
         m_leftSpinButton(leftSpinButton),
         m_rightSpinButton(rightSpinButton),
         m_motor(motor),
         m_state(FREE_MOVING),
+<<<<<<< HEAD
         m_lift_pid(0.002, 0., 0., 0), 
+=======
+        m_pid(0.002, 0., 0., 0), 
+>>>>>>> main
         m_target_position(0),
         m_tolerance(5) {
 
@@ -41,8 +49,13 @@ void GoalSpinnerNode::setSpinnerPosition(int position, int tolerance) {
 /**
  * This should only be called from autonomous 
  * */
+<<<<<<< HEAD
 void GoalSpinnerNode::setSpinnerState(LiftState state) {
     m_lift_state = state;
+=======
+void GoalSpinnerNode::setSpinnerState(SpinnerState state) {
+    m_state = state;
+>>>>>>> main
 }
 
 int GoalSpinnerNode::getPosition() { // change back to use pot
@@ -50,13 +63,20 @@ int GoalSpinnerNode::getPosition() { // change back to use pot
 }
 
 void GoalSpinnerNode::teleopPeriodic() {
+<<<<<<< HEAD
     m_updateLiftStateTeleop();
 
+=======
+>>>>>>> main
     switch (m_state) {
         case HOLDING:
             setSpinnerPosition(m_target_position);
             // pros::lcd::print(2, "Lift State: DOWN");
+<<<<<<< HEAD
             m_setLiftPID();
+=======
+            m_setSpinnerPID();
+>>>>>>> main
         break;
         
         case FREE_MOVING: 
@@ -74,13 +94,20 @@ void GoalSpinnerNode::teleopPeriodic() {
         
         // should not be used in tele-op
         case SPIN_180:
+<<<<<<< HEAD
             setLiftPosition(m_spin180);
             // pros::lcd::print(2, "Lift State: FULLY_UP");
             m_setLiftPID();
+=======
+            setSpinnerPosition(m_spin180);
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
+            m_setSpinnerPID();
+>>>>>>> main
         break;
         
         // should not be used in tele-op
         case SPIN_STRAIGHT:
+<<<<<<< HEAD
             setLiftPosition(m_spinStraight);
             // pros::lcd::print(2, "Lift State: FULLY_UP");
             m_setLiftPID();
@@ -89,6 +116,16 @@ void GoalSpinnerNode::teleopPeriodic() {
         default:
             setLiftPosition(m_target_position);
             m_setLiftPID();
+=======
+            setSpinnerPosition(m_spinStraight);
+            // pros::lcd::print(2, "Lift State: FULLY_UP");
+            m_setSpinnerPID();
+        break;
+
+        default:
+            setSpinnerPosition(m_target_position);
+            m_setSpinnerPID();
+>>>>>>> main
             // pros::lcd::print(2, "Lift State: default");
         break;
     }
@@ -97,22 +134,38 @@ void GoalSpinnerNode::teleopPeriodic() {
 void GoalSpinnerNode::autonPeriodic() { 
     switch (m_state) {
         case SPIN_180:
+<<<<<<< HEAD
             setLiftPosition(m_spin180);
+=======
+            setSpinnerPosition(m_spin180);
+>>>>>>> main
             // pros::lcd::print(2, "Lift State: FULLY_UP");
         break;
         
         case SPIN_STRAIGHT:
+<<<<<<< HEAD
             setLiftPosition(m_spinStraight);
+=======
+            setSpinnerPosition(m_spinStraight);
+>>>>>>> main
             // pros::lcd::print(2, "Lift State: FULLY_UP");
         break;
 
         default:
+<<<<<<< HEAD
             setLiftPosition(m_target_position);
+=======
+            setSpinnerPosition(m_target_position);
+>>>>>>> main
             // pros::lcd::print(2, "Lift State: default");
         break;
     }
 
+<<<<<<< HEAD
     m_setLiftPID();
+=======
+    m_setSpinnerPID();
+>>>>>>> main
 };
 
 /**
@@ -207,10 +260,17 @@ void GoalSpinnerNode::autonPeriodic() {
 void GoalSpinnerNode::m_setSpinnerPID() {
     int errorPosition = m_target_position - getPosition();
     // pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
+<<<<<<< HEAD
     float feedback = m_lift_pid.calculate(errorPosition);
     // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
     // pros::lcd::print(0, "encoder: %d\n", getPosition());
     setLiftVelocity(feedback * MAX_VELOCITY);
+=======
+    float feedback = m_pid.calculate(errorPosition);
+    // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
+    // pros::lcd::print(0, "encoder: %d\n", getPosition());
+    setSpinnerVelocity(feedback * MAX_VELOCITY);
+>>>>>>> main
 }
 
 GoalSpinnerNode::~GoalSpinnerNode() {
