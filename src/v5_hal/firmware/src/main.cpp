@@ -173,7 +173,7 @@ void initialize() {
 		highRungLiftPotentiometer
 	);
 
-	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
+	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false, true);
 
 	frontClaw = new ClawNode(nodeManager, "frontClaw", controller1, frontClawPiston, 
 		DIGITAL_L1);
@@ -181,22 +181,24 @@ void initialize() {
 	goalSpinnerMotor = new MotorNode(nodeManager, 5, "goalSpinnerMotor", true);
 	goalSpinner = new GoalSpinnerNode(nodeManager, "goalSpinner", controller1, DIGITAL_A, DIGITAL_Y, goalSpinnerMotor);
 
-	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
+	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false, true);
 
-	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false);
+	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false, true);
 
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, DIGITAL_L2, 
 		DIGITAL_DOWN, backTiltPiston, backClawPiston);
 	
-	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
+	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false, true);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 
 	// autons
 	MatchAuton* matchAuton = new MatchAuton(tankDriveNode, odomNode, frontClaw);
     LeftAuton* leftAuton = new LeftAuton(tankDriveNode, odomNode, frontClaw, 
         liftNode, highRungLift, backClaw, intakeNode, conveyorNode, flapConveyorNode);
+	BackClawTestAuton* backClawTestAuton = new BackClawTestAuton(tankDriveNode, odomNode, 
+		yOdomEncoder, inertialSensor, backClaw);
 	
-	std::vector<Auton*> autons = { matchAuton, leftAuton };
+	std::vector<Auton*> autons = { matchAuton, leftAuton, backClawTestAuton };
 	
 	// Initialize the autonomous manager
 	autonManagerNode = new AutonManagerNode(nodeManager, autons);
