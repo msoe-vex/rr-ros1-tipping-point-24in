@@ -4,7 +4,7 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
         BackClawNode* backClaw, IClawNode* buddyClimb, LiftNode* liftNode, 
         HighRungLiftNode* highRungLiftNode) : 
-        Auton("ProgSkills", "/usd/paths/path24inProgPt1v3.json"), 
+        Auton("ProgSkills", "/usd/paths/path24inProgPt1v5.json"), 
         m_driveNode(driveNode),
         m_odomNode(odomNode),
         m_intakeNode(intakeNode),
@@ -25,6 +25,11 @@ void ProgrammingSkillzAuton::AddNodes() {
     // 1. Deploy
     AutonNode* deploy = new AutonNode(0.1, new DeployAction());
     Auton::AddFirstNode(deploy);
+
+    // Start ring intake to pickup and rings we happen to encounter along the way
+    AutonNode* startRingIntake = new AutonNode(0.1, new RollerIntakeAction(m_intakeNode));
+
+    deploy->AddNext(startRingIntake);
     
     // 2a. Open Back Claw
     AutonNode* OpenBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
@@ -42,43 +47,72 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     deploy->AddNext(StartToBlueGoalNode);
 
+    // 4c. Open Front Claw
+    AutonNode* OpenFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
+
+    StartToBlueGoalNode->AddNext(OpenFrontClaw1);
+    
+    // Lower lift
+    AutonNode* LowerLift = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::DOWN));
+    
+    OpenFrontClaw1->AddNext(LowerLift);
+
     // 3b. Close Back Claw= Grab First Goal
     AutonNode* CloseBackClaw1 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
 
     StartToBlueGoalNode->AddNext(CloseBackClaw1);
 
+    // Wait 2 seconds after picking up goal to start scoring rings
+    AutonNode* waitToStartScoringRings = new AutonNode(2.0, new WaitAction(2.0));
+
+    CloseBackClaw1->AddNext(waitToStartScoringRings);
+
+    // Turn on conveyor
+    AutonNode* startConveyor = new AutonNode(0.1, new RollerIntakeAction(m_conveyorNode));
+    
+    waitToStartScoringRings->AddNext(startConveyor);
+
+    // Turn on flap conveyor
+    AutonNode* startFlapConveyor = new AutonNode(0.1, new RollerIntakeAction(m_flapConveyorNode));
+    
+    waitToStartScoringRings->AddNext(startFlapConveyor);
+
+    // Wait for robot to pick up alliance goal
+    AutonNode* waitToPickup = new AutonNode(1.0, new WaitAction(1.0));
+
+    CloseBackClaw1->AddNext(waitToPickup);
+
     // 4b. Path to Second Goal
+    // Do this after waiting for the back claw
     Path BlueGoalToYellowGoal = PathManager::GetInstance()->GetPath("BlueGoalToYellowGoal");
     AutonNode* BlueGoalToYellowGoalNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(BlueGoalToYellowGoal), BlueGoalToYellowGoal, false));
 
-    StartToBlueGoalNode->AddNext(BlueGoalToYellowGoalNode);
+    waitToPickup->AddNext(BlueGoalToYellowGoalNode);
 
-    // 4c. Open Front Claw
-    AutonNode* OpenFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
 
-    StartToBlueGoalNode->AddNext(OpenFrontClaw1);
-
+    /**
+     * This commented out section used to be actions for picking up rings before the yelow goal
+     * It has since been taken out of this Auton
+     * */
     // raise the goal above the rings
-    AutonNode* RaiseLift = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
+    // AutonNode* RaiseLift = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
     
-    StartToBlueGoalNode->AddNext(RaiseLift);
+    // StartToBlueGoalNode->AddNext(RaiseLift);
 
     //  Turn on Ring Intake
-    AutonNode* EnableRingIntake = new AutonNode(0.1, new RollerIntakeAction(m_intakeNode));
+    // AutonNode* EnableRingIntake = new AutonNode(0.1, new RollerIntakeAction(m_intakeNode));
     
-    StartToBlueGoalNode->AddNext(EnableRingIntake);
+    // StartToBlueGoalNode->AddNext(EnableRingIntake);
 
     // wait to pick up rings before lowering lift
-    AutonNode* waitToLowerClaw = new AutonNode(3.0, new WaitAction(3.0));
+    // AutonNode* waitToLowerClaw = new AutonNode(3.0, new WaitAction(3.0));
     
-    StartToBlueGoalNode->AddNext(waitToLowerClaw);
+    // StartToBlueGoalNode->AddNext(waitToLowerClaw);
 
-    // Lower lift
-    AutonNode* LowerLift = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::DOWN));
-    
-    waitToLowerClaw->AddNext(LowerLift);
+
 
     // 5b. Close Front Claw = Grab Second Goal
+    // This is done as soon as the path to the yellow goal ends
     AutonNode* CloseFrontClaw1 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, true));
 
     BlueGoalToYellowGoalNode->AddNext(CloseFrontClaw1);
@@ -88,8 +122,8 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     CloseFrontClaw1->AddNext(waitForClawClose);
 
-    // 6b. Raise Second Goal
-    AutonNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
+    // 6b. Raise Second Goal to FULLY_UP
+    AutonNode* RaiseGoal1 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::FULLY_UP));
     
     waitForClawClose->AddNext(RaiseGoal1);
 
@@ -99,26 +133,26 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     BlueGoalToYellowGoalNode->AddNext(YellowToRingsNode);
 
-    // 8b. Path to Ring Cluster
-    // Path PathToRingCluster = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
-    // AutonNode* PathToRingClusterNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToRingCluster), PathToRingCluster, false));
+    // 9b. Path to Corner
+    Path ReverseTowardsBlueGoalDrop = PathManager::GetInstance()->GetPath("ReverseTowardsBlueGoalDrop");
+    AutonNode* ReverseTowardsBlueGoalDropNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(ReverseTowardsBlueGoalDrop), ReverseTowardsBlueGoalDrop, false));
 
-    // YellowToRingsNode->AddNext(PathToRingClusterNode);
+    YellowToRingsNode->AddNext(ReverseTowardsBlueGoalDropNode);
 
-    // // 9b. Path to Corner
-    // Path PathToCorner = PathManager::GetInstance()->GetPath("LeftGoalToWallReverse");
-    // AutonNode* PathToCornerNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(PathToCorner), PathToCorner, false));
-
-    // PathToRingClusterNode->AddNext(PathToCornerNode);
-
-    // // 9c. Turn off Ring Intake
-    // AutonNode* DisableRingIntake = new AutonNode(0.1, new RollerIntakeAction(m_intakeNode, 0));
+    // Stop scoring rings
+    // Turn off conveyor
+    AutonNode* stopConveyor = new AutonNode(0.1, new RollerIntakeAction(m_conveyorNode, 0));
     
-    // PathToRingClusterNode->AddNext(DisableRingIntake);
+    ReverseTowardsBlueGoalDropNode->AddNext(startConveyor);
 
-    // // 10b. Open Back Claw = Drop Goal
-    // AutonNode* OpenBackClaw2 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+    // Turn off flap conveyor
+    AutonNode* stopFlapConveyor = new AutonNode(0.1, new RollerIntakeAction(m_flapConveyorNode, 0));
+    
+    ReverseTowardsBlueGoalDropNode->AddNext(startFlapConveyor);
 
-    // PathToFirstGoalNode->AddNext(OpenBackClaw2);
+    // 10b. Open Back Claw = Drop Goal
+    AutonNode* OpenBackClaw2 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+
+    ReverseTowardsBlueGoalDropNode->AddNext(OpenBackClaw2);
 
 };
