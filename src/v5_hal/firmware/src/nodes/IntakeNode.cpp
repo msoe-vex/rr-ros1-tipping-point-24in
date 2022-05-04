@@ -52,19 +52,23 @@ void IntakeNode::initialize() {
 
 void IntakeNode::teleopPeriodic() {
     if (m_toggle) {
-        bool upButtonCurrentState = m_controller->get_digital(m_in_button);
-
-        if (upButtonCurrentState == 1 && m_inButtonPreivousState == 0) {
-            m_running = !m_running;
-        }
-
-        if (m_running) {
-            setIntakeVoltage(MAX_MOTOR_VOLTAGE);
+        if (m_controller->get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+            setIntakeVoltage(-MAX_MOTOR_VOLTAGE);
         } else {
-            setIntakeVoltage(0);
-        }
+            bool upButtonCurrentState = m_controller->get_digital(m_in_button);
 
-        m_inButtonPreivousState = upButtonCurrentState;
+            if (upButtonCurrentState == 1 && m_inButtonPreivousState == 0) {
+                m_running = !m_running;
+            }
+
+            if (m_running) {
+                setIntakeVoltage(MAX_MOTOR_VOLTAGE);
+            } else {
+                setIntakeVoltage(0);
+            }        
+
+            m_inButtonPreivousState = upButtonCurrentState;
+        }
     } else {
         if (m_controller->get_digital(m_in_button)) { 
             setIntakeVoltage(MAX_MOTOR_VOLTAGE);
