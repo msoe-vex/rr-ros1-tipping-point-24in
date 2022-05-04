@@ -56,6 +56,10 @@ void ClawNode::teleopPeriodic() {
 	}
 }
 
+// void ClawNode::setDisabled(bool disabled) {
+// 	// do fucking nothing
+// }
+
 void ClawNode::autonPeriodic() {
 
 }

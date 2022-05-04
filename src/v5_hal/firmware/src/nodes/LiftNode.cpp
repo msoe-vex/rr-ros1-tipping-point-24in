@@ -80,33 +80,33 @@ int LiftNode::getPosition() { // change back to use pot
 }
 
 void LiftNode::teleopPeriodic() {
-    m_updateLiftStateTeleop();
+    // m_updateLiftStateTeleop();
 
-    switch (m_lift_state) {
-        case DOWN:
-            setLiftPosition(m_downPosition);
-            // pros::lcd::print(2, "Lift State: DOWN");
-            m_setLiftPID();
-        break;
+    // switch (m_lift_state) {
+    //     case DOWN:
+    //         setLiftPosition(m_downPosition);
+    //         // pros::lcd::print(2, "Lift State: DOWN");
+    //         m_setLiftPID();
+    //     break;
         
-        case UP_FOR_RINGS: 
-            setLiftPosition(m_upForRingsPosition);
-            // pros::lcd::print(2, "Lift State: UP_FOR_RINGS");
-            m_setLiftPID();
-        break;
+    //     case UP_FOR_RINGS: 
+    //         setLiftPosition(m_upForRingsPosition);
+    //         // pros::lcd::print(2, "Lift State: UP_FOR_RINGS");
+    //         m_setLiftPID();
+    //     break;
         
-        case FULLY_UP:
-            setLiftPosition(m_fullyUpPosition);
-            // pros::lcd::print(2, "Lift State: FULLY_UP");
-            m_setLiftPID();
-        break;
+    //     case FULLY_UP:
+    //         setLiftPosition(m_fullyUpPosition);
+    //         // pros::lcd::print(2, "Lift State: FULLY_UP");
+    //         m_setLiftPID();
+    //     break;
 
-        case STARTING_CONFIGURATION:
-            setLiftPosition(m_startingConfiguaration);
-            m_setLiftPID();
-        break;
+    //     case STARTING_CONFIGURATION:
+    //         setLiftPosition(m_startingConfiguaration);
+    //         m_setLiftPID();
+    //     break;
         
-        case FREE_MOVING: 
+    //     case FREE_MOVING: 
             if (m_controller->getController()->get_digital(m_upButton) && 
                 !m_controller->getController()->get_digital(m_downButton)) {
                 setLiftVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
@@ -116,15 +116,15 @@ void LiftNode::teleopPeriodic() {
             } else {
                 setLiftVelocity(0);
             }   
-            pros::lcd::print(2, "Lift Pos: %d", getPosition());
-        break;
+    //         pros::lcd::print(2, "Lift Pos: %d", getPosition());
+    //     break;
 
-        default:
-            setLiftPosition(m_target_position);
-            m_setLiftPID();
-            // pros::lcd::print(2, "Lift State: default");
-        break;
-    }
+    //     default:
+    //         setLiftPosition(m_target_position);
+    //         m_setLiftPID();
+    //         // pros::lcd::print(2, "Lift State: default");
+    //     break;
+    // }
 };
 
 void LiftNode::autonPeriodic() { 
