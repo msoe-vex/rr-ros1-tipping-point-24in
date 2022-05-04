@@ -80,7 +80,10 @@
 #include "auton/auton_routines/MatchAuton.h"
 #include "auton/auton_routines/LeftAuton.h"
 #include "auton/auton_routines/BasicAuton.h"
+<<<<<<< HEAD
+=======
 #include "auton/auton_routines/BackClawTestAuton.h"
+>>>>>>> 3064be4f7582e28e6ab2080e22cbcfc963b61d93
 #include "auton/auton_routines/ProgrammingSkillzAuton.h"
 
    /**
