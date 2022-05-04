@@ -24,6 +24,7 @@
 #include "nodes/BackClawNode.h"
 #include "nodes/LiftNode.h"
 #include "nodes/HighRungLiftNode.h"
+#include "nodes/GoalSpinnerNode.h"
 
 
 class ProgrammingSkillzAuton : public Auton {

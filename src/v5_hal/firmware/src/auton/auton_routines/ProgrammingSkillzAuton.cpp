@@ -3,7 +3,7 @@
 ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNode* odomNode, IRollerIntakeNode* intakeNode, 
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
         BackClawNode* backClaw, IClawNode* wingArms, IClawNode* buddyClimb, LiftNode* liftNode, 
-        HighRungLiftNode* highRungLiftNode) : 
+        HighRungLiftNode* highRungLiftNode):
         Auton("Programming Skills", "/usd/paths/path24inProgPt2.json"), 
         m_driveNode(driveNode),
         m_odomNode(odomNode),
@@ -112,24 +112,94 @@ void ProgrammingSkillzAuton::AddNodes() {
 
     grabColorGoalCorner->AddNext(waitAfterColorGoalGrab);
 
-    //Part 3: Lift the goal to ring height, turn on the conveyor belt,
-    //Follow the path
+   //Part 3: Move to the middle neutral goal, raise lift, conveyor, front ring roller, flaps, and agitator
 
-    Path redRampToRedRingStopPath = PathManager::GetInstance()->GetPath("RedRampToRedRingStop");
-    AutonNode* redRampToRedRingStop = new AutonNode(
+    Path redRampToCenterGoalPath = PathManager::GetInstance()->GetPath("RedRampToCenterGoal");
+    AutonNode* redRampToCenterGoal = new AutonNode(
         5,
         new FollowPathAction(
             m_driveNode,
             m_odomNode,
-            new TankPathPursuit(redRampToRedRingStopPath),
-            redRampToRedRingStopPath,
+            new TankPathPursuit(redRampToCenterGoalPath),
+            redRampToCenterGoalPath,
             false
         )
     );
 
-    waitAfterColorGoalGrab->AddNext(redRampToRedRingStop);
-    redRampToRedRingStop->AddAction(new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
-    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_intakeNode));
-    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_conveyorNode));
-    redRampToRedRingStop->AddAction(new RollerIntakeAction(m_flapConveyorNode));
+    waitAfterColorGoalGrab->AddNext(redRampToCenterGoal);
+    redRampToCenterGoal->AddAction(new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
+    redRampToCenterGoal->AddAction(new RollerIntakeAction(m_intakeNode));
+    redRampToCenterGoal->AddAction(new RollerIntakeAction(m_conveyorNode));
+    redRampToCenterGoal->AddAction(new RollerIntakeAction(m_flapConveyorNode));
+
+    //Part 4: Backup up, lift down, turn off front roller, close claw
+
+    Path centerGoalDragBackPath = PathManager::GetInstance()->GetPath("CenterGoalDragBack");
+    AutonNode* centerGoalDragBack = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(centerGoalDragBackPath),
+            centerGoalDragBackPath,
+            false
+        )
+    );
+    
+    redRampToCenterGoal->AddNext(centerGoalDragBack);
+    centerGoalDragBack->AddAction(new SetLiftStateAction(m_liftNode, LiftNode::DOWN));
+
+    AutonNode* clawCloseMid = new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
+    redRampToCenterGoal->AddNext(clawCloseMid);
+    centerGoalDragBack->AddAction(new RollerIntakeAction(m_intakeNode, 0));
+
+    //Part 5: Claw open and drive forward
+
+    Path centerGoalForwardGrabPath = PathManager::GetInstance()->GetPath("CenterGoalForwardGrab");
+    AutonNode* centerGoalForwardGrab = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(centerGoalForwardGrabPath),
+            centerGoalForwardGrabPath,
+            false
+        )
+    );
+
+    centerGoalDragBack->AddNext(centerGoalForwardGrab);
+    AutonNode* clawOpenMid = new AutonNode(0.5, new UseClawAction(m_frontClawNode, true));
+    centerGoalDragBack->AddNext(clawOpenMid);
+
+    AutonNode* clawCloseMid = new AutonNode(0.5, new UseClawAction(m_frontClawNode, false));
+    centerGoalForwardGrab->AddNext(clawCloseMid);
+
+    //Part 6: Drive to Ramp, intake, Lift up
+
+    Path centerGoalToOppositeRampPath = PathManager::GetInstance()->GetPath("CenterGoalToOppositeRamp");
+    AutonNode* centerGoalToOppositeRamp = new AutonNode(
+        5,
+        new FollowPathAction(
+            m_driveNode,
+            m_odomNode,
+            new TankPathPursuit(centerGoalForwardGrabPath),
+            centerGoalForwardGrabPath,
+            false
+        )
+    );
+
+    AutonNode* waitAfterNeutralGrab = new AutonNode(0.5, new WaitAction(0.5));
+    centerGoalForwardGrab->AddNext(centerGoalToOppositeRamp);
+    centerGoalForwardGrab->AddNext(waitAfterNeutralGrab);
+    centerGoalToOppositeRamp->AddAction(new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
+    centerGoalToOppositeRamp->AddAction(new RollerIntakeAction(m_intakeNode));
+
+    AutonNode* stopRoller = new AutonNode(0.5, new RollerIntakeAction(m_intakeNode, 0));
+    centerGoalToOppositeRamp->AddNext(stopRoller);
+
+    AutonNode* stopConv = new AutonNode(0.5, new RollerIntakeAction(m_conveyorNode, 0));
+    centerGoalToOppositeRamp->AddNext(stopConv);
+    AutonNode* stopFlapConv = new AutonNode(0.5, new RollerIntakeAction(m_flapConveyorNode, 0));
+    centerGoalToOppositeRamp->AddNext(stopFlapConv);
+
 }
