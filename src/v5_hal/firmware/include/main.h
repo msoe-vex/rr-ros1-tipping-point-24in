@@ -81,6 +81,7 @@
 #include "auton/auton_routines/LeftAuton.h"
 #include "auton/auton_routines/ProgrammingSkillzAuton.h"
 #include "auton/auton_routines/BasicAuton.h"
+#include "auton/auton_routines/BackClawTestAuton.h"
 
    /**
     * You should add more #includes here
