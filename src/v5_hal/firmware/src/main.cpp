@@ -61,6 +61,8 @@ InertialSensorNode* inertialSensor;
 
 OdometryNode* odomNode;
 
+GoalStateNode* goalStateNode;
+
 // Declare all robot nodes here:
 
 /**
@@ -190,6 +192,9 @@ void initialize() {
 	
 	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
+
+	GoalStateNode* goalStateNode = new GoalStateNode(nodeManager, "goalStateNode", controller1, goalSpinner, 
+		frontClaw, liftNode, highRungLift, DIGITAL_X);
 
 	// autons
 	MatchAuton* matchAuton = new MatchAuton(tankDriveNode, odomNode, frontClaw);

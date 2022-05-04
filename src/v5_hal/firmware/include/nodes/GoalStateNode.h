@@ -45,7 +45,7 @@ private:
     IClawNode* m_frontClaw;
     LiftNode* m_lift;
     HighRungLiftNode* m_highRungLift;
-    pros::controller_digital_e_t m_endgameToggleButton
+    pros::controller_digital_e_t m_endgameToggleButton;
 
     std::string m_handle_name;
 
@@ -57,6 +57,9 @@ private:
     // HighRungLift to Lift function
     float m_slope = -55.0; // NEEDS TO BE CHANGED
     float m_intercept = 15.0; // NEEDS TO BE CHANGED
+
+    int m_lowPosition = 500;
+    int m_highPosition = 2000;
 
     void periodic();
 };

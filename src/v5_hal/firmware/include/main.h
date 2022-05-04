@@ -71,6 +71,7 @@
 #include "nodes/IntakeNode.h"
 #include "nodes/HighRungLiftNode.h"
 #include "nodes/GoalSpinnerNode.h"
+#include "nodes/GoalStateNode.h"
 
 //autons
 #include "lib-rr/auton/AutonSelector.h"

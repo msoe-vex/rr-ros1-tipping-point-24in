@@ -61,11 +61,7 @@ int HighRungLiftNode::getPosition() { // change back to use pot
 }
 
 void HighRungLiftNode::teleopPeriodic() {
-<<<<<<< HEAD
-    // pros::lcd::print(0, "pot: %d", getPosition());
-=======
     pros::lcd::print(2, "pot: %d", getPosition());
->>>>>>> main
     
     switch (m_state) {
     
