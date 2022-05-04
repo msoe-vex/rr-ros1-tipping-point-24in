@@ -34,7 +34,7 @@ void LeftAuton::AddNodes() {
     deploy->AddNext(lowerLift);
     deploy->AddNext(clawCloseDelay);
     
-    AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
+    AutonNode* clawClose = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
     
     clawCloseDelay->AddNext(clawClose);
 
@@ -52,7 +52,7 @@ void LeftAuton::AddNodes() {
 
     clawClose->AddNext(firstBackingNode);
     
-    AutonNode* clawOpen = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
+    AutonNode* clawOpen = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
     firstBackingNode->AddNext(clawOpen);
     
     AutonNode* backClawOpen = new AutonNode(0.5, new SetBackClawStateAction(m_backClawNode, BackClawNode::BackClawState::PIVOT_DOWN_CLAW_OPEN));
@@ -62,7 +62,7 @@ void LeftAuton::AddNodes() {
     AutonNode* secondGrabYellowNode = new AutonNode(4, new FollowPathAction(m_drive_node, m_odom_node, new TankPathPursuit(secondGrabYellow), secondGrabYellow, false));
     firstBackingNode->AddNext(secondGrabYellowNode);
     
-    AutonNode* clawClose2 = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
+    AutonNode* clawClose2 = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
     secondGrabYellowNode->AddNext(clawClose2);
     
     AutonNode* wait = new AutonNode(0.5, new WaitAction(0.5));
@@ -81,7 +81,7 @@ void LeftAuton::AddNodes() {
     AutonNode* backClawClosed = new AutonNode(0.5, new SetBackClawStateAction(m_backClawNode, BackClawNode::BackClawState::PIVOT_BACK));
     backingGrabBlueNode->AddNext(backClawClosed);
     
-    AutonNode* clawOpen2 = new AutonNode(0.5, new UseClawAction(m_front_claw_node, false));
+    AutonNode* clawOpen2 = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
 
     backClawClosed->AddNext(clawOpen2);
 
@@ -131,7 +131,7 @@ void LeftAuton::AddNodes() {
 
     AutonNode* lowerLiftForTallGoal = new AutonNode(2, new SetLiftStateAction(m_liftNode, LiftNode::LiftState::DOWN));
 
-    AutonNode* clawOpenForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
+    AutonNode* clawOpenForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
 
     AutonNode* waitForLift = new AutonNode(1., new WaitAction(1.));
 
@@ -139,7 +139,7 @@ void LeftAuton::AddNodes() {
     fifthReverseForTallGoal->AddNext(clawOpenForTallGoal);
     fifthReverseForTallGoal->AddNext(waitForLift);
 
-    AutonNode* clawCloseForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
+    AutonNode* clawCloseForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
 
     waitForLift->AddNext(clawCloseForTallGoal);
 
@@ -161,7 +161,7 @@ void LeftAuton::AddNodes() {
 
     waitForPullTallGoalClose->AddNext(backwardsTallGoalGrab);
 
-    AutonNode* clawOpenFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
+    AutonNode* clawOpenFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
 
     backwardsTallGoalGrab->AddNext(clawOpenFinalForTallGoal);
 
@@ -179,7 +179,7 @@ void LeftAuton::AddNodes() {
 
     clawOpenFinalForTallGoal->AddNext(sixthMovetoTallGoal);
 
-    AutonNode* clawCloseFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
+    AutonNode* clawCloseFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
 
     sixthMovetoTallGoal->AddNext(clawCloseFinalForTallGoal);
 

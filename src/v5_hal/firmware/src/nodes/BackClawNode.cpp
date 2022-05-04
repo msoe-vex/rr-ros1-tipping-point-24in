@@ -8,13 +8,14 @@ BackClawNode::BackClawNode(NodeManager* node_manager, std::string handle_name,
         m_pivotButton(pivotButton),
         m_clawButton(clawButton),
         m_pivot(pivot),
-        m_claw(claw) {
+        m_claw(claw),
+        m_state(PIVOT_BACK) {
     m_handle_name = handle_name.insert(0, "robot/");
 }
 
 
 void BackClawNode::initialize() {
-    m_state = PIVOT_BACK;
+    
 }
 
 void BackClawNode::setState(BackClawState state) {
@@ -84,33 +85,33 @@ void BackClawNode::periodic() {
     switch (m_state)
     {
         case PIVOT_BACK:
-            m_claw->setValue(1);
+            m_claw->setValue(0);
 
             if (m_previousState == PIVOT_DOWN_CLAW_CLOSED) {
-                m_pivot->setValue(1);
+                m_pivot->setValue(0);
             } else if (m_stateChange && m_previousState == PIVOT_DOWN_CLAW_OPEN) {
                 m_timer.Start();
             } else if (m_timer.Get() > 0.3) {
-                m_pivot->setValue(1);
+                m_pivot->setValue(0);
             }        
             
         break;
 
         case PIVOT_DOWN_CLAW_OPEN:
-            m_pivot->setValue(0);
+            m_pivot->setValue(1);
 
             if (m_previousState == PIVOT_DOWN_CLAW_CLOSED) {
-                m_claw->setValue(0);    
+                m_claw->setValue(1);    
             } else if (m_stateChange && m_previousState == PIVOT_BACK) {
                 m_timer.Start();
             } else if (m_timer.Get() > 0.7) {
-                m_claw->setValue(0);    
+                m_claw->setValue(1);    
             }       
         break;
 
         case PIVOT_DOWN_CLAW_CLOSED:
-            m_pivot->setValue(0);
-            m_claw->setValue(1);
+            m_pivot->setValue(1);
+            m_claw->setValue(0);
         break;
         
         default:

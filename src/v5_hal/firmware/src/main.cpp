@@ -166,7 +166,7 @@ void initialize() {
 		nodeManager, 
 		"highRungLift", 
 		controller2, 
-		ANALOG_LEFT_X, 
+		ANALOG_LEFT_Y, 
 		highRungLiftMotor, 
 		highRungLiftPotentiometer
 	);
@@ -189,8 +189,11 @@ void initialize() {
 	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 	
+<<<<<<< HEAD
 	// Define main
 
+=======
+>>>>>>> 3064be4f7582e28e6ab2080e22cbcfc963b61d93
 	// Declare all autons
 	ProgrammingSkillzAuton* progSkills = new ProgrammingSkillzAuton(
 		tankDriveNode, 
@@ -220,8 +223,13 @@ void initialize() {
 
 	// Initialize the autonomous manager
 	std::vector<Auton*> autons = { 
+<<<<<<< HEAD
 		progSkills,
 		leftMatchAuton
+=======
+		leftMatchAuton,
+		progSkills
+>>>>>>> 3064be4f7582e28e6ab2080e22cbcfc963b61d93
 	};
 
 	autonManagerNode = new AutonManagerNode(nodeManager, autons);

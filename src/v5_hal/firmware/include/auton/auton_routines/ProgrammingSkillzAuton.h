@@ -24,7 +24,10 @@
 #include "nodes/BackClawNode.h"
 #include "nodes/LiftNode.h"
 #include "nodes/HighRungLiftNode.h"
+<<<<<<< HEAD
 #include "nodes/GoalSpinnerNode.h"
+=======
+>>>>>>> 3064be4f7582e28e6ab2080e22cbcfc963b61d93
 
 
 class ProgrammingSkillzAuton : public Auton {
