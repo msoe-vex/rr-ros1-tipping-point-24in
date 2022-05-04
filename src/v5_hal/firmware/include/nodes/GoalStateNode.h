@@ -9,6 +9,7 @@
 #include "nodes/HighRungLiftNode.h"
 #include "nodes/GoalSpinnerNode.h"
 #include "pros/misc.h"
+#include "lib-rr/util/PID.h"
 
 class GoalStateNode : public Node {
 public:
@@ -59,7 +60,7 @@ private:
     float m_intercept = 15.0; // NEEDS TO BE CHANGED
 
     int m_lowPosition = 500;
-    int m_highPosition = 2000;
+    int m_highPosition = 2100;
 
     void periodic();
 };

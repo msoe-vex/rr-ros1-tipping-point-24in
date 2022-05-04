@@ -12,7 +12,6 @@ private:
     ADIDigitalOutNode* m_claw;
     pros::controller_digital_e_t m_button1;
     pros::controller_digital_e_t m_button2;
-    bool m_claw_open;
     bool m_a_previous_state;
     bool m_isToggle;
     bool m_disabled;
@@ -34,6 +33,8 @@ public:
     void teleopPeriodic();
 
     void autonPeriodic();
+    
+    bool claw_open;
 
     ~ClawNode();
 };

@@ -16,7 +16,7 @@ GoalStateNode::GoalStateNode(NodeManager* node_manager, std::string handle_name,
 
 
 void GoalStateNode::initialize() {
-    m_state = STARTING;
+    // m_state = STARTING;
 }
 
 void GoalStateNode::setState(GoalState state) {
@@ -36,6 +36,25 @@ void GoalStateNode::teleopPeriodic() {
     } else {
         m_frontClaw->setDisabled(false);
         pros::lcd::print(4, "enable");
+    }
+
+    
+    // gets controller input and scales it to [-1, 1]
+    double controllerInput = m_controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+
+    // setLiftVoltage(max(controllerInput * MAX_MOTOR_VOLTAGE, 0));
+
+    if (m_frontClaw->claw_open) {
+        int currentPosition = m_highRungLift->getPosition();
+        if (currentPosition < m_highPosition && 
+                currentPosition > m_lowPosition) {
+            m_highRungLift->setLiftVoltage(max(controllerInput * MAX_MOTOR_VOLTAGE, 0));
+        } else if (currentPosition > m_lowPosition &&
+                currentPosition < m_highPosition) {
+            m_highRungLift->setLiftVoltage(min(controllerInput * MAX_MOTOR_VOLTAGE, 0));
+        } else {
+            m_highRungLift->setLiftVoltage(controllerInput * MAX_MOTOR_VOLTAGE);
+        }
     }
 
     switch (m_state) {

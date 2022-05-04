@@ -6,7 +6,7 @@ ClawNode::ClawNode(NodeManager* node_manager, std::string handle_name, Controlle
 		m_controller(controller),
 		m_claw(claw),
 		m_button1(button1),
-		m_claw_open(false),
+		claw_open(false),
 		m_a_previous_state(false) {
 	m_isToggle = true;
 }
@@ -18,7 +18,7 @@ ClawNode::ClawNode(NodeManager* node_manager, std::string handle_name, Controlle
 		m_claw(claw),
 		m_button1(button1),
 		m_button2(button2),
-		m_claw_open(false),
+		claw_open(false),
 		m_a_previous_state(false) {
 	m_isToggle = false;
 }
@@ -45,8 +45,8 @@ void ClawNode::teleopPeriodic() {
 			bool a_current_state = m_controller->getController()->get_digital(m_button1);
 
 		if (a_current_state == 1 && m_a_previous_state == 0) {
-				m_claw_open = !m_claw_open;
-				useClaw(m_claw_open);
+				claw_open = !claw_open;
+				useClaw(claw_open);
 			}
 
 		m_a_previous_state = a_current_state;
