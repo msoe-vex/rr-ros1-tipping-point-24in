@@ -168,7 +168,7 @@ void initialize() {
 		nodeManager, 
 		"highRungLift", 
 		controller2, 
-		ANALOG_LEFT_X, 
+		ANALOG_LEFT_Y, 
 		highRungLiftMotor, 
 		highRungLiftPotentiometer
 	);
