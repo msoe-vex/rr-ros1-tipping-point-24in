@@ -173,7 +173,7 @@ void initialize() {
 		highRungLiftPotentiometer
 	);
 
-	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false, true);
+	frontClawPiston = new ADIDigitalOutNode(nodeManager, "frontClawPiston", 'G', false);
 
 	frontClaw = new ClawNode(nodeManager, "frontClaw", controller1, frontClawPiston, 
 		DIGITAL_L1);
@@ -181,14 +181,14 @@ void initialize() {
 	goalSpinnerMotor = new MotorNode(nodeManager, 5, "goalSpinnerMotor", true);
 	goalSpinner = new GoalSpinnerNode(nodeManager, "goalSpinner", controller1, DIGITAL_A, DIGITAL_Y, goalSpinnerMotor);
 
-	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false, true);
+	backClawPiston = new ADIDigitalOutNode(nodeManager, "backClawPiston", 'F', false);
 
-	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false, true);
+	backTiltPiston = new ADIDigitalOutNode(nodeManager, "backTiltPiston", 'E', false);
 
 	backClaw = new BackClawNode(nodeManager, "backClaw", controller1, DIGITAL_L2, 
 		DIGITAL_DOWN, backTiltPiston, backClawPiston);
 	
-	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false, true);
+	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
 	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
 
 	// autons
