@@ -40,7 +40,7 @@ void LeftAuton::AddNodes() {
 
     Path firstBackingPath = PathManager::GetInstance()->GetPath("First");
     AutonNode* firstBackingNode = new AutonNode(
-        4, 
+        45, 
         new FollowPathAction(
             m_drive_node, 
             m_odom_node, 
@@ -81,23 +81,37 @@ void LeftAuton::AddNodes() {
     AutonNode* backClawClosed = new AutonNode(0.5, new SetBackClawStateAction(m_backClawNode, BackClawNode::BackClawState::PIVOT_BACK));
     backingGrabBlueNode->AddNext(backClawClosed);
     
-    AutonNode* clawOpen2 = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
+    //AutonNode* clawOpen2 = new AutonNode(0.5, new UseClawAction(m_front_claw_node, true));
 
-    backClawClosed->AddNext(clawOpen2);
+    // backClawClosed->AddNext(clawOpen2);
 
-    Path turnRings = PathManager::GetInstance()->GetPath("Fourth");
-    AutonNode* turnRingsNode = new AutonNode(
-        10, 
+    Path rampToFirstRingStackPath = PathManager::GetInstance()->GetPath("RampToFirstRingStack");
+    AutonNode* rampToFirstRingStack = new AutonNode(
+        45, 
         new FollowPathAction(
             m_drive_node, 
             m_odom_node, 
-            new TankPathPursuit(turnRings), 
-            turnRings, 
+            new TankPathPursuit(rampToFirstRingStackPath), 
+            rampToFirstRingStackPath, 
             false
         )
     );
+
+    backingGrabBlueNode->AddNext(rampToFirstRingStack);
+
+    // Path turnRings = PathManager::GetInstance()->GetPath("Fourth");
+    // AutonNode* turnRingsNode = new AutonNode(
+    //     45, 
+    //     new FollowPathAction(
+    //         m_drive_node, 
+    //         m_odom_node, 
+    //         new TankPathPursuit(turnRings), 
+    //         turnRings, 
+    //         false
+    //     )
+    // );
     
-    backingGrabBlueNode->AddNext(turnRingsNode);
+    // backingGrabBlueNode->AddNext(turnRingsNode);
     
     AutonNode* wait2 = new AutonNode(1.5, new WaitAction(1.5));
     backClawClosed->AddNext(wait2);
@@ -115,118 +129,118 @@ void LeftAuton::AddNodes() {
     wait2->AddNext(startConveyor);
     wait2->AddNext(startFlatConveyor);
 
-    Path fifthReverseForTallGoalPath = PathManager::GetInstance()->GetPath("Fifth");
-    AutonNode* fifthReverseForTallGoal = new AutonNode(
-        4, 
-        new FollowPathAction(
-            m_drive_node, 
-            m_odom_node, 
-            new TankPathPursuit(fifthReverseForTallGoalPath), 
-            fifthReverseForTallGoalPath, 
-            false
-        )
-    );
+    // Path fifthReverseForTallGoalPath = PathManager::GetInstance()->GetPath("Fifth");
+    // AutonNode* fifthReverseForTallGoal = new AutonNode(
+    //     45, 
+    //     new FollowPathAction(
+    //         m_drive_node, 
+    //         m_odom_node, 
+    //         new TankPathPursuit(fifthReverseForTallGoalPath), 
+    //         fifthReverseForTallGoalPath, 
+    //         false
+    //     )
+    // );
 
-    turnRingsNode->AddNext(fifthReverseForTallGoal);
+    // turnRingsNode->AddNext(fifthReverseForTallGoal);
 
-    AutonNode* lowerLiftForTallGoal = new AutonNode(2, new SetLiftStateAction(m_liftNode, LiftNode::LiftState::DOWN));
+    // AutonNode* lowerLiftForTallGoal = new AutonNode(2, new SetLiftStateAction(m_liftNode, LiftNode::LiftState::DOWN));
 
-    AutonNode* clawOpenForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
+    // AutonNode* clawOpenForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
 
-    AutonNode* waitForLift = new AutonNode(1., new WaitAction(1.));
+    // AutonNode* waitForLift = new AutonNode(1., new WaitAction(1.));
 
-    fifthReverseForTallGoal->AddNext(lowerLiftForTallGoal);
-    fifthReverseForTallGoal->AddNext(clawOpenForTallGoal);
-    fifthReverseForTallGoal->AddNext(waitForLift);
+    // fifthReverseForTallGoal->AddNext(lowerLiftForTallGoal);
+    // fifthReverseForTallGoal->AddNext(clawOpenForTallGoal);
+    // fifthReverseForTallGoal->AddNext(waitForLift);
 
-    AutonNode* clawCloseForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
+    // AutonNode* clawCloseForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
 
-    waitForLift->AddNext(clawCloseForTallGoal);
+    // waitForLift->AddNext(clawCloseForTallGoal);
 
-    AutonNode* waitForPullTallGoalClose = new AutonNode(0.2, new WaitAction(0.2));
+    // AutonNode* waitForPullTallGoalClose = new AutonNode(0.2, new WaitAction(0.2));
 
-    clawCloseForTallGoal->AddNext(waitForPullTallGoalClose);
+    // clawCloseForTallGoal->AddNext(waitForPullTallGoalClose);
 
-    Path backwardsTallGoalGrabPath = PathManager::GetInstance()->GetPath("BackwardsTallGoalGrab");
-    AutonNode* backwardsTallGoalGrab = new AutonNode(
-        4, 
-        new FollowPathAction(
-            m_drive_node, 
-            m_odom_node, 
-            new TankPathPursuit(backwardsTallGoalGrabPath), 
-            backwardsTallGoalGrabPath, 
-            false
-        )
-    );
+    // Path backwardsTallGoalGrabPath = PathManager::GetInstance()->GetPath("BackwardsTallGoalGrab");
+    // AutonNode* backwardsTallGoalGrab = new AutonNode(
+    //     45, 
+    //     new FollowPathAction(
+    //         m_drive_node, 
+    //         m_odom_node, 
+    //         new TankPathPursuit(backwardsTallGoalGrabPath), 
+    //         backwardsTallGoalGrabPath, 
+    //         false
+    //     )
+    // );
 
-    waitForPullTallGoalClose->AddNext(backwardsTallGoalGrab);
+    // waitForPullTallGoalClose->AddNext(backwardsTallGoalGrab);
 
-    AutonNode* clawOpenFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
+    // AutonNode* clawOpenFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, true));
 
-    backwardsTallGoalGrab->AddNext(clawOpenFinalForTallGoal);
+    // backwardsTallGoalGrab->AddNext(clawOpenFinalForTallGoal);
 
-    Path sixthMoveToTallGoalPath = PathManager::GetInstance()->GetPath("Sixth");
-    AutonNode* sixthMovetoTallGoal = new AutonNode(
-        4, 
-        new FollowPathAction(
-            m_drive_node, 
-            m_odom_node, 
-            new TankPathPursuit(sixthMoveToTallGoalPath), 
-            sixthMoveToTallGoalPath, 
-            false
-        )
-    );
+    // Path sixthMoveToTallGoalPath = PathManager::GetInstance()->GetPath("Sixth");
+    // AutonNode* sixthMovetoTallGoal = new AutonNode(
+    //     45, 
+    //     new FollowPathAction(
+    //         m_drive_node, 
+    //         m_odom_node, 
+    //         new TankPathPursuit(sixthMoveToTallGoalPath), 
+    //         sixthMoveToTallGoalPath, 
+    //         false
+    //     )
+    // );
 
-    clawOpenFinalForTallGoal->AddNext(sixthMovetoTallGoal);
+    // clawOpenFinalForTallGoal->AddNext(sixthMovetoTallGoal);
 
-    AutonNode* clawCloseFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
+    // AutonNode* clawCloseFinalForTallGoal = new AutonNode(0.1, new UseClawAction(m_front_claw_node, false));
 
-    sixthMovetoTallGoal->AddNext(clawCloseFinalForTallGoal);
+    // sixthMovetoTallGoal->AddNext(clawCloseFinalForTallGoal);
 
-    AutonNode* waitForTallGoalClose = new AutonNode(0.5, new WaitAction(0.5));
-    clawCloseFinalForTallGoal->AddNext(waitForTallGoalClose);
+    // AutonNode* waitForTallGoalClose = new AutonNode(0.5, new WaitAction(0.5));
+    // clawCloseFinalForTallGoal->AddNext(waitForTallGoalClose);
 
-    AutonNode* raiseLiftTallGoal = new AutonNode(2, new SetLiftStateAction(m_liftNode, LiftNode::LiftState::FULLY_UP));
-    waitForTallGoalClose->AddNext(raiseLiftTallGoal);
+    // AutonNode* raiseLiftTallGoal = new AutonNode(2, new SetLiftStateAction(m_liftNode, LiftNode::LiftState::FULLY_UP));
+    // waitForTallGoalClose->AddNext(raiseLiftTallGoal);
 
-    AutonNode* waitForTallGoalLiftUp = new AutonNode(0.5, new WaitAction(0.5));
-    raiseLiftTallGoal->AddNext(waitForTallGoalLiftUp);
+    // AutonNode* waitForTallGoalLiftUp = new AutonNode(0.5, new WaitAction(0.5));
+    // raiseLiftTallGoal->AddNext(waitForTallGoalLiftUp);
 
-    Path seventhPickUpRingsPath = PathManager::GetInstance()->GetPath("Seventh");
-    AutonNode* seventhPickUpRings = new AutonNode(
-        10, 
-        new FollowPathAction(
-            m_drive_node, 
-            m_odom_node, 
-            new TankPathPursuit(seventhPickUpRingsPath), 
-            seventhPickUpRingsPath, 
-            false
-        )
-    );
+    // Path seventhPickUpRingsPath = PathManager::GetInstance()->GetPath("Seventh");
+    // AutonNode* seventhPickUpRings = new AutonNode(
+    //     45, 
+    //     new FollowPathAction(
+    //         m_drive_node, 
+    //         m_odom_node, 
+    //         new TankPathPursuit(seventhPickUpRingsPath), 
+    //         seventhPickUpRingsPath, 
+    //         false
+    //     )
+    // );
 
-    AutonNode* stopFlapConveyor = new AutonNode(0.5, new RollerIntakeAction(m_flapConveyorNode, 0));
+    // AutonNode* stopFlapConveyor = new AutonNode(0.5, new RollerIntakeAction(m_flapConveyorNode, 0));
 
-    waitForTallGoalLiftUp->AddNext(stopFlapConveyor);
-    waitForTallGoalLiftUp->AddNext(seventhPickUpRings);
+    // waitForTallGoalLiftUp->AddNext(stopFlapConveyor);
+    // waitForTallGoalLiftUp->AddNext(seventhPickUpRings);
 
-    Path eighthProtectNeutralPath = PathManager::GetInstance()->GetPath("Eighth");
-    AutonNode* eighthProtectNeutral = new AutonNode(
-        10, 
-        new FollowPathAction(
-            m_drive_node, 
-            m_odom_node, 
-            new TankPathPursuit(eighthProtectNeutralPath), 
-            eighthProtectNeutralPath, 
-            false
-        )
-    );
+    // Path eighthProtectNeutralPath = PathManager::GetInstance()->GetPath("Eighth");
+    // AutonNode* eighthProtectNeutral = new AutonNode(
+    //     45, 
+    //     new FollowPathAction(
+    //         m_drive_node, 
+    //         m_odom_node, 
+    //         new TankPathPursuit(eighthProtectNeutralPath), 
+    //         eighthProtectNeutralPath, 
+    //         false
+    //     )
+    // );
 
-    seventhPickUpRings->AddNext(eighthProtectNeutral);
+    // seventhPickUpRings->AddNext(eighthProtectNeutral);
 
-    AutonNode* stopRingIntake = new AutonNode(0.5, new RollerIntakeAction(m_intakeNode, 0));
+    // AutonNode* stopRingIntake = new AutonNode(0.5, new RollerIntakeAction(m_intakeNode, 0));
 
-    AutonNode* stopConveyor = new AutonNode(0.5, new RollerIntakeAction(m_conveyorNode, 0));
+    // AutonNode* stopConveyor = new AutonNode(0.5, new RollerIntakeAction(m_conveyorNode, 0));
 
-    eighthProtectNeutral->AddNext(stopRingIntake);
-    eighthProtectNeutral->AddNext(stopConveyor);
+    // eighthProtectNeutral->AddNext(stopRingIntake);
+    // eighthProtectNeutral->AddNext(stopConveyor);
 }
