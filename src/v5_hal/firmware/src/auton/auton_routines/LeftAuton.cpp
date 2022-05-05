@@ -191,6 +191,9 @@ void LeftAuton::AddNodes() {
 
     AutonNode* waitForTallGoalLiftUp = new AutonNode(0.5, new WaitAction(0.5));
     raiseLiftTallGoal->AddNext(waitForTallGoalLiftUp);
+    
+    AutonNode* backClawOpenForEnd = new AutonNode(0.5, new SetBackClawStateAction(m_backClawNode, BackClawNode::BackClawState::PIVOT_DOWN_CLAW_OPEN));
+    waitForTallGoalLiftUp->AddNext(backClawOpenForEnd);
 
     Path seventhPickUpRingsPath = PathManager::GetInstance()->GetPath("Seventh");
     AutonNode* seventhPickUpRings = new AutonNode(
