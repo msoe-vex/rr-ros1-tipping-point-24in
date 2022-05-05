@@ -1,7 +1,7 @@
 #include "nodes/HighRungLiftNode.h"
 
 HighRungLiftNode::HighRungLiftNode(NodeManager* node_manager, std::string handle_name, 
-        ControllerNode* controller, pros::controller_analog_e_t joystick, 
+        ControllerNode* controller, pros::controller_analog_e_t joystick, pros::controller_digital_e_t preset_btn,
         MotorNode* motor, ADIAnalogInNode* potentiometer) : 
         ILiftNode(node_manager, handle_name), 
         m_controller(controller),
@@ -62,11 +62,28 @@ int HighRungLiftNode::getPosition() { // change back to use pot
 
 void HighRungLiftNode::teleopPeriodic() {
     pros::lcd::print(2, "pot: %d", getPosition());
-    
+
     // gets controller input and scales it to [-1, 1]
     double controllerInput = m_controller->getController()->get_analog(m_joystick) / 127.0;
 
-    setLiftVoltage(controllerInput * MAX_MOTOR_VOLTAGE);
+    if (m_preset_btn == 1) {
+        m_state = STRAIGHT_UP;
+    } else if (abs(controllerInput) > 0.1) {
+        m_state = FREE_MOVING;
+    }
+
+    switch (m_state) {
+        case FREE_MOVING:
+            setLiftVoltage(controllerInput * MAX_MOTOR_VOLTAGE);
+            break;
+        
+        case STRAIGHT_UP:
+            setLiftPosition(m_straightUpPosition);
+            break;
+
+        default:
+            m_state = FREE_MOVING;
+    }
 };
 
 void HighRungLiftNode::autonPeriodic() { 

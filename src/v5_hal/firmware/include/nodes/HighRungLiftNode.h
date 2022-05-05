@@ -15,7 +15,7 @@ public:
     };
 
     HighRungLiftNode(NodeManager* node_manager, std::string handle_name, 
-        ControllerNode* controller, pros::controller_analog_e_t joystick, 
+        ControllerNode* controller, pros::controller_analog_e_t joystick, pros::controller_digital_e_t preset_btn, 
         MotorNode* motor, ADIAnalogInNode* potentiometer);
     
     void initialize();
@@ -47,6 +47,7 @@ private:
     MotorNode* m_motor;
     ADIAnalogInNode* m_potentiometer;
     pros::controller_analog_e_t m_joystick;
+    pros::controller_digital_e_t m_preset_btn;
     HighRungLiftState m_state;
 
     PID m_lift_pid;
