@@ -18,6 +18,7 @@ private:
     bool m_twoMotors = false;
     pros::controller_digital_e_t m_in_button;
     pros::controller_digital_e_t m_out_button;
+    pros::controller_digital_e_t m_secondary_button;
 
     std::string m_handle_name;
 
@@ -31,7 +32,7 @@ public:
 
     IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button);
 
-    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, MotorNode* intake_motor2, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button);
+    IntakeNode(NodeManager* node_manager, std::string handle_name, ControllerNode* controller, MotorNode* intake_motor, MotorNode* intake_motor2, pros::controller_digital_e_t in_button, pros::controller_digital_e_t out_button, pros::controller_digital_e_t secondary_button);
 
     void setIntakeVoltage(int voltage);
     
