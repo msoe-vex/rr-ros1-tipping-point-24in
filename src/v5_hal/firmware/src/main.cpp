@@ -214,12 +214,22 @@ void initialize() {
 		backClaw,
 		buddyClimb,
 		liftNode,
-		highRungLift
+		highRungLift,
+		goalSpinner
+	);
+
+	BasicAuton* basicAuton = new BasicAuton(
+		tankDriveNode,
+		odomNode,
+		highRungLift,
+		goalSpinner,
+		liftNode
 	);
 	
 	std::vector<Auton*> autons = {
 		leftAuton,
-		progSkills
+		progSkills,
+		basicAuton
 	};
 	
 	// Initialize the autonomous manager

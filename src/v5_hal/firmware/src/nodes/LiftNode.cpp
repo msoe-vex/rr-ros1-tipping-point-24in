@@ -146,7 +146,7 @@ void LiftNode::autonPeriodic() {
         break;
 
         default:
-            setLiftPosition(m_target_position);
+            setLiftVelocity(0);
         break;
     }
 

@@ -14,6 +14,8 @@
 #include "lib-rr/nodes/subsystems/ILiftNode.h"
 #include "lib-rr/nodes/subsystems/IClawNode.h"
 #include "lib-rr/nodes/subsystems/IRollerIntakeNode.h"
+#include "nodes/GoalSpinnerNode.h"
+#include "auton/auton_actions/MoveSpinnerToPositionAction.h"
 #include "auton/auton_actions/DeployAction.h"
 #include "auton/auton_actions/SetBackClawStateAction.h"
 #include "auton/auton_actions/SetHighRungLiftStateAction.h"
@@ -32,7 +34,7 @@ public:
     ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNode* odomNode, IRollerIntakeNode* intakeNode, 
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
         BackClawNode* backClaw, IClawNode* buddyClimb, LiftNode* liftNode, 
-        HighRungLiftNode* highRungLiftNode);
+        HighRungLiftNode* highRungLiftNode, GoalSpinnerNode* goalSpinner);
 
     void AddNodes();
 
@@ -47,5 +49,6 @@ private:
     IClawNode* m_buddyClimb;
     LiftNode* m_liftNode;
     HighRungLiftNode* m_highRungLiftNode;
+    GoalSpinnerNode* m_goalSpinner;
 
 };

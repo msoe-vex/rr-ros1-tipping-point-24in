@@ -3,7 +3,7 @@
 ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNode* odomNode, IRollerIntakeNode* intakeNode, 
         IRollerIntakeNode* conveyorNode, IRollerIntakeNode* flapConveyorNode, IClawNode* frontClawNode, 
         BackClawNode* backClaw, IClawNode* buddyClimb, LiftNode* liftNode, 
-        HighRungLiftNode* highRungLiftNode) : 
+        HighRungLiftNode* highRungLiftNode, GoalSpinnerNode* goalSpinner) : 
         Auton("ProgSkills", "/usd/paths/path24inProgPt1v5.json"), 
         m_driveNode(driveNode),
         m_odomNode(odomNode),
@@ -14,7 +14,8 @@ ProgrammingSkillzAuton::ProgrammingSkillzAuton(IDriveNode* driveNode, OdometryNo
         m_backClaw(backClaw),
         m_buddyClimb(buddyClimb),
         m_liftNode(liftNode),
-        m_highRungLiftNode(highRungLiftNode) {
+        m_highRungLiftNode(highRungLiftNode),
+        m_goalSpinner(goalSpinner) {
     
 }
 
@@ -127,32 +128,103 @@ void ProgrammingSkillzAuton::AddNodes() {
     
     waitForClawClose->AddNext(RaiseGoal1);
 
-    // 7b. Path to Pre-Ring Intake Position
-    Path YellowToRings = PathManager::GetInstance()->GetPath("YellowToRings");
-    AutonNode* YellowToRingsNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(YellowToRings), YellowToRings, false));
+    Path ToDropRed = PathManager::GetInstance()->GetPath("ToDropRed");
+    AutonNode* ToDropRedNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(ToDropRed), ToDropRed, false));
 
-    BlueGoalToYellowGoalNode->AddNext(YellowToRingsNode);
+    CloseFrontClaw1->AddNext(ToDropRedNode);
 
-    // 9b. Path to Corner
-    Path ReverseTowardsBlueGoalDrop = PathManager::GetInstance()->GetPath("ReverseTowardsBlueGoalDrop");
-    AutonNode* ReverseTowardsBlueGoalDropNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(ReverseTowardsBlueGoalDrop), ReverseTowardsBlueGoalDrop, false));
-
-    YellowToRingsNode->AddNext(ReverseTowardsBlueGoalDropNode);
-
-    // Stop scoring rings
-    // Turn off conveyor
-    AutonNode* stopConveyor = new AutonNode(0.1, new RollerIntakeAction(m_conveyorNode, 0));
-    
-    ReverseTowardsBlueGoalDropNode->AddNext(startConveyor);
-
-    // Turn off flap conveyor
-    AutonNode* stopFlapConveyor = new AutonNode(0.1, new RollerIntakeAction(m_flapConveyorNode, 0));
-    
-    ReverseTowardsBlueGoalDropNode->AddNext(startFlapConveyor);
-
-    // 10b. Open Back Claw = Drop Goal
     AutonNode* OpenBackClaw2 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+    
+    ToDropRedNode->AddNext(OpenBackClaw2);
 
-    ReverseTowardsBlueGoalDropNode->AddNext(OpenBackClaw2);
+    Path Forwards = PathManager::GetInstance()->GetPath("Forwards");
+    AutonNode* ForwardsNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(Forwards), Forwards, false));
+
+    ToDropRedNode->AddNext(ForwardsNode);
+
+    AutonNode* OpenFrontClaw2 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, false));
+
+    ForwardsNode->AddNext(OpenFrontClaw2);
+
+    Path UTurnGrabRed = PathManager::GetInstance()->GetPath("UTurnGrabRed");
+    AutonNode* UTurnGrabRedNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(UTurnGrabRed), UTurnGrabRed, false));
+
+    ForwardsNode->AddNext(UTurnGrabRedNode);
+
+    AutonNode* CloseBackClaw2 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_BACK));
+
+    UTurnGrabRedNode->AddNext(CloseBackClaw2);
+
+    Path ScootToMiddle = PathManager::GetInstance()->GetPath("ScootToMiddle");
+    AutonNode* ScootToMiddleNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(ScootToMiddle), ScootToMiddle, false));
+
+    UTurnGrabRedNode->AddNext(ScootToMiddleNode);
+
+    Path BackUp = PathManager::GetInstance()->GetPath("BackUp");
+    AutonNode* BackUpNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(BackUp), BackUp, false));
+
+    ScootToMiddleNode->AddNext(BackUpNode);
+
+    AutonNode* LowerLift2 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::DOWN));
+    
+    BackUpNode->AddNext(LowerLift2);
+
+    Path ForwardToMid = PathManager::GetInstance()->GetPath("ForwardToMid");
+    AutonNode* ForwardToMidNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(ForwardToMid), ForwardToMid, false));
+
+    BackUpNode->AddNext(ForwardToMidNode);
+
+    AutonNode* CloseFrontClaw2 = new AutonNode(0.1, new UseClawAction(m_frontClawNode, true));
+
+    ForwardToMidNode->AddNext(CloseFrontClaw2);
+
+    AutonNode* wait34 = new AutonNode(0.5, new WaitAction(0.5));
+
+    CloseFrontClaw2->AddNext(wait34);
+
+    AutonNode* RaiseGoal2 = new AutonNode(0.1, new SetLiftStateAction(m_liftNode, LiftNode::UP_FOR_RINGS));
+    
+    wait34->AddNext(RaiseGoal2);
+
+    Path BluePlat = PathManager::GetInstance()->GetPath("BluePlat");
+    AutonNode* BluePlatNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(BluePlat), BluePlat, false));
+
+    RaiseGoal2->AddNext(BluePlatNode);
+
+    AutonNode* SpinToPosition = new AutonNode(5, new MoveSpinnerToPositionAction(m_goalSpinner, m_goalSpinner->getPosition() + 3200, 0));
+
+    BluePlatNode->AddNext(SpinToPosition);
+
+    AutonNode* HighRungLiftScore = new AutonNode(0.1, new SetHighRungLiftStateAction(m_highRungLiftNode, HighRungLiftNode::SCORING));
+    
+    SpinToPosition->AddNext(HighRungLiftScore);
+
+    // // 7b. Path to Pre-Ring Intake Position
+    // Path YellowToRings = PathManager::GetInstance()->GetPath("YellowToRings");
+    // AutonNode* YellowToRingsNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(YellowToRings), YellowToRings, false));
+
+    // BlueGoalToYellowGoalNode->AddNext(YellowToRingsNode);
+
+    // // 9b. Path to Corner
+    // Path ReverseTowardsBlueGoalDrop = PathManager::GetInstance()->GetPath("ReverseTowardsBlueGoalDrop");
+    // AutonNode* ReverseTowardsBlueGoalDropNode = new AutonNode(10, new FollowPathAction(m_driveNode, m_odomNode, new TankPathPursuit(ReverseTowardsBlueGoalDrop), ReverseTowardsBlueGoalDrop, false));
+
+    // YellowToRingsNode->AddNext(ReverseTowardsBlueGoalDropNode);
+
+    // // Stop scoring rings
+    // // Turn off conveyor
+    // AutonNode* stopConveyor = new AutonNode(0.1, new RollerIntakeAction(m_conveyorNode, 0));
+    
+    // ReverseTowardsBlueGoalDropNode->AddNext(startConveyor);
+
+    // // Turn off flap conveyor
+    // AutonNode* stopFlapConveyor = new AutonNode(0.1, new RollerIntakeAction(m_flapConveyorNode, 0));
+    
+    // ReverseTowardsBlueGoalDropNode->AddNext(startFlapConveyor);
+
+    // // 10b. Open Back Claw = Drop Goal
+    // AutonNode* OpenBackClaw2 = new AutonNode(0.1, new SetBackClawStateAction(m_backClaw, BackClawNode::PIVOT_DOWN_CLAW_OPEN));
+
+    // ReverseTowardsBlueGoalDropNode->AddNext(OpenBackClaw2);
 
 };

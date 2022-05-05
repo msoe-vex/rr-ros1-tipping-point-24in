@@ -58,6 +58,8 @@ void GoalSpinnerNode::teleopPeriodic() {
         break;
         
         case FREE_MOVING: 
+        
+    pros::lcd::print(4, "position: %d\n", getPosition());
             if (m_controller->getController()->get_digital(m_leftSpinButton) && 
                 !m_controller->getController()->get_digital(m_rightSpinButton)) {
                 setSpinnerVoltage(MAX_MOTOR_VOLTAGE); // using voltage here cause we don't know max motor velocity for sure
@@ -207,7 +209,7 @@ void GoalSpinnerNode::m_setSpinnerPID() {
     // pros::lcd::print(4, "m_target_position: %d\n", m_target_position);
     float feedback = m_pid.calculate(errorPosition);
     // pros::lcd::print(1, "lift_feedback: %f\n", lift_feedback);
-    // pros::lcd::print(0, "encoder: %d\n", getPosition());
+    pros::lcd::print(4, "position: %d\n", getPosition());
     setSpinnerVelocity(feedback * MAX_VELOCITY);
 }
 

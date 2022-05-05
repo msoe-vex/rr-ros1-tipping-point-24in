@@ -7,17 +7,24 @@
 #include "lib-rr/auton/auton_actions/DriveStraightAction.h"
 #include "auton/auton_actions/PlatformBalance.h"
 #include "auton/auton_actions/SetHighRungLiftStateAction.h"
+#include "auton/auton_actions/DeployAction.h"
+#include "auton/auton_actions/MoveSpinnerToPositionAction.h"
 #include "lib-rr/auton/auton_actions/UseClawAction.h"
 #include "lib-rr/auton/auton_actions/MoveLiftToPositionAction.h"
+#include "auton/auton_actions/SetLiftStateAction.h"
 #include "lib-rr/nodes/subsystems/ILiftNode.h"
 #include "lib-rr/nodes/subsystems/IClawNode.h"
 #include "lib-rr/util/Constants.h"
 #include "lib-rr/eigen/Eigen/Dense"
 #include "nodes/HighRungLiftNode.h"
+#include "nodes/LiftNode.h"
+#include "nodes/GoalSpinnerNode.h"
 
 class BasicAuton : public Auton {
 public:
-    BasicAuton(IDriveNode* drive_node, OdometryNode* odom_node, HighRungLiftNode* high_rung_lift_node);
+    BasicAuton(IDriveNode* drive_node, OdometryNode* odom_node, 
+        HighRungLiftNode* high_rung_lift_node, GoalSpinnerNode* goalSpinnerNode, 
+        LiftNode* liftNode);
 
     void AddNodes();
 
@@ -27,5 +34,7 @@ private:
     InertialSensorNode* m_inertial_sensor;
     OdometryNode* m_odom_node;
     HighRungLiftNode* m_high_rung_lift_node;
+    GoalSpinnerNode* m_goalSpinnerNode;
+    LiftNode* m_liftNode;
 
 };
