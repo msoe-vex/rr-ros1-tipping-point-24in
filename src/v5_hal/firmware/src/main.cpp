@@ -189,7 +189,7 @@ void initialize() {
 		DIGITAL_DOWN, backTiltPiston, backClawPiston);
 	
 	buddyClimbPiston = new ADIDigitalOutNode(nodeManager, "buddyClimbPiston", 'C', false);
-	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_UP, DIGITAL_RIGHT);
+	buddyClimb = new ClawNode(nodeManager, "buddyClimb", controller1, buddyClimbPiston, DIGITAL_RIGHT, DIGITAL_UP);
 
 	// autons
 	MatchAuton* matchAuton = new MatchAuton(tankDriveNode, odomNode, frontClaw);
